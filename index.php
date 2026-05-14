@@ -41,11 +41,15 @@ switch ($page) {
         $template_data['auto_imgs']  = get_automation_images();
         $template_data['reviews']    = get_reviews($lang_id);
         $template_data['solutions_items'] = [
-            'solutions'  => get_solution_items($lang_id, 'solution'),
-            'departments'=> get_solution_items($lang_id, 'department'),
-            'industries' => get_solution_items($lang_id, 'industry'),
+            'solutions'   => get_solution_items($lang_id, 'solution'),
+            'departments' => get_solution_items($lang_id, 'department'),
+            'industries'  => get_solution_items($lang_id, 'industry'),
         ];
-        $template_data['featured_cases'] = get_cases($lang_id, [], 4);
+        $template_data['featured_cases'] = get_cases($lang_id, ['is_featured'=>1], 4);
+        if (empty($template_data['featured_cases'])) {
+            $template_data['featured_cases'] = get_cases($lang_id, [], 4);
+        }
+        $template_data['home_blocks'] = rows('SELECT * FROM home_blocks WHERE is_active=1 ORDER BY sort_order');
         $template_data['page_class'] = 'home-page';
         render('home', $template_data);
         break;

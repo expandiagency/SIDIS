@@ -116,7 +116,34 @@ try {
   cta_title TEXT DEFAULT '',
   cta_subtitle TEXT DEFAULT '',
   cta_btn_text VARCHAR(100) DEFAULT '',
-  cta_btn_url VARCHAR(300) DEFAULT '#'
+  cta_btn_url VARCHAR(300) DEFAULT '#',
+  why_subtitle VARCHAR(300) DEFAULT '',
+  why_text TEXT DEFAULT '',
+  solutions_text TEXT DEFAULT '',
+  automation_btn1_text VARCHAR(100) DEFAULT '',
+  automation_btn2_text VARCHAR(100) DEFAULT '',
+  roadmap_title VARCHAR(200) DEFAULT '',
+  roadmap_btn1_text VARCHAR(100) DEFAULT '',
+  roadmap_btn1_url VARCHAR(300) DEFAULT '#',
+  roadmap_btn2_text VARCHAR(100) DEFAULT '',
+  roadmap_btn2_url VARCHAR(300) DEFAULT '#',
+  roadmap_steps TEXT DEFAULT '',
+  cta_text TEXT DEFAULT '',
+  cta_item2 TEXT DEFAULT '',
+  cta_item3 TEXT DEFAULT '',
+  cta_form_title VARCHAR(200) DEFAULT '',
+  presentation_title VARCHAR(200) DEFAULT '',
+  presentation_subtitle VARCHAR(200) DEFAULT '',
+  presentation_text TEXT DEFAULT '',
+  presentation_video VARCHAR(500) DEFAULT ''
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4",
+
+'home_blocks' => "CREATE TABLE IF NOT EXISTS home_blocks (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  block_key VARCHAR(50) NOT NULL,
+  label VARCHAR(100) NOT NULL,
+  sort_order INT DEFAULT 0,
+  is_active TINYINT DEFAULT 1
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4",
 
 'home_why_slides' => "CREATE TABLE IF NOT EXISTS home_why_slides (
@@ -423,6 +450,20 @@ try {
             ]);
             $done[] = 'Seeded home content (EN)';
         }
+    }
+
+    // Home blocks order
+    $blocks_count = row('SELECT COUNT(*) as c FROM home_blocks')['c'] ?? 0;
+    if ($blocks_count == 0) {
+        $default_blocks = [
+            ['hero','Hero Section'],['why','Why Us (Carousel)'],['automation','Automation Hub'],
+            ['solutions','Solutions / Tabs'],['projects','Projects Grid'],['reviews','Client Reviews'],
+            ['roadmap','Roadmap'],['getintouch','Get In Touch Form'],['presentation','Video Presentation'],
+        ];
+        foreach ($default_blocks as $i => [$key, $label]) {
+            insert('home_blocks', ['block_key'=>$key,'label'=>$label,'sort_order'=>$i,'is_active'=>1]);
+        }
+        $done[] = 'Seeded home blocks order';
     }
 
     // Default nav items (EN header)

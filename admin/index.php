@@ -218,8 +218,8 @@ tr:hover td{background:#fafafa}
                 <button class="btn btn--primary" @click="saveHome">Save All</button>
             </div>
             <div class="tabs">
-                <button v-for="t in ['Hero','Why Slides','Automation','Partner Logos','Reviews','Solutions Section']" :key="t"
-                    class="tab-btn" :class="{active:homeTab===t}" @click="homeTab=t">{{ t }}</button>
+                <button v-for="t in ['Hero','Why Slides','Automation','Partner Logos','Reviews','Solutions Section','Roadmap & CTA','Page Blocks']" :key="t"
+                    class="tab-btn" :class="{active:homeTab===t}" @click="homeTab=t;if(t==='Page Blocks')loadBlocks()">{{ t }}</button>
             </div>
 
             <!-- Hero -->
@@ -325,13 +325,72 @@ tr:hover td{background:#fafafa}
             <div v-if="homeTab==='Solutions Section'" class="card"><div class="card__body">
                 <div class="form-grid cols-1">
                     <div class="field"><label>Solutions Section Title</label><input v-model="homeData.solutions_title"></div>
+                    <div class="field"><label>Solutions Section Text</label><textarea v-model="homeData.solutions_text" rows="3"></textarea></div>
                     <div class="field"><label>Projects Section Title</label><input v-model="homeData.projects_title"></div>
                     <div class="field"><label>Projects Button Text</label><input v-model="homeData.projects_btn_text"></div>
                     <div class="field"><label>Projects Button URL</label><input v-model="homeData.projects_btn_url"></div>
                     <div class="field"><label>Reviews Section Title</label><input v-model="homeData.reviews_title"></div>
                     <div class="field"><label>Why Section Title</label><input v-model="homeData.why_title"></div>
+                    <div class="field"><label>Why Section Subtitle</label><input v-model="homeData.why_subtitle"></div>
+                    <div class="field"><label>Why Section Text</label><textarea v-model="homeData.why_text" rows="3"></textarea></div>
                 </div>
             </div></div>
+
+            <!-- Roadmap & CTA -->
+            <div v-if="homeTab==='Roadmap & CTA'" class="card"><div class="card__body">
+                <p style="font-size:13px;color:var(--muted);margin-bottom:16px">Roadmap section settings</p>
+                <div class="form-grid">
+                    <div class="field"><label>Roadmap Title</label><input v-model="homeData.roadmap_title"></div>
+                    <div class="field"><label>Roadmap Btn 1 Text</label><input v-model="homeData.roadmap_btn1_text"></div>
+                    <div class="field"><label>Roadmap Btn 1 URL</label><input v-model="homeData.roadmap_btn1_url"></div>
+                    <div class="field"><label>Roadmap Btn 2 Text</label><input v-model="homeData.roadmap_btn2_text"></div>
+                    <div class="field"><label>Roadmap Btn 2 URL</label><input v-model="homeData.roadmap_btn2_url"></div>
+                </div>
+                <hr style="margin:20px 0;border:none;border-top:1px solid var(--border)">
+                <p style="font-size:13px;font-weight:600;margin-bottom:12px">Contact Form Section</p>
+                <div class="form-grid cols-1">
+                    <div class="field"><label>Section Title</label><input v-model="homeData.cta_title"></div>
+                    <div class="field"><label>Form Title</label><input v-model="homeData.cta_form_title"></div>
+                    <div class="field"><label>Intro Text (item 1)</label><textarea v-model="homeData.cta_text" rows="3"></textarea></div>
+                    <div class="field"><label>Item 2</label><input v-model="homeData.cta_item2"></div>
+                    <div class="field"><label>Item 3</label><input v-model="homeData.cta_item3"></div>
+                    <div class="field"><label>Submit Button Text</label><input v-model="homeData.cta_btn_text"></div>
+                </div>
+                <hr style="margin:20px 0;border:none;border-top:1px solid var(--border)">
+                <p style="font-size:13px;font-weight:600;margin-bottom:12px">Video Presentation Section</p>
+                <div class="form-grid cols-1">
+                    <div class="field"><label>Subtitle (small text above)</label><input v-model="homeData.presentation_subtitle"></div>
+                    <div class="field"><label>Title</label><input v-model="homeData.presentation_title"></div>
+                    <div class="field"><label>Description text</label><textarea v-model="homeData.presentation_text" rows="3"></textarea></div>
+                    <div class="field"><label>Video path (e.g. ./assets/video/1-hero.mp4)</label><input v-model="homeData.presentation_video"></div>
+                </div>
+            </div></div>
+
+            <!-- Page Blocks Order -->
+            <div v-if="homeTab==='Page Blocks'">
+                <div class="card">
+                    <div class="card__head"><h2>Homepage Block Order</h2></div>
+                    <div class="card__body">
+                        <p style="font-size:13px;color:var(--muted);margin-bottom:16px">Drag to reorder blocks on the homepage. Toggle to show/hide sections.</p>
+                        <div class="repeat-list">
+                            <div v-for="(block,i) in homeBlocksList" :key="block.id" class="repeat-item" style="display:flex;align-items:center;gap:16px;cursor:grab">
+                                <span style="font-size:18px;color:#ccc;cursor:grab" title="Drag to reorder">⠿</span>
+                                <div style="flex:1;font-weight:500">{{ block.label }}</div>
+                                <div style="font-size:12px;color:var(--muted);font-family:monospace">{{ block.block_key }}</div>
+                                <label class="toggle">
+                                    <input type="checkbox" :checked="block.is_active==1" @change="toggleBlock(block)">
+                                    <span class="toggle__slider"></span>
+                                </label>
+                                <div style="display:flex;gap:4px">
+                                    <button class="btn btn--outline btn--sm" :disabled="i===0" @click="moveBlock(i,-1)">↑</button>
+                                    <button class="btn btn--outline btn--sm" :disabled="i===homeBlocksList.length-1" @click="moveBlock(i,1)">↓</button>
+                                </div>
+                            </div>
+                        </div>
+                        <button class="btn btn--primary" style="margin-top:16px" @click="saveBlocksOrder">Save Block Order</button>
+                    </div>
+                </div>
+            </div>
         </template>
 
         <!-- ── NAVIGATION ── -->
@@ -1185,6 +1244,26 @@ createApp({
             showAlert('Settings saved!');
         };
 
+        /* ─── Home Blocks ───────────────────────────────────────────────── */
+        const homeBlocksList = ref([]);
+        const loadBlocks = async () => { homeBlocksList.value = await api('/admin/api/blocks.php'); };
+        const toggleBlock = async block => {
+            block.is_active = block.is_active ? 0 : 1;
+            await api(`/admin/api/blocks.php?action=toggle&id=${block.id}`,{method:'POST',body:'{}'});
+        };
+        const moveBlock = (i, dir) => {
+            const arr = homeBlocksList.value;
+            const j = i + dir;
+            if (j < 0 || j >= arr.length) return;
+            [arr[i], arr[j]] = [arr[j], arr[i]];
+        };
+        const saveBlocksOrder = async () => {
+            const order = homeBlocksList.value.map(b => b.id);
+            await api('/admin/api/blocks.php?action=reorder',{method:'POST',body:JSON.stringify({order})});
+            showAlert('Block order saved!');
+            await loadBlocks();
+        };
+
         /* ─── Dashboard Stats ───────────────────────────────────────────── */
         const loadStats = async () => {
             const [c,p,s,m] = await Promise.all([
@@ -1264,6 +1343,7 @@ createApp({
             mediaList, uploadFiles, uploadAndPick, pickMedia, selectMedia, deleteMedia, copyUrl,
             settingsData, saveSettings,
             onLangChange, slugify,
+            homeBlocksList, loadBlocks, toggleBlock, moveBlock, saveBlocksOrder,
         };
     }
 }).mount('#app');
