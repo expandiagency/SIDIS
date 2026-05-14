@@ -15,7 +15,7 @@ jobs:
       - name: Deploy via FTP
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
-          server: ftp.flowerworld.lviv.ua
+          server: sidis.expandi.agency
           username: sidis@sidis.expandi.agency
           password: ${{ secrets.FTP_PASSWORD }}
           port: 21
