@@ -1,9 +1,9 @@
 <?php
 // Database — fill in after creating DB in cPanel
 define('DB_HOST', 'localhost');
-define('DB_NAME', 'your_database_name');
-define('DB_USER', 'your_database_user');
-define('DB_PASS', 'your_database_password');
+define('DB_NAME', 'flowerwo_sidis');
+define('DB_USER', 'flowerwo_sidisgroup');
+define('DB_PASS', '9?Y^mm+UZ7}9w^O?');
 define('DB_CHARSET', 'utf8mb4');
 
 // Site URL (no trailing slash)
