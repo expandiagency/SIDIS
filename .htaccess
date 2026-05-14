@@ -1,0 +1,16 @@
+Options -Indexes
+RewriteEngine On
+RewriteBase /
+
+# Allow direct access to real files and directories
+RewriteCond %{REQUEST_FILENAME} -f [OR]
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteRule ^ - [L]
+
+# Admin panel — pass to admin/index.php
+RewriteRule ^admin/?$ admin/index.php [L,QSA]
+RewriteRule ^admin/login/?$ admin/login.php [L,QSA]
+RewriteRule ^admin/api/(.+)$ admin/api/$1 [L,QSA]
+
+# All public routes → router
+RewriteRule ^ index.php [L,QSA]
