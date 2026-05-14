@@ -1,6 +1,5 @@
 <?php
 require_once dirname(__DIR__) . '/includes/auth.php';
-require_once dirname(__DIR__) . '/includes/functions.php';
 admin_session_start();
 admin_require_auth();
 $admin = admin_current();

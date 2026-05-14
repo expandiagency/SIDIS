@@ -1,6 +1,5 @@
 <?php
-require_once __DIR__ . '/config.php';
-require_once __DIR__ . '/db.php';
+require_once __DIR__ . '/functions.php';
 
 function admin_session_start(): void {
     session_name(SESSION_NAME);
@@ -13,7 +12,7 @@ function admin_logged_in(): bool {
 
 function admin_require_auth(): void {
     if (!admin_logged_in()) {
-        if (str_contains($_SERVER['REQUEST_URI'] ?? '', '/api/')) {
+        if (strpos($_SERVER['REQUEST_URI'] ?? '', '/api/') !== false) {
             json_response(['error' => 'Unauthorized'], 401);
         }
         header('Location: /admin/login.php');
@@ -39,9 +38,3 @@ function admin_current(): ?array {
     return row('SELECT id, name, email FROM admin_users WHERE id=?', [$_SESSION['admin_id']]);
 }
 
-function json_response(mixed $data, int $status = 200): void {
-    http_response_code($status);
-    header('Content-Type: application/json');
-    echo json_encode($data, JSON_UNESCAPED_UNICODE);
-    exit;
-}

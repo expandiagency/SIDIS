@@ -273,7 +273,7 @@ function media_url(?string $path): string {
     return UPLOAD_URL . $path;
 }
 
-function upload_file(array $file, string $subdir = ''): array {
+function upload_file(array $file, string $subdir = ''): int {
     $allowed = ['image/jpeg', 'image/png', 'image/webp', 'image/gif', 'image/svg+xml'];
     if (!in_array($file['type'], $allowed)) throw new Exception('File type not allowed');
     if ($file['size'] > 10 * 1024 * 1024) throw new Exception('File too large (max 10MB)');
@@ -300,7 +300,7 @@ function upload_file(array $file, string $subdir = ''): array {
 function e(string $s): string { return htmlspecialchars($s, ENT_QUOTES, 'UTF-8'); }
 function slug(string $s): string { return strtolower(trim(preg_replace('/[^a-z0-9]+/i', '-', $s), '-')); }
 
-function json_response(mixed $data, int $status = 200): void {
+function json_response($data, int $status = 200): void {
     http_response_code($status);
     header('Content-Type: application/json');
     echo json_encode($data, JSON_UNESCAPED_UNICODE);
