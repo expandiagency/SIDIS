@@ -18,7 +18,7 @@ $admin = admin_current();
 body{font-family:system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex}
 a{color:inherit;text-decoration:none}
 .sidebar{width:240px;background:var(--sidebar);min-height:100vh;display:flex;flex-direction:column;position:fixed;top:0;left:0;bottom:0;z-index:100}
-.sidebar__logo{padding:24px 20px;border-bottom:1px solid rgba(255,255,255,.1)}
+.sidebar__logo{padding:20px 20px 18px;border-bottom:1px solid rgba(255,255,255,.1)}
 .sidebar__logo svg{color:#fff}
 .sidebar__nav{padding:12px 0;flex:1;overflow-y:auto}
 .nav-item{display:flex;align-items:center;gap:10px;padding:11px 20px;color:rgba(255,255,255,.7);cursor:pointer;font-size:14px;transition:.15s;border-left:3px solid transparent}
@@ -80,8 +80,11 @@ tr:hover td{background:#fafafa}
 .media-item__name{font-size:11px;padding:4px 6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;background:#f8f9fa}
 /* Repeat list */
 .repeat-list{display:flex;flex-direction:column;gap:8px}
-.repeat-item{background:#f8f9fa;border:1px solid var(--border);border-radius:8px;padding:12px 14px;position:relative}
-.repeat-item__actions{position:absolute;top:10px;right:10px;display:flex;gap:6px}
+.repeat-item{background:#f8f9fa;border:1px solid var(--border);border-radius:8px;overflow:hidden}
+.repeat-item__header{display:flex;align-items:center;justify-content:space-between;padding:8px 12px;border-bottom:1px solid var(--border);background:#f0f1f3;min-height:36px}
+.repeat-item__header-label{font-size:12px;font-weight:600;color:var(--muted)}
+.repeat-item__actions{display:flex;gap:6px}
+.repeat-item__body{padding:12px 14px}
 /* Tabs */
 .tabs{display:flex;gap:4px;margin-bottom:20px;border-bottom:2px solid var(--border);padding-bottom:0}
 .tab-btn{padding:8px 18px;font-size:13px;font-weight:500;border:none;background:none;cursor:pointer;color:var(--muted);border-bottom:2px solid transparent;margin-bottom:-2px;transition:.15s}
@@ -117,6 +120,14 @@ tr:hover td{background:#fafafa}
 /* Upload zone */
 .upload-zone{border:2px dashed var(--border);border-radius:8px;padding:24px;text-align:center;cursor:pointer;color:var(--muted);font-size:13px;transition:.15s}
 .upload-zone:hover{border-color:var(--accent);color:var(--accent)}
+/* SVG field */
+.svg-field-row{display:flex;align-items:flex-start;gap:10px}
+.svg-preview{width:48px;height:48px;flex-shrink:0;border:1px solid var(--border);border-radius:6px;display:flex;align-items:center;justify-content:center;background:#fff;overflow:hidden}
+.svg-preview svg{width:32px;height:32px}
+.svg-field-row textarea{flex:1}
+/* Drag handle */
+.drag-handle{cursor:grab;color:#ccc;font-size:20px;padding:0 4px}
+.drag-handle:active{cursor:grabbing}
 </style>
 </head>
 <body>
@@ -125,8 +136,8 @@ tr:hover td{background:#fafafa}
 <!-- ══ SIDEBAR ══ -->
 <aside class="sidebar">
     <div class="sidebar__logo">
-        <svg width="90" height="22" viewBox="0 0 115 29" fill="none"><path d="M53.6506 13.8293C53.6506 14.7154 53.3599 15.4805 52.7785 16.1294C52.1971 16.7759 51.3877 17.2736 50.3458 17.6155C49.3062 17.9597 48.1131 18.1318 46.7665 18.1318C46.3897 18.1318 45.9292 18.1132 45.3827 18.076C44.8361 18.0388 44.1105 17.9342 43.2058 17.7644C42.3011 17.5946 41.3592 17.3411 40.3801 17.0085V13.5339C41.2987 13.9758 42.2011 14.3456 43.0872 14.6386C43.9733 14.9316 44.9245 15.0782 45.9385 15.0782C46.8735 15.0782 47.4782 14.9572 47.7549 14.7154C48.0317 14.4735 48.1689 14.2479 48.1689 14.0362C48.1689 13.6548 47.934 13.3339 47.4619 13.0711C46.9898 12.8083 46.3037 12.5385 45.4036 12.2594C44.4082 11.9315 43.5337 11.5756 42.7825 11.1919C42.0313 10.8081 41.4173 10.3244 40.9406 9.74529C40.4638 9.16618 40.2266 8.48242 40.2266 7.69167C40.2266 6.90093 40.4661 6.2381 40.9475 5.62178C41.429 5.00546 42.1616 4.51241 43.15 4.14495C44.1384 3.77748 45.3432 3.59375 46.7688 3.59375C47.7828 3.59375 48.7201 3.6705 49.5806 3.824C50.4411 3.97749 51.1505 4.1496 51.711 4.34031C52.2715 4.53102 52.6552 4.67986 52.8645 4.78917V8.1103C52.1226 7.694 51.2947 7.32421 50.3807 6.99628C49.4667 6.66835 48.4899 6.50555 47.4503 6.50555C46.7688 6.50555 46.2758 6.60789 45.9688 6.81255C45.6618 7.01721 45.5106 7.26839 45.5106 7.56841C45.5106 7.8475 45.6641 8.08937 45.9688 8.29403C46.2734 8.4987 46.82 8.74755 47.6061 9.04059C49.0038 9.55225 50.1225 10.0104 50.9621 10.4197C51.8017 10.8291 52.4575 11.3012 52.9343 11.8361C53.4111 12.371 53.6483 13.0362 53.6483 13.8339Z" fill="white"/><path d="M63.5419 17.9472H58.0625V3.78125H63.5419V17.9472Z" fill="white"/><path d="M3.47226 4.24281L13.3833 0.63547C18.8536-1.35553 24.9108 1.46899 26.9018 6.93921L7.0796 14.1539C4.34339 15.1498 1.31479 13.7375 0.318896 11.0013C-0.676204 8.26731 0.738242 5.23791 3.47226 4.24281Z" fill="white"/><path d="M23.8629 24.4425L13.9518 28.0498C8.48159 30.0408 2.42438 27.2163 0.433387 21.7461L20.2555 14.5314C22.9917 13.5355 26.0203 14.9478 27.0162 17.684C28.0121 20.4202 26.5999 23.4488 23.8637 24.4447Z" fill="#772885"/></svg>
-        <div style="font-size:11px;color:rgba(255,255,255,.4);margin-top:4px">Admin Panel</div>
+        <img src="/assets/img/logo.svg" alt="SIDIS GROUP" style="height:30px;max-width:160px;display:block">
+        <div style="font-size:11px;color:rgba(255,255,255,.4);margin-top:6px;letter-spacing:.5px">Admin Panel</div>
     </div>
     <nav class="sidebar__nav">
         <div v-for="item in navItems" :key="item.id"
@@ -423,30 +434,64 @@ tr:hover td{background:#fafafa}
 
         <!-- ── SOLUTIONS ── -->
         <template v-if="currentView==='solutions'">
-            <div class="section-head"><h1>Solutions / Departments / Industries</h1>
-                <button class="btn btn--primary" @click="openSolutionItemModal()">+ Add Item</button>
+            <div class="section-head">
+                <h1>Solutions / Departments / Industries</h1>
+                <button v-if="solutionsMainTab==='items'" class="btn btn--primary" @click="openSolutionItemModal()">+ Add Item</button>
+                <button v-if="solutionsMainTab==='blocks'" class="btn btn--primary" @click="saveSolBlocksOrder">Save Block Order</button>
             </div>
-            <div class="tabs">
-                <button v-for="t in ['solution','department','industry']" :key="t" class="tab-btn"
-                    :class="{active:solutionsTab===t}" @click="solutionsTab=t;loadSolutionItems()">
-                    {{ t.charAt(0).toUpperCase()+t.slice(1)+'s' }}
-                </button>
+            <div class="tabs" style="margin-bottom:0;border-bottom:none">
+                <button class="tab-btn" :class="{active:solutionsMainTab==='items'}" @click="solutionsMainTab='items'">Homepage Tabs</button>
+                <button class="tab-btn" :class="{active:solutionsMainTab==='blocks'}" @click="solutionsMainTab='blocks';loadSolBlocks()">Page Sections</button>
             </div>
-            <div class="card"><div class="table-wrap"><table>
-                <thead><tr><th>Icon</th><th>Title</th><th>Active</th><th>Sort</th><th>Actions</th></tr></thead>
-                <tbody>
-                    <tr v-for="item in solutionItems" :key="item.id">
-                        <td><div v-if="item.icon_svg" v-html="item.icon_svg" style="width:32px;height:32px;overflow:hidden"></div></td>
-                        <td>{{ item.title }}</td>
-                        <td><span :class="'badge badge--'+(item.is_active?'on':'off')">{{ item.is_active?'Yes':'No' }}</span></td>
-                        <td>{{ item.sort_order }}</td>
-                        <td>
-                            <button class="btn btn--outline btn--sm" @click="openSolutionItemModal(item)">Edit</button>
-                            <button class="btn btn--danger btn--sm" style="margin-left:6px" @click="deleteSolutionItem(item.id)">Del</button>
-                        </td>
-                    </tr>
-                </tbody>
-            </table></div></div>
+            <div v-if="solutionsMainTab==='items'">
+                <div class="tabs" style="margin-top:4px">
+                    <button v-for="t in ['solution','department','industry']" :key="t" class="tab-btn"
+                        :class="{active:solutionsTab===t}" @click="solutionsTab=t;loadSolutionItems()">
+                        {{ t.charAt(0).toUpperCase()+t.slice(1)+'s' }}
+                    </button>
+                </div>
+                <div class="card"><div class="table-wrap"><table>
+                    <thead><tr><th>Icon</th><th>Title</th><th>Desc (preview)</th><th>Active</th><th>Sort</th><th>Actions</th></tr></thead>
+                    <tbody>
+                        <tr v-for="item in solutionItems" :key="item.id">
+                            <td><div v-if="item.icon_svg" v-html="item.icon_svg" style="width:32px;height:32px;overflow:hidden;flex-shrink:0"></div></td>
+                            <td style="font-weight:500">{{ item.title }}</td>
+                            <td style="max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:12px;color:var(--muted)">{{ item.description }}</td>
+                            <td><span :class="'badge badge--'+(item.is_active?'on':'off')">{{ item.is_active?'Yes':'No' }}</span></td>
+                            <td>{{ item.sort_order }}</td>
+                            <td>
+                                <button class="btn btn--outline btn--sm" @click="openSolutionItemModal(item)">Edit</button>
+                                <button class="btn btn--danger btn--sm" style="margin-left:6px" @click="deleteSolutionItem(item.id)">Del</button>
+                            </td>
+                        </tr>
+                        <tr v-if="!solutionItems.length"><td colspan="6" class="empty" style="padding:20px">No items yet. Click "+ Add Item"</td></tr>
+                    </tbody>
+                </table></div></div>
+            </div>
+
+            <div v-if="solutionsMainTab==='blocks'" style="margin-top:12px">
+                <p style="font-size:13px;color:var(--muted);margin-bottom:12px">Control which sections appear on each page type and their order. These affect /solutions/, /departments/, /industries/ pages.</p>
+                <div v-for="pt in ['solutions','departments','industries']" :key="pt" class="card" style="margin-bottom:16px">
+                    <div class="card__head"><h2>{{ pt.charAt(0).toUpperCase()+pt.slice(1) }} page blocks</h2></div>
+                    <div class="card__body">
+                        <div class="repeat-list">
+                            <div v-for="(blk,i) in (solBlocks[pt]||[])" :key="blk.id" style="display:flex;align-items:center;gap:12px;padding:10px 14px;background:#f8f9fa;border:1px solid var(--border);border-radius:8px">
+                                <span class="drag-handle">⠿</span>
+                                <div style="flex:1;font-weight:500;font-size:14px">{{ blk.label }}</div>
+                                <div style="font-size:11px;color:var(--muted);font-family:monospace">{{ blk.block_key }}</div>
+                                <label class="toggle">
+                                    <input type="checkbox" :checked="blk.is_active==1" @change="blk.is_active=blk.is_active?0:1">
+                                    <span class="toggle__slider"></span>
+                                </label>
+                                <div style="display:flex;gap:4px">
+                                    <button class="btn btn--outline btn--sm" :disabled="i===0" @click="solBlocks[pt].splice(i-1,0,...solBlocks[pt].splice(i,1))">↑</button>
+                                    <button class="btn btn--outline btn--sm" :disabled="i===(solBlocks[pt].length-1)" @click="solBlocks[pt].splice(i+1,0,...solBlocks[pt].splice(i,1))">↓</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </template>
 
         <!-- ── CASES ── -->
@@ -519,10 +564,15 @@ tr:hover td{background:#fafafa}
                         </div>
                         <div class="repeat-list">
                             <div v-for="(ch,i) in caseForm.challenges" :key="i" class="repeat-item">
-                                <div class="repeat-item__actions"><button class="btn btn--danger btn--sm btn--icon" @click="caseForm.challenges.splice(i,1)">×</button></div>
-                                <div class="form-grid cols-1" style="gap:8px">
-                                    <div class="field"><label>Title</label><input v-model="ch.title"></div>
-                                    <div class="field"><label>Description</label><textarea v-model="ch.text" rows="3"></textarea></div>
+                                <div class="repeat-item__header">
+                                    <span class="repeat-item__header-label">Challenge {{ i+1 }}</span>
+                                    <div class="repeat-item__actions"><button class="btn btn--danger btn--sm btn--icon" @click="caseForm.challenges.splice(i,1)">×</button></div>
+                                </div>
+                                <div class="repeat-item__body">
+                                    <div class="form-grid cols-1" style="gap:8px">
+                                        <div class="field"><label>Title</label><input v-model="ch.title"></div>
+                                        <div class="field"><label>Description</label><textarea v-model="ch.text" rows="3"></textarea></div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -535,10 +585,21 @@ tr:hover td{background:#fafafa}
                         </div>
                         <div class="repeat-list">
                             <div v-for="(ti,i) in caseForm.tech_items" :key="i" class="repeat-item">
-                                <div class="repeat-item__actions"><button class="btn btn--danger btn--sm btn--icon" @click="caseForm.tech_items.splice(i,1)">×</button></div>
-                                <div class="form-grid">
-                                    <div class="field"><label>Name</label><input v-model="ti.name"></div>
-                                    <div class="field"><label>SVG Icon (paste SVG code)</label><textarea v-model="ti.icon_svg" rows="3"></textarea></div>
+                                <div class="repeat-item__header">
+                                    <span class="repeat-item__header-label">{{ ti.name || 'Tech Item '+(i+1) }}</span>
+                                    <div class="repeat-item__actions"><button class="btn btn--danger btn--sm btn--icon" @click="caseForm.tech_items.splice(i,1)">×</button></div>
+                                </div>
+                                <div class="repeat-item__body">
+                                    <div class="form-grid">
+                                        <div class="field"><label>Name</label><input v-model="ti.name"></div>
+                                        <div class="field"><label>Icon SVG</label>
+                                            <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
+                                                <div class="svg-preview" v-html="ti.icon_svg||'<span style=color:#ccc;font-size:10px>No icon</span>'"></div>
+                                                <label class="btn btn--outline btn--sm" style="cursor:pointer">Upload SVG<input type="file" accept=".svg,image/svg+xml" style="display:none" @change="loadSvgInto($event,ti,'icon_svg')"></label>
+                                            </div>
+                                            <textarea v-model="ti.icon_svg" rows="2" placeholder="<svg...></svg>"></textarea>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -630,10 +691,15 @@ tr:hover td{background:#fafafa}
                             </div>
                             <div class="repeat-list">
                                 <div v-for="(t,i) in postForm.toc" :key="i" class="repeat-item">
-                                    <div class="repeat-item__actions"><button class="btn btn--danger btn--sm btn--icon" @click="postForm.toc.splice(i,1)">×</button></div>
-                                    <div class="form-grid">
-                                        <div class="field"><label>TOC Title</label><input v-model="t.title" @input="t.anchor=t.anchor||slugify(t.title)"></div>
-                                        <div class="field"><label>Anchor ID</label><input v-model="t.anchor"></div>
+                                    <div class="repeat-item__header">
+                                        <span class="repeat-item__header-label">{{ t.title || 'TOC Item '+(i+1) }}</span>
+                                        <div class="repeat-item__actions"><button class="btn btn--danger btn--sm btn--icon" @click="postForm.toc.splice(i,1)">×</button></div>
+                                    </div>
+                                    <div class="repeat-item__body">
+                                        <div class="form-grid">
+                                            <div class="field"><label>TOC Title</label><input v-model="t.title" @input="t.anchor=t.anchor||slugify(t.title)"></div>
+                                            <div class="field"><label>Anchor ID</label><input v-model="t.anchor"></div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -768,7 +834,13 @@ tr:hover td{background:#fafafa}
                 <div class="field"><label>Sort Order</label><input type="number" v-model.number="whySlideForm.sort_order"></div>
                 <div class="field"><label>Title</label><input v-model="whySlideForm.title"></div>
                 <div class="field"><label>Text</label><textarea v-model="whySlideForm.text" rows="4"></textarea></div>
-                <div class="field"><label>Icon SVG (paste SVG code)</label><textarea v-model="whySlideForm.icon_svg" rows="5" placeholder="<svg ...>...</svg>"></textarea></div>
+                <div class="field"><label>Icon SVG</label>
+                    <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
+                        <div class="svg-preview" v-html="whySlideForm.icon_svg||'<span style=color:#ccc;font-size:10px>No icon</span>'"></div>
+                        <label class="btn btn--outline btn--sm" style="cursor:pointer">Upload SVG<input type="file" accept=".svg,image/svg+xml" style="display:none" @change="loadSvgInto($event,whySlideForm,'icon_svg')"></label>
+                    </div>
+                    <textarea v-model="whySlideForm.icon_svg" rows="3" placeholder="<svg...></svg>"></textarea>
+                </div>
             </div>
         </div>
         <div class="modal__foot">
@@ -849,14 +921,27 @@ tr:hover td{background:#fafafa}
                 <div class="card__body">
                     <div class="repeat-list">
                         <div v-for="(sub,si) in cat.subitems" :key="sub.id" class="repeat-item">
-                            <div class="repeat-item__actions"><button class="btn btn--danger btn--sm btn--icon" @click="deleteMegaSubitem(sub.id,cat)">×</button></div>
-                            <div class="form-grid">
-                                <div class="field"><label>Title</label><input v-model="sub.title"></div>
-                                <div class="field"><label>URL</label><input v-model="sub.url"></div>
-                                <div class="field field--full"><label>Description</label><input v-model="sub.description"></div>
-                                <div class="field field--full"><label>Icon SVG</label><textarea v-model="sub.icon_svg" rows="2"></textarea></div>
+                            <div class="repeat-item__header">
+                                <span class="repeat-item__header-label">{{ sub.title || 'Sub-item '+(si+1) }}</span>
+                                <div class="repeat-item__actions">
+                                    <button class="btn btn--success btn--sm" @click="saveMegaSubitem(sub,cat)">Save</button>
+                                    <button class="btn btn--danger btn--sm btn--icon" @click="deleteMegaSubitem(sub.id,cat)">×</button>
+                                </div>
                             </div>
-                            <button class="btn btn--success btn--sm" style="margin-top:8px" @click="saveMegaSubitem(sub,cat)">Save sub-item</button>
+                            <div class="repeat-item__body">
+                                <div class="form-grid">
+                                    <div class="field"><label>Title</label><input v-model="sub.title"></div>
+                                    <div class="field"><label>URL</label><input v-model="sub.url"></div>
+                                    <div class="field field--full"><label>Description</label><input v-model="sub.description"></div>
+                                    <div class="field field--full"><label>Icon SVG</label>
+                                        <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
+                                            <div class="svg-preview" v-html="sub.icon_svg||'<span style=color:#ccc;font-size:10px>No icon</span>'"></div>
+                                            <label class="btn btn--outline btn--sm" style="cursor:pointer">Upload SVG<input type="file" accept=".svg,image/svg+xml" style="display:none" @change="loadSvgInto($event,sub,'icon_svg')"></label>
+                                        </div>
+                                        <textarea v-model="sub.icon_svg" rows="2" placeholder="<svg...></svg>"></textarea>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <button class="btn btn--outline btn--sm" style="margin-top:8px" @click="cat.subitems.push({id:0,title:'',description:'',url:'#',icon_svg:'',sort_order:cat.subitems.length})">+ Add Sub-item</button>
@@ -879,7 +964,13 @@ tr:hover td{background:#fafafa}
                 <div class="field"><label>Description</label><textarea v-model="solutionItemForm.description" rows="3"></textarea></div>
                 <div class="field"><label>Button Text</label><input v-model="solutionItemForm.btn_text"></div>
                 <div class="field"><label>Button URL</label><input v-model="solutionItemForm.btn_url"></div>
-                <div class="field"><label>Icon SVG</label><textarea v-model="solutionItemForm.icon_svg" rows="4" placeholder="<svg ...>...</svg>"></textarea></div>
+                <div class="field"><label>Icon SVG</label>
+                    <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
+                        <div class="svg-preview" v-html="solutionItemForm.icon_svg||'<span style=color:#ccc;font-size:10px>No icon</span>'"></div>
+                        <label class="btn btn--outline btn--sm" style="cursor:pointer">Upload SVG<input type="file" accept=".svg,image/svg+xml" style="display:none" @change="loadSvgInto($event,solutionItemForm,'icon_svg')"></label>
+                    </div>
+                    <textarea v-model="solutionItemForm.icon_svg" rows="3" placeholder="<svg...></svg>"></textarea>
+                </div>
                 <div class="field"><label>Sort Order</label><input type="number" v-model.number="solutionItemForm.sort_order"></div>
             </div>
         </div>
@@ -992,6 +1083,16 @@ createApp({
         };
         const slugify = s => s.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
 
+        // Load SVG file into a form field via FileReader
+        const loadSvgInto = (event, obj, field) => {
+            const file = event.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = e => { obj[field] = e.target.result; };
+            reader.readAsText(file);
+            event.target.value = '';
+        };
+
         /* ─── Languages ─────────────────────────────────────────────────── */
         const langForm = reactive({id:0, code:'', name:'', is_active:1});
         const modals = reactive({lang:false, whySlide:false, review:false, nav:false, mega:false,
@@ -1095,8 +1196,31 @@ createApp({
 
         /* ─── Solutions ─────────────────────────────────────────────────── */
         const solutionsTab = ref('solution');
+        const solutionsMainTab = ref('items');
         const solutionItems = ref([]);
         const solutionItemForm = reactive({id:0,type:'solution',title:'',description:'',btn_text:'Learn more',btn_url:'#',icon_svg:'',sort_order:0,is_active:1});
+
+        // Default blocks for each page type (lazy-created in DB on first save)
+        const defaultSolBlocks = {
+            solutions:   [{block_key:'header',label:'Page Header',sort_order:0,is_active:1},{block_key:'features',label:'Features',sort_order:1,is_active:1},{block_key:'solutions_list',label:'Solutions List',sort_order:2,is_active:1},{block_key:'cases',label:'Related Cases',sort_order:3,is_active:1},{block_key:'cta',label:'Contact Form',sort_order:4,is_active:1}],
+            departments: [{block_key:'header',label:'Page Header',sort_order:0,is_active:1},{block_key:'features',label:'Features',sort_order:1,is_active:1},{block_key:'solutions_list',label:'Solutions List',sort_order:2,is_active:1},{block_key:'cases',label:'Related Cases',sort_order:3,is_active:1},{block_key:'cta',label:'Contact Form',sort_order:4,is_active:1}],
+            industries:  [{block_key:'header',label:'Page Header',sort_order:0,is_active:1},{block_key:'features',label:'Features',sort_order:1,is_active:1},{block_key:'solutions_list',label:'Solutions List',sort_order:2,is_active:1},{block_key:'cases',label:'Related Cases',sort_order:3,is_active:1},{block_key:'cta',label:'Contact Form',sort_order:4,is_active:1}],
+        };
+        const solBlocks = reactive({solutions:[],departments:[],industries:[]});
+        const loadSolBlocks = async () => {
+            const data = await api('/admin/api/blocks.php?type=solution_pages');
+            ['solutions','departments','industries'].forEach(pt => {
+                solBlocks[pt] = (data[pt] && data[pt].length) ? data[pt] : defaultSolBlocks[pt].map((b,i)=>({...b,id:0,page_type:pt}));
+            });
+        };
+        const saveSolBlocksOrder = async () => {
+            const payload = {};
+            ['solutions','departments','industries'].forEach(pt => {
+                payload[pt] = solBlocks[pt].map((b,i)=>({...b,sort_order:i}));
+            });
+            await api('/admin/api/blocks.php?action=save_sol_blocks',{method:'POST',body:JSON.stringify(payload)});
+            showAlert('Page sections saved!');
+        };
 
         const loadSolutionItems = async () => {
             solutionItems.value = await api(`/admin/api/solutions.php?action=items&type=${solutionsTab.value}&lang_id=${langId.value}`);
@@ -1332,7 +1456,8 @@ createApp({
             navLocation, navItems_data, navForm, megaNavItem, megaCategories,
             loadNav, openNavModal, saveNavItem, deleteNavItem,
             openMegaEditor, saveMegaCategory, deleteMegaCategory, saveMegaSubitem, deleteMegaSubitem,
-            solutionsTab, solutionItems, solutionItemForm,
+            solutionsTab, solutionsMainTab, solutionItems, solutionItemForm,
+            solBlocks, loadSolBlocks, saveSolBlocksOrder,
             loadSolutionItems, openSolutionItemModal, saveSolutionItem, deleteSolutionItem,
             casesList, editingCase, caseTab, allTerms, caseForm,
             openCaseEditor, saveCase, deleteCase,
@@ -1342,7 +1467,7 @@ createApp({
             authorForm, openAuthorModal, saveAuthor, deleteAuthor,
             mediaList, uploadFiles, uploadAndPick, pickMedia, selectMedia, deleteMedia, copyUrl,
             settingsData, saveSettings,
-            onLangChange, slugify,
+            onLangChange, slugify, loadSvgInto,
             homeBlocksList, loadBlocks, toggleBlock, moveBlock, saveBlocksOrder,
         };
     }
