@@ -267,9 +267,9 @@ function get_terms(int $lang_id, string $type): array {
 
 /* ─── Media ─────────────────────────────────────────────────────────────── */
 
-function media_url(?string $path): string {
+function media_url($path): string {
     if (!$path) return '';
-    if (str_starts_with($path, '/') || str_starts_with($path, 'http')) return $path;
+    if ($path[0] === '/' || strpos($path, 'http') === 0 || strpos($path, './') === 0) return $path;
     return UPLOAD_URL . $path;
 }
 
