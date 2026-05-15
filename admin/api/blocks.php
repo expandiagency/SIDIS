@@ -19,6 +19,26 @@ db()->exec("CREATE TABLE IF NOT EXISTS solution_page_blocks (
     UNIQUE KEY uk_page_block (page_type, block_key)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4");
 
+// Ensure all expected home blocks exist (self-healing migration)
+$default_home_blocks = [
+    'hero'         => ['Hero Section', 0],
+    'why'          => ['Why Us (Carousel)', 1],
+    'automation'   => ['Automation Hub', 2],
+    'solutions'    => ['Solutions / Tabs', 3],
+    'projects'     => ['Projects Grid', 4],
+    'reviews'      => ['Client Reviews', 5],
+    'roadmap'      => ['Roadmap', 6],
+    'getintouch'   => ['Get In Touch Form', 7],
+    'presentation' => ['Video Presentation', 8],
+    'faq'          => ['Questions & Answers', 9],
+    'articles'     => ['Latest Articles', 10],
+];
+foreach ($default_home_blocks as $key => [$label, $order]) {
+    if (!row('SELECT id FROM home_blocks WHERE block_key=?', [$key])) {
+        insert('home_blocks', ['block_key'=>$key,'label'=>$label,'sort_order'=>$order,'is_active'=>1]);
+    }
+}
+
 if ($method === 'GET') {
     if ($type === 'solution_pages') {
         $result = [];

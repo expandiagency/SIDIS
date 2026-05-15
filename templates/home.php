@@ -12,6 +12,7 @@ if (empty($blocks)) {
         ['block_key'=>'hero'],['block_key'=>'why'],['block_key'=>'automation'],
         ['block_key'=>'solutions'],['block_key'=>'projects'],['block_key'=>'reviews'],
         ['block_key'=>'roadmap'],['block_key'=>'getintouch'],['block_key'=>'presentation'],
+        ['block_key'=>'faq'],['block_key'=>'articles'],
     ];
 }
 
@@ -455,9 +456,9 @@ require __DIR__ . '/layout.php';
 </section>
 <?php endif; ?>
 
-<?php endforeach; ?>
 
 <?php /* ═══════ FAQ ══════════════════════════════════════════════════════ */ ?>
+<?php if ($bk === 'faq'): ?>
 <section class="faq">
     <div class="faq__container">
         <h2 class="faq__title title title--h1">Questions & answers</h2>
@@ -493,9 +494,10 @@ require __DIR__ . '/layout.php';
         </div>
     </div>
 </section>
+<?php endif; ?>
 
 <?php /* ═══════ LATEST ARTICLES ═════════════════════════════════════════ */ ?>
-<?php if (!empty($recent_posts)): ?>
+<?php if ($bk === 'articles' && !empty($recent_posts)): ?>
 <section class="articles">
     <div class="articles__container">
         <div class="articles__head">
@@ -556,6 +558,7 @@ require __DIR__ . '/layout.php';
 </section>
 <?php endif; ?>
 
+<?php endforeach; ?>
 </main>
 
 <?php require __DIR__ . '/layout_footer.php'; ?>
