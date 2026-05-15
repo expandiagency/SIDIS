@@ -16,6 +16,7 @@ $admin = admin_current();
 *{box-sizing:border-box;margin:0;padding:0}
 :root{--sidebar:#1a1a2e;--sidebar-hover:#252545;--accent:#772885;--accent2:#8e35a0;--bg:#f0f2f5;--card:#fff;--text:#1a1a1a;--muted:#666;--border:#e2e4e8;--red:#e53935;--green:#43a047}
 body{font-family:system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex}
+#app{display:flex;flex:1;width:100%;min-height:100vh}
 a{color:inherit;text-decoration:none}
 .sidebar{width:240px;background:var(--sidebar);min-height:100vh;display:flex;flex-direction:column;position:fixed;top:0;left:0;bottom:0;z-index:100}
 .sidebar__logo{padding:20px 20px 18px;border-bottom:1px solid rgba(255,255,255,.1)}

@@ -81,7 +81,7 @@
                 </a>
             </div>
             <div class="footer__descr">
-                <div class="footer__copy"><?= e(get_setting('footer_copyright') ?: '© ' . date('Y') . ' Sidis Business Services.') ?></div>
+                <div class="footer__copy"><?= e(get_setting('footer_copyright', $lang_id) ?: get_setting('footer_copyright') ?: '© ' . date('Y') . ' Sidis Business Services.') ?></div>
                 <div class="footer__socials">
                     <?php $linkedin = get_setting('social_linkedin'); ?>
                     <a href="<?= $linkedin ? e($linkedin) : '#' ?>" class="footer__social" target="_blank" rel="noopener">
