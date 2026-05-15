@@ -62,6 +62,44 @@ function active_lang_url(string $path, array $lang, array $default_lang): string
                             <div class="submenu" data-fls-lp="" data-menu-target="mega-<?= $item['id'] ?>" data-submenu="">
                                 <div class="submenu__container">
                                     <div class="submenu__inner">
+
+                                    <?php if (($item['mega_type'] ?? 'solutions') === 'departments'): ?>
+                                    <!-- Departments-type: flat grid with photo -->
+                                    <?php
+                                    // Collect all subitems across all categories
+                                    $all_dept_items = [];
+                                    foreach ($item['mega_categories'] as $cat) {
+                                        foreach ($cat['subitems'] as $sub) $all_dept_items[] = $sub;
+                                    }
+                                    $col_size  = 5;
+                                    $columns   = array_chunk($all_dept_items, $col_size);
+                                    $img_text  = $item['mega_img_text'] ?? 'Crafting innovative apps with a focus on user experience and scalability.';
+                                    ?>
+                                    <div class="submenu__wrapper">
+                                        <div class="submenu__info">
+                                            <?php foreach ($columns as $col): ?>
+                                            <ul class="submenu__info-list">
+                                                <?php foreach ($col as $sub): ?>
+                                                <li class="submenu__info-item">
+                                                    <a href="<?= e($sub['url']) ?>" class="submenu__info-link">
+                                                        <?php if ($sub['icon_svg']): ?>
+                                                        <span class="submenu__info-icon"><?= $sub['icon_svg'] ?></span>
+                                                        <?php endif; ?>
+                                                        <span class="submenu__info-title"><?= e($sub['title']) ?></span>
+                                                    </a>
+                                                </li>
+                                                <?php endforeach; ?>
+                                            </ul>
+                                            <?php endforeach; ?>
+                                        </div>
+                                        <div class="submenu__img">
+                                            <img alt="Image" loading="lazy" src="./assets/img/header/image.webp">
+                                            <div class="submenu__img-text"><?= e($img_text) ?></div>
+                                        </div>
+                                    </div>
+
+                                    <?php else: ?>
+                                    <!-- Solutions/Industries-type: category list + subitems -->
                                         <ul class="submenu__list">
                                             <?php foreach ($item['mega_categories'] as $ci => $cat): ?>
                                             <li class="submenu__item">
@@ -87,6 +125,8 @@ function active_lang_url(string $path, array $lang, array $default_lang): string
                                             </li>
                                             <?php endforeach; ?>
                                         </ul>
+                                    <?php endif; ?>
+
                                     </div>
                                 </div>
                             </div>

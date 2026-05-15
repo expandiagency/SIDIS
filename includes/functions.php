@@ -37,7 +37,7 @@ function lang_url(string $path, array $lang, array $default_lang): string {
 
 function get_nav(int $lang_id, string $location): array {
     $items = rows(
-        'SELECT * FROM nav_items WHERE lang_id=? AND location=? AND parent_id IS NULL AND is_active=1 ORDER BY sort_order',
+        'SELECT n.*, COALESCE(n.mega_type,"solutions") as mega_type FROM nav_items n WHERE lang_id=? AND location=? AND parent_id IS NULL AND is_active=1 ORDER BY sort_order',
         [$lang_id, $location]
     );
     foreach ($items as &$item) {

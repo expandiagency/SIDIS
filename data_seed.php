@@ -38,9 +38,9 @@ try {
     if (true) {
 
         // ── Header top-level items
-        $sol_id  = insert('nav_items', ['lang_id'=>$lid,'location'=>'header','title'=>'Solutions','url'=>'/solutions/','sort_order'=>0,'is_active'=>1,'has_mega'=>1]);
-        $dept_id = insert('nav_items', ['lang_id'=>$lid,'location'=>'header','title'=>'Departments','url'=>'/departments/','sort_order'=>1,'is_active'=>1,'has_mega'=>1]);
-        $ind_id  = insert('nav_items', ['lang_id'=>$lid,'location'=>'header','title'=>'Industries','url'=>'/industries/','sort_order'=>2,'is_active'=>1,'has_mega'=>1]);
+        $sol_id  = insert('nav_items', ['lang_id'=>$lid,'location'=>'header','title'=>'Solutions','url'=>'/solutions/','sort_order'=>0,'is_active'=>1,'has_mega'=>1,'mega_type'=>'solutions','mega_img_text'=>'']);
+        $dept_id = insert('nav_items', ['lang_id'=>$lid,'location'=>'header','title'=>'Departments','url'=>'/departments/','sort_order'=>1,'is_active'=>1,'has_mega'=>1,'mega_type'=>'departments','mega_img_text'=>'Crafting innovative apps with a focus on user experience and scalability.']);
+        $ind_id  = insert('nav_items', ['lang_id'=>$lid,'location'=>'header','title'=>'Industries','url'=>'/industries/','sort_order'=>2,'is_active'=>1,'has_mega'=>1,'mega_type'=>'solutions','mega_img_text'=>'']);
         insert('nav_items', ['lang_id'=>$lid,'location'=>'header','title'=>'Case Studies','url'=>'/cases/','sort_order'=>3,'is_active'=>1,'has_mega'=>0]);
         insert('nav_items', ['lang_id'=>$lid,'location'=>'header','title'=>'Blog','url'=>'/blog/','sort_order'=>4,'is_active'=>1,'has_mega'=>0]);
         insert('nav_items', ['lang_id'=>$lid,'location'=>'header','title'=>'Contact','url'=>'#getintouch','sort_order'=>5,'is_active'=>1,'has_mega'=>0]);
@@ -84,41 +84,23 @@ try {
             }
         }
 
-        // ── DEPARTMENTS mega-menu
-        $cats_depts = [
-            [0, 'Tech & Digital', 'Solutions for technology and digital teams.', [
-                ['SaaS Startups','Scale your SaaS product with smart automation.'],
-                ['LegalTech','Automate legal workflows and document processing.'],
-                ['IT / Engineering','Streamline your engineering and IT operations.'],
-                ['Analytics / BI','Automate your data and business intelligence workflows.'],
-            ]],
-            [1, 'Marketing & Growth', 'Tools for marketing and growth teams.', [
-                ['Affiliate Marketing','Automate affiliate tracking, payouts, and reporting.'],
-                ['Marketing automation','Scale your marketing campaigns with intelligent automation.'],
-                ['Lead Generation Agencies','Automate lead capture, qualification, and nurturing.'],
-            ]],
-            [2, 'Business Services', 'Automation for core business departments.', [
-                ['Operations','Automate day-to-day operational tasks and workflows.'],
-                ['Sales','Close more deals faster with sales pipeline automation.'],
-                ['Customer Support','Deliver outstanding support with AI-powered automation.'],
-                ['Finance','Automate invoicing, reporting, and financial workflows.'],
-                ['HR','Streamline HR processes from hiring to onboarding.'],
-                ['Recruitment','Automate candidate sourcing, screening, and outreach.'],
-                ['Legal','Automate contracts, compliance checks, and legal workflows.'],
-                ['Compliance','Automate compliance monitoring and regulatory reporting.'],
-            ]],
-            [3, 'Commerce & Property', 'Automation for retail, ecommerce, and property.', [
-                ['Ecommerce','Automate orders, inventory, and customer communication.'],
-                ['Retail','Streamline retail operations from supply chain to POS.'],
-                ['Real Estate','Automate property listings, leads, and client communication.'],
-            ]],
-        ];
+        // ── DEPARTMENTS mega-menu (flat grid, 15 items → 3 columns of 5)
+        $svg_hub40 = '<svg width="40" height="40" viewbox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M36.4844 16.4844C34.9586 16.4844 33.67 17.467 33.1846 18.8281H25.7408C25.5886 18.0814 25.2906 17.3884 24.8832 16.7739L26.7961 14.861C28.0993 15.478 29.6902 15.2805 30.7723 14.2002C31.8504 13.1221 32.0527 11.5301 31.4337 10.2235L33.4255 8.23164C34.7299 8.84766 36.3236 8.64891 37.402 7.57062H37.4031C38.7719 6.19961 38.7719 3.96914 37.402 2.59703C36.0298 1.22719 33.7994 1.23063 32.4295 2.5982C31.3522 3.67555 31.153 5.26984 31.7687 6.57445L29.7678 8.57531C28.4658 7.99062 26.837 8.19094 25.8012 9.22773C24.7195 10.3094 24.5223 11.9011 25.139 13.2041L23.2262 15.1169C22.6117 14.7095 21.9188 14.4115 21.172 14.2593V6.89352C22.533 6.40812 23.5156 5.11953 23.5156 3.59375C23.5156 1.65516 21.9386 0 20 0C18.0614 0 16.4844 1.65516 16.4844 3.59375C16.4844 5.11953 17.467 6.40812 18.8281 6.89352V14.2592C18.0814 14.4114 17.3884 14.7094 16.7739 15.1168L14.861 13.2039C15.478 11.9007 15.2805 10.3098 14.2002 9.22766C13.1634 8.19086 11.535 7.9907 10.2327 8.57547L8.23148 6.5743C8.84719 5.26969 8.64789 3.67539 7.57062 2.59805C6.19852 1.22703 3.96914 1.23047 2.59703 2.59805C1.22828 3.96906 1.22828 6.19953 2.5982 7.57047C3.67578 8.64805 5.26969 8.84773 6.57461 8.23148L8.56648 10.2234C7.94781 11.5297 8.14875 13.1219 9.22781 14.1989C10.3095 15.2805 11.9012 15.4778 13.2042 14.8611L15.117 16.7738C14.7095 17.3884 14.4116 18.0813 14.2594 18.828H6.81539C6.33 17.467 5.04141 16.4844 3.51562 16.4844C1.57703 16.4844 0 18.0614 0 20C0 21.9386 1.57703 23.5156 3.51562 23.5156C5.04141 23.5156 6.33 22.533 6.81539 21.1719H14.2592C14.4114 21.9186 14.7094 22.6116 15.1168 23.2261L13.1948 25.1481C11.8938 24.5646 10.2658 24.7643 9.22766 25.7998C8.14961 26.8777 7.94734 28.4699 8.56633 29.7765L6.57438 31.7684C5.26992 31.1527 3.67602 31.352 2.59695 32.4293C1.2282 33.8003 1.2282 36.0308 2.59812 37.4029C3.96914 38.7716 6.19969 38.7715 7.57055 37.4029C8.64789 36.3244 8.84711 34.7301 8.23141 33.4255L10.2233 31.4336C11.5294 32.0521 13.1213 31.851 14.2001 30.7721C15.2831 29.687 15.4766 28.096 14.8612 26.7955L16.7738 24.883C17.3884 25.2904 18.0813 25.5884 18.828 25.7405V33.1063C17.467 33.5916 16.4843 34.8802 16.4843 36.406C16.4843 38.3446 18.0613 39.9998 19.9999 39.9998C21.9385 39.9998 23.5155 38.3446 23.5155 36.406C23.5155 34.8802 22.5329 33.5916 21.1718 33.1063V25.7405C21.9185 25.5884 22.6115 25.2904 23.226 24.883L25.1388 26.7957C24.5222 28.0984 24.7189 29.6894 25.7998 30.7721C26.8778 31.85 28.4698 32.0524 29.7764 31.4334L31.7684 33.4254C31.1527 34.73 31.352 36.3246 32.4292 37.4028C33.7987 38.7699 36.0266 38.7733 37.4028 37.4016C38.7716 36.0306 38.7716 33.8002 37.4028 32.4292C36.3236 31.3512 34.7293 31.153 33.4254 31.7684L31.4335 29.7765C32.052 28.4704 31.8509 26.8785 30.772 25.7997C29.7327 24.7623 28.1052 24.5645 26.8049 25.148L24.8829 23.2259C25.2903 22.6114 25.5883 21.9184 25.7405 21.1717H33.1843C33.6697 22.5328 34.9583 23.5155 36.4841 23.5155C38.4227 23.5155 39.9997 21.9384 39.9997 19.9998C39.9997 18.0613 38.423 16.4844 36.4844 16.4844Z" fill="currentColor"/></svg>';
+        $svg_code40 = '<svg width="40" height="31" viewbox="0 0 40 31" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M9.33333 24.6676C8.798 24.6676 8.29533 24.459 7.91867 24.081L0.586 16.7483C0.208667 16.3723 0 15.8696 0 15.3343C0 14.799 0.208667 14.2963 0.586667 13.9196L7.91933 6.58698C8.29533 6.20964 8.798 6.00098 9.33333 6.00098C10.436 6.00098 11.3333 6.89831 11.3333 8.00098C11.3333 8.53631 11.1247 9.03898 10.7467 9.41564L4.828 15.3343L10.7473 21.2536C11.1253 21.6296 11.3333 22.1323 11.3333 22.6676C11.3333 23.7703 10.436 24.6676 9.33333 24.6676Z" fill="currentColor"/><path d="M30.667 25.3317C29.5643 25.3317 28.667 24.4344 28.667 23.3317C28.667 22.7964 28.8757 22.2937 29.2537 21.917L35.1723 15.9984L29.253 10.079C28.8757 9.70171 28.667 9.19904 28.667 8.66504C28.667 7.56237 29.5643 6.66504 30.667 6.66504C31.2023 6.66504 31.705 6.87371 32.0817 7.25171L39.4143 14.5844C39.7923 14.9617 40.0003 15.4644 40.0003 15.9984C40.0003 16.5337 39.7917 17.0364 39.4137 17.413L32.081 24.7457C31.705 25.1237 31.2023 25.3317 30.667 25.3317Z" fill="currentColor"/><path d="M14.002 30.6667C12.8993 30.6667 12.002 29.7693 12.002 28.6667C12.002 28.4013 12.054 28.142 12.1553 27.8967L24.156 1.22867C24.4693 0.482 25.194 0 26.002 0C27.1046 0 28.002 0.897333 28.002 2C28.002 2.26533 27.95 2.52467 27.8486 2.77L15.848 29.438C15.5346 30.1847 14.81 30.6667 14.002 30.6667Z" fill="currentColor"/></svg>';
+        $svg_branch40 = '<svg width="40" height="40" viewbox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M31.8752 4.79184C30.9026 3.81977 29.7221 3.3336 28.333 3.3336C26.9445 3.3336 25.764 3.8195 24.7916 4.79184C23.8196 5.76391 23.3336 6.94431 23.3336 8.3335C23.3336 9.23624 23.5587 10.074 24.0101 10.8464C24.4614 11.619 25.0685 12.2225 25.833 12.6563C25.833 13.5591 25.7596 14.3536 25.6123 15.0393C25.4643 15.7249 25.2215 16.328 24.8831 16.8491C24.5438 17.3701 24.193 17.8125 23.8281 18.1772C23.4632 18.542 22.951 18.8846 22.2913 19.2059C21.6318 19.5271 21.0194 19.7959 20.4553 20.0133C19.8912 20.2299 19.1314 20.4859 18.1766 20.7812C16.4402 21.3196 15.1037 21.814 14.1661 22.2657V9.32262C14.93 8.8889 15.5377 8.28552 15.989 7.51294C16.4402 6.74035 16.6659 5.90255 16.6659 4.99981C16.6659 3.61107 16.18 2.4304 15.2077 1.45833C14.2357 0.486353 13.0553 0 11.6662 0C10.277 0 9.0966 0.485988 8.12425 1.45833C7.15228 2.4304 6.66602 3.61107 6.66602 4.99981C6.66602 5.90255 6.89168 6.74035 7.34291 7.51294C7.79424 8.28552 8.40182 8.8889 9.16583 9.32262V30.6774C8.40182 31.1109 7.79424 31.7149 7.34291 32.4872C6.89168 33.2601 6.66602 34.0979 6.66602 35.0004C6.66602 36.3891 7.15191 37.5697 8.12425 38.5417C9.0966 39.5136 10.2773 40 11.6662 40C13.055 40 14.2357 39.5136 15.2077 38.5417C16.1797 37.5697 16.6659 36.389 16.6659 35.0004C16.6659 34.0979 16.4402 33.2601 15.989 32.4872C15.5376 31.7149 14.93 31.1109 14.1661 30.6774V30.0003C14.1661 28.8026 14.5263 27.9348 15.2467 27.3967C15.9671 26.8579 17.4385 26.2417 19.661 25.5475C22.0051 24.8008 23.7676 24.0973 24.948 23.4374C28.8368 21.233 30.7987 17.6391 30.8333 12.6562C31.5977 12.2225 32.2049 11.6189 32.6562 10.8464C33.1072 10.0738 33.3333 9.23615 33.3333 8.33341C33.3335 6.94458 32.8473 5.76418 31.8752 4.79184Z" fill="currentColor"/></svg>';
 
-        foreach ($cats_depts as [$sort, $title, $desc, $subs]) {
-            $cat_id = insert('nav_mega_categories', ['nav_item_id'=>$dept_id,'lang_id'=>$lid,'title'=>$title,'description'=>$desc,'sort_order'=>$sort]);
-            foreach ($subs as $si => $sub) {
-                insert('nav_mega_subitems', ['category_id'=>$cat_id,'lang_id'=>$lid,'title'=>$sub[0],'description'=>$sub[1],'url'=>'#','icon_svg'=>$svg_hub,'sort_order'=>$si]);
-            }
+        // 15 departments, each with icon — stored as flat list under one category
+        $dept_items = [
+            ['Operations',$svg_hub40],['Sales',$svg_hub40],['Marketing',$svg_code40],
+            ['Finance',$svg_hub40],['HR',$svg_hub40],
+            ['Recruitment',$svg_hub40],['Product',$svg_hub40],['IT / Engineering',$svg_code40],
+            ['Analytics / BI',$svg_branch40],['Executive / Management',$svg_hub40],
+            ['Legal',$svg_hub40],['Compliance',$svg_hub40],['Partnerships',$svg_hub40],
+            ['Procurement',$svg_hub40],['Customer Support',$svg_hub40],
+        ];
+        $dept_cat_id = insert('nav_mega_categories', ['nav_item_id'=>$dept_id,'lang_id'=>$lid,'title'=>'All Departments','description'=>'','sort_order'=>0]);
+        foreach ($dept_items as $si => $di) {
+            insert('nav_mega_subitems', ['category_id'=>$dept_cat_id,'lang_id'=>$lid,'title'=>$di[0],'description'=>'','url'=>'#','icon_svg'=>$di[1],'sort_order'=>$si]);
         }
 
         // ── INDUSTRIES mega-menu
@@ -385,6 +367,13 @@ try {
     // ══════════════════════════════════════════════════════════════════════════
     // 7b. ADD MISSING COLUMNS & TABLES (migration for existing DBs)
     // ══════════════════════════════════════════════════════════════════════════
+    // Add mega_type column to nav_items
+    $has_mt = $pdo->query("SHOW COLUMNS FROM `nav_items` LIKE 'mega_type'")->fetch();
+    if (!$has_mt) {
+        $pdo->exec("ALTER TABLE `nav_items` ADD COLUMN `mega_type` VARCHAR(20) DEFAULT 'solutions'");
+        $pdo->exec("ALTER TABLE `nav_items` ADD COLUMN `mega_img_text` VARCHAR(500) DEFAULT ''");
+    }
+
     $new_cols = [
         ['home_content', 'why_subtitle',        "VARCHAR(300) DEFAULT ''"],
         ['home_content', 'why_text',             "TEXT DEFAULT ''"],
