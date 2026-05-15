@@ -31,12 +31,11 @@ try {
     // ══════════════════════════════════════════════════════════════════════════
     // 1. HEADER NAVIGATION
     // ══════════════════════════════════════════════════════════════════════════
-    $existing_nav = row('SELECT COUNT(*) as c FROM nav_items WHERE lang_id=? AND location=?', [$lid, 'header'])['c'];
-    if ($existing_nav == 0 || (int)$existing_nav < 3) {
-        // Clear existing
-        q('DELETE FROM nav_mega_subitems WHERE lang_id=?', [$lid]);
-        q('DELETE FROM nav_mega_categories WHERE lang_id=?', [$lid]);
-        q('DELETE FROM nav_items WHERE lang_id=?', [$lid]);
+    // Always reseed nav (clear and rebuild)
+    q('DELETE FROM nav_mega_subitems WHERE lang_id=?', [$lid]);
+    q('DELETE FROM nav_mega_categories WHERE lang_id=?', [$lid]);
+    q('DELETE FROM nav_items WHERE lang_id=?', [$lid]);
+    if (true) {
 
         // ── Header top-level items
         $sol_id  = insert('nav_items', ['lang_id'=>$lid,'location'=>'header','title'=>'Solutions','url'=>'/solutions/','sort_order'=>0,'is_active'=>1,'has_mega'=>1]);
@@ -164,9 +163,8 @@ try {
     // ══════════════════════════════════════════════════════════════════════════
     // 2. FOOTER NAVIGATION
     // ══════════════════════════════════════════════════════════════════════════
-    $existing_footer = row('SELECT COUNT(*) as c FROM nav_items WHERE lang_id=? AND location=?', [$lid, 'footer'])['c'];
-    if ((int)$existing_footer < 4) {
-        q('DELETE FROM nav_items WHERE lang_id=? AND location=?', [$lid, 'footer']);
+    // Footer already cleared above, just seed it
+    if (true) {
 
         $footer_cols = [
             ['Explore Solutions', [
@@ -574,6 +572,20 @@ try {
         }
     }
     $done[] = 'Site settings seeded';
+
+    // ══════════════════════════════════════════════════════════════════════════
+    // 10. SELF-CLEANUP — delete this file and setup.php after successful seed
+    // ══════════════════════════════════════════════════════════════════════════
+    $files_deleted = [];
+    foreach ([__FILE__, __DIR__ . '/setup.php'] as $f) {
+        if (file_exists($f)) {
+            unlink($f);
+            $files_deleted[] = basename($f);
+        }
+    }
+    if ($files_deleted) {
+        $done[] = 'Security cleanup: deleted ' . implode(', ', $files_deleted) . ' from server';
+    }
 
 } catch (Exception $e) {
     $errors[] = $e->getMessage();
