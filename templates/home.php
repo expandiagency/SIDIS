@@ -456,6 +456,106 @@ require __DIR__ . '/layout.php';
 <?php endif; ?>
 
 <?php endforeach; ?>
+
+<?php /* ═══════ FAQ ══════════════════════════════════════════════════════ */ ?>
+<section class="faq">
+    <div class="faq__container">
+        <h2 class="faq__title title title--h1">Questions & answers</h2>
+        <div data-fls-spollers="" data-fls-spollers-one="" class="faq__items spollers">
+            <div class="spollers__column">
+                <details class="spollers__item">
+                    <summary class="spollers__title">What are your pricing options?</summary>
+                    <div class="spollers__body">Our team is based in Eastern Europe, which gives us an advantage in operational costs — low taxes, rent, and payroll. We deliberately maintain a compact team of professionals instead of a bloated staff. Over the years, we've built automated processes and refined systems which eliminates unnecessary work hours. We don't spend budget on expensive offices in central London or New York — we save that money for the client.</div>
+                </details>
+                <details class="spollers__item">
+                    <summary class="spollers__title">How do you handle customer feedback?</summary>
+                    <div class="spollers__body">Our team is based in Eastern Europe, which gives us an advantage in operational costs — low taxes, rent, and payroll. We deliberately maintain a compact team of professionals instead of a bloated staff. Over the years, we've built automated processes and refined systems which eliminates unnecessary work hours. We don't spend budget on expensive offices in central London or New York — we save that money for the client.</div>
+                </details>
+                <details class="spollers__item">
+                    <summary class="spollers__title">What is your typical project timeline?</summary>
+                    <div class="spollers__body">Our team is based in Eastern Europe, which gives us an advantage in operational costs — low taxes, rent, and payroll. We deliberately maintain a compact team of professionals instead of a bloated staff. Over the years, we've built automated processes and refined systems which eliminates unnecessary work hours. We don't spend budget on expensive offices in central London or New York — we save that money for the client.</div>
+                </details>
+            </div>
+            <div class="spollers__column">
+                <details class="spollers__item">
+                    <summary class="spollers__title">Can you provide case studies or testimonials?</summary>
+                    <div class="spollers__body">Our team is based in Eastern Europe, which gives us an advantage in operational costs — low taxes, rent, and payroll. We deliberately maintain a compact team of professionals instead of a bloated staff. Over the years, we've built automated processes and refined systems which eliminates unnecessary work hours. We don't spend budget on expensive offices in central London or New York — we save that money for the client.</div>
+                </details>
+                <details class="spollers__item">
+                    <summary class="spollers__title">What sets you apart from competitors?</summary>
+                    <div class="spollers__body">Our team is based in Eastern Europe, which gives us an advantage in operational costs — low taxes, rent, and payroll. We deliberately maintain a compact team of professionals instead of a bloated staff. Over the years, we've built automated processes and refined systems which eliminates unnecessary work hours. We don't spend budget on expensive offices in central London or New York — we save that money for the client.</div>
+                </details>
+                <details class="spollers__item">
+                    <summary class="spollers__title">How do you ensure quality in your work?</summary>
+                    <div class="spollers__body">Our team is based in Eastern Europe, which gives us an advantage in operational costs — low taxes, rent, and payroll. We deliberately maintain a compact team of professionals instead of a bloated staff. Over the years, we've built automated processes and refined systems which eliminates unnecessary work hours. We don't spend budget on expensive offices in central London or New York — we save that money for the client.</div>
+                </details>
+            </div>
+        </div>
+    </div>
+</section>
+
+<?php /* ═══════ LATEST ARTICLES ═════════════════════════════════════════ */ ?>
+<?php if (!empty($recent_posts)): ?>
+<section class="articles">
+    <div class="articles__container">
+        <div class="articles__head">
+            <h2 class="articles__title title title--h1">
+                Latest Automation<br>Insights
+            </h2>
+            <div class="articles__navigation">
+                <button type="button" class="swiper-button-prev">
+                    <svg style="margin-right:4px" width="11" height="18" viewbox="0 0 11 18" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M10.0527 0.523193L1.05273 8.52319L10.0527 16.5232" stroke="currentColor" stroke-width="1.4"></path></svg>
+                </button>
+                <div class="swiper-pagination"></div>
+                <button type="button" class="swiper-button-next">
+                    <svg style="margin-left:4px" width="11" height="18" viewbox="0 0 11 18" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0.464844 0.523193L9.46484 8.52319L0.464844 16.5232" stroke="currentColor" stroke-width="1.4"></path></svg>
+                </button>
+            </div>
+        </div>
+        <div data-fls-slider="" class="articles__slider swiper">
+            <div class="articles__wrapper swiper-wrapper">
+                <?php foreach ($recent_posts as $post): ?>
+                <article class="article-card swiper-slide" data-fls-watcher="" data-fls-watcher-threshold="0.6">
+                    <div class="article-card__img">
+                        <?php if (!empty($post['image_path'])): ?>
+                        <img alt="<?= e($post['title'] ?? '') ?>" loading="lazy" src="<?= e(media_url($post['image_path'])) ?>">
+                        <?php endif; ?>
+                        <a href="/blog/<?= e($post['slug'] ?? '') ?>" class="article-card__arrow button button--icon">
+                            <span class="button__text">Open article</span>
+                            <span class="button__icon">
+                                <svg width="14" height="14" viewbox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0.707031 13L12.707 1M12.707 1L0.707031 1M12.707 1V12.8868" stroke="currentColor" stroke-width="2"></path></svg>
+                            </span>
+                        </a>
+                    </div>
+                    <a href="/blog/<?= e($post['slug'] ?? '') ?>" class="article-card__title"><?= e($post['title'] ?? '') ?></a>
+                    <div class="article-card__badges">
+                        <?php if (!empty($post['published_at'])): ?>
+                        <div class="article-card__badge"><?= date('j, F, Y', strtotime($post['published_at'])) ?></div>
+                        <?php endif; ?>
+                    </div>
+                    <?php if (!empty($post['author_name'])): ?>
+                    <div class="article-card__author">
+                        <?php if (!empty($post['author_image_path'])): ?>
+                        <div class="article-card__author-img">
+                            <img alt="<?= e($post['author_name']) ?>" loading="lazy" src="<?= e(media_url($post['author_image_path'])) ?>">
+                        </div>
+                        <?php endif; ?>
+                        <div class="article-card__author-body">
+                            <div class="article-card__author-name"><?= e($post['author_name']) ?></div>
+                            <?php if (!empty($post['author_title'])): ?>
+                            <div class="article-card__author-position"><?= e($post['author_title']) ?></div>
+                            <?php endif; ?>
+                        </div>
+                    </div>
+                    <?php endif; ?>
+                </article>
+                <?php endforeach; ?>
+            </div>
+        </div>
+    </div>
+</section>
+<?php endif; ?>
+
 </main>
 
 <?php require __DIR__ . '/layout_footer.php'; ?>

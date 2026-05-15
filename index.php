@@ -49,7 +49,8 @@ switch ($page) {
         if (empty($template_data['featured_cases'])) {
             $template_data['featured_cases'] = get_cases($lang_id, [], 4);
         }
-        $template_data['home_blocks'] = rows('SELECT * FROM home_blocks WHERE is_active=1 ORDER BY sort_order');
+        $template_data['home_blocks']  = rows('SELECT * FROM home_blocks WHERE is_active=1 ORDER BY sort_order');
+        $template_data['recent_posts'] = get_posts($lang_id, [], 4);
         $template_data['page_class'] = 'home-page';
         render('home', $template_data);
         break;
