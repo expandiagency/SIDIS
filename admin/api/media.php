@@ -7,12 +7,23 @@ admin_require_auth();
 $method = $_SERVER['REQUEST_METHOD'];
 $id     = (int)($_GET['id'] ?? 0);
 
+function admin_media_url(string $path): string {
+    if (!$path) return '';
+    if (strpos($path, 'http') === 0) return $path;
+    if ($path[0] === '/') return $path;
+    // Seeded static assets stored as ./assets/... → convert to /assets/...
+    if (strpos($path, './') === 0) return '/' . ltrim($path, './');
+    return UPLOAD_URL . $path;
+}
+
 if ($method === 'GET') {
     $limit  = (int)($_GET['limit'] ?? 60);
     $offset = (int)($_GET['offset'] ?? 0);
     $items  = rows('SELECT * FROM media ORDER BY created_at DESC LIMIT ? OFFSET ?', [$limit, $offset]);
     $total  = row('SELECT COUNT(*) as c FROM media')['c'];
-    foreach ($items as &$item) $item['url'] = UPLOAD_URL . $item['path'];
+    foreach ($items as &$item) {
+        $item['url'] = admin_media_url($item['path']);
+    }
     json_response(['items' => $items, 'total' => $total]);
 }
 
