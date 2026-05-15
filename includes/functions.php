@@ -185,7 +185,11 @@ function get_cases(int $lang_id, array $filters = [], int $limit = 50, int $offs
     $sql .= ' ORDER BY c.sort_order, c.created_at DESC LIMIT ? OFFSET ?';
     $params[] = $limit;
     $params[] = $offset;
-    return rows($sql, $params);
+    $cases = rows($sql, $params);
+    foreach ($cases as &$case) {
+        $case['terms'] = rows('SELECT ct.type, tt.name FROM case_terms ct JOIN terms_t tt ON ct.term_id=tt.term_id AND tt.lang_id=? WHERE ct.case_id=?', [$lang_id, $case['id']]);
+    }
+    return $cases;
 }
 
 function get_case(int $lang_id, string $slug): ?array {
