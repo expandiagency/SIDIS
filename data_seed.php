@@ -385,6 +385,60 @@ try {
     }
 
     // ══════════════════════════════════════════════════════════════════════════
+    // 7b. ADD MISSING COLUMNS & TABLES (migration for existing DBs)
+    // ══════════════════════════════════════════════════════════════════════════
+    $new_cols = [
+        ['home_content', 'why_subtitle',        "VARCHAR(300) DEFAULT ''"],
+        ['home_content', 'why_text',             "TEXT DEFAULT ''"],
+        ['home_content', 'solutions_text',       "TEXT DEFAULT ''"],
+        ['home_content', 'automation_btn1_text', "VARCHAR(100) DEFAULT ''"],
+        ['home_content', 'automation_btn2_text', "VARCHAR(100) DEFAULT ''"],
+        ['home_content', 'roadmap_title',        "VARCHAR(200) DEFAULT ''"],
+        ['home_content', 'roadmap_btn1_text',    "VARCHAR(100) DEFAULT ''"],
+        ['home_content', 'roadmap_btn1_url',     "VARCHAR(300) DEFAULT '#'"],
+        ['home_content', 'roadmap_btn2_text',    "VARCHAR(100) DEFAULT ''"],
+        ['home_content', 'roadmap_btn2_url',     "VARCHAR(300) DEFAULT '#'"],
+        ['home_content', 'roadmap_steps',        "TEXT DEFAULT ''"],
+        ['home_content', 'cta_text',             "TEXT DEFAULT ''"],
+        ['home_content', 'cta_item2',            "TEXT DEFAULT ''"],
+        ['home_content', 'cta_item3',            "TEXT DEFAULT ''"],
+        ['home_content', 'cta_form_title',       "VARCHAR(200) DEFAULT ''"],
+        ['home_content', 'presentation_title',   "VARCHAR(200) DEFAULT ''"],
+        ['home_content', 'presentation_subtitle',"VARCHAR(200) DEFAULT ''"],
+        ['home_content', 'presentation_text',    "TEXT DEFAULT ''"],
+        ['home_content', 'presentation_video',   "VARCHAR(500) DEFAULT ''"],
+    ];
+    foreach ($new_cols as [$tbl, $col, $def]) {
+        $exists = $pdo->query("SHOW COLUMNS FROM `$tbl` LIKE '$col'")->fetch();
+        if (!$exists) {
+            $pdo->exec("ALTER TABLE `$tbl` ADD COLUMN `$col` $def");
+        }
+    }
+
+    // Create home_blocks if missing
+    $pdo->exec("CREATE TABLE IF NOT EXISTS home_blocks (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        block_key VARCHAR(50) NOT NULL,
+        label VARCHAR(100) NOT NULL,
+        sort_order INT DEFAULT 0,
+        is_active TINYINT DEFAULT 1
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4");
+
+    $blocks_count = row('SELECT COUNT(*) as c FROM home_blocks')['c'];
+    if ((int)$blocks_count == 0) {
+        $default_blocks = [
+            ['hero','Hero Section'],['why','Why Us (Carousel)'],['automation','Automation Hub'],
+            ['solutions','Solutions / Tabs'],['projects','Projects Grid'],['reviews','Client Reviews'],
+            ['roadmap','Roadmap'],['getintouch','Get In Touch Form'],['presentation','Video Presentation'],
+        ];
+        foreach ($default_blocks as $i => [$key, $label]) {
+            insert('home_blocks', ['block_key'=>$key,'label'=>$label,'sort_order'=>$i,'is_active'=>1]);
+        }
+    }
+
+    $done[] = 'DB migration: added missing columns and home_blocks table';
+
+    // ══════════════════════════════════════════════════════════════════════════
     // 8. UPDATE HOME CONTENT with full text
     // ══════════════════════════════════════════════════════════════════════════
     $home = row('SELECT id FROM home_content WHERE lang_id=?', [$lid]);
