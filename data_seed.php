@@ -19,6 +19,61 @@ try {
     }
     $lid = (int)$lang['id'];
 
+    // ── Run DB migrations FIRST (before any inserts that use new columns) ───
+    $has_mt = $pdo->query("SHOW COLUMNS FROM `nav_items` LIKE 'mega_type'")->fetch();
+    if (!$has_mt) {
+        $pdo->exec("ALTER TABLE `nav_items` ADD COLUMN `mega_type` VARCHAR(20) DEFAULT 'solutions'");
+        $pdo->exec("ALTER TABLE `nav_items` ADD COLUMN `mega_img_text` VARCHAR(500) DEFAULT ''");
+    }
+
+    $new_cols = [
+        ['home_content', 'why_subtitle',        "VARCHAR(300) DEFAULT ''"],
+        ['home_content', 'why_text',             "TEXT DEFAULT ''"],
+        ['home_content', 'solutions_text',       "TEXT DEFAULT ''"],
+        ['home_content', 'automation_btn1_text', "VARCHAR(100) DEFAULT ''"],
+        ['home_content', 'automation_btn2_text', "VARCHAR(100) DEFAULT ''"],
+        ['home_content', 'roadmap_title',        "VARCHAR(200) DEFAULT ''"],
+        ['home_content', 'roadmap_btn1_text',    "VARCHAR(100) DEFAULT ''"],
+        ['home_content', 'roadmap_btn1_url',     "VARCHAR(300) DEFAULT '#'"],
+        ['home_content', 'roadmap_btn2_text',    "VARCHAR(100) DEFAULT ''"],
+        ['home_content', 'roadmap_btn2_url',     "VARCHAR(300) DEFAULT '#'"],
+        ['home_content', 'roadmap_steps',        "TEXT DEFAULT ''"],
+        ['home_content', 'cta_text',             "TEXT DEFAULT ''"],
+        ['home_content', 'cta_item2',            "TEXT DEFAULT ''"],
+        ['home_content', 'cta_item3',            "TEXT DEFAULT ''"],
+        ['home_content', 'cta_form_title',       "VARCHAR(200) DEFAULT ''"],
+        ['home_content', 'presentation_title',   "VARCHAR(200) DEFAULT ''"],
+        ['home_content', 'presentation_subtitle',"VARCHAR(200) DEFAULT ''"],
+        ['home_content', 'presentation_text',    "TEXT DEFAULT ''"],
+        ['home_content', 'presentation_video',   "VARCHAR(500) DEFAULT ''"],
+    ];
+    foreach ($new_cols as [$tbl, $col, $def]) {
+        $exists = $pdo->query("SHOW COLUMNS FROM `$tbl` LIKE '$col'")->fetch();
+        if (!$exists) {
+            $pdo->exec("ALTER TABLE `$tbl` ADD COLUMN `$col` $def");
+        }
+    }
+
+    $pdo->exec("CREATE TABLE IF NOT EXISTS home_blocks (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        block_key VARCHAR(50) NOT NULL,
+        label VARCHAR(100) NOT NULL,
+        sort_order INT DEFAULT 0,
+        is_active TINYINT DEFAULT 1
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4");
+
+    $blocks_count = row('SELECT COUNT(*) as c FROM home_blocks')['c'];
+    if ((int)$blocks_count == 0) {
+        $default_blocks = [
+            ['hero','Hero Section'],['why','Why Us (Carousel)'],['automation','Automation Hub'],
+            ['solutions','Solutions / Tabs'],['projects','Projects Grid'],['reviews','Client Reviews'],
+            ['roadmap','Roadmap'],['getintouch','Get In Touch Form'],['presentation','Video Presentation'],
+        ];
+        foreach ($default_blocks as $i => [$key, $label]) {
+            insert('home_blocks', ['block_key'=>$key,'label'=>$label,'sort_order'=>$i,'is_active'=>1]);
+        }
+    }
+
     // ── Shared SVG icons ─────────────────────────────────────────────────────
     $svg_hub = '<svg width="44" height="44" viewbox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M40.1328 18.1328C38.4545 18.1328 37.037 19.2137 36.5031 20.7109H28.3149C28.1475 19.8895 27.8197 19.1273 27.3715 18.4513L29.4757 16.3471C30.9092 17.0258 32.6592 16.8086 33.8496 15.6202C35.0354 14.4343 35.2579 12.6831 34.577 11.2459L36.7681 9.0548C38.2029 9.73242 39.956 9.5138 41.1421 8.32769H41.1434C42.6491 6.81957 42.6491 4.36605 41.1421 2.85673C39.6328 1.34991 37.1793 1.35369 35.6725 2.85802C34.4874 4.0431 34.2683 5.79683 34.9455 7.2319L32.7446 9.43284C31.3124 8.78969 29.5206 9.01003 28.3813 10.1505C27.1915 11.3403 26.9745 13.0912 27.6529 14.5246L25.5489 16.6286C24.8729 16.1804 24.1106 15.8526 23.2892 15.6852V7.58287C24.7863 7.04894 25.8672 5.63148 25.8672 3.95312C25.8672 1.82067 24.1325 0 22 0C19.8675 0 18.1328 1.82067 18.1328 3.95312C18.1328 5.63148 19.2137 7.04894 20.7109 7.58287V15.6851C19.8895 15.8525 19.1273 16.1803 18.4513 16.6285L16.3471 14.5243C17.0258 13.0908 16.8086 11.3408 15.6202 10.1504C14.4797 9.00994 12.6885 8.78977 11.2559 9.43302L9.05463 7.23173C9.73191 5.79666 9.51268 4.04293 8.32769 2.85785C6.81837 1.34973 4.36605 1.35352 2.85673 2.85785C1.35111 4.36597 1.35111 6.81948 2.85802 8.32752C4.04336 9.51285 5.79666 9.73251 7.23207 9.05463L9.42313 11.2457C8.74259 12.6827 8.96362 14.4341 10.1506 15.6188C11.3404 16.8086 13.0913 17.0256 14.5246 16.3472L16.6286 18.4512C16.1805 19.1272 15.8527 19.8895 15.6853 20.7109H7.49693C6.963 19.2137 5.54555 18.1328 3.86719 18.1328C1.73473 18.1328 0 19.8675 0 22C0 24.1325 1.73473 25.8672 3.86719 25.8672C5.54555 25.8672 6.963 24.7863 7.49693 23.2891H15.6851C15.8525 24.1105 16.1803 24.8727 16.6285 25.5487L14.5142 27.6629C13.0831 27.0211 11.2924 27.2407 10.1504 28.3798C8.96457 29.5655 8.74208 31.3169 9.42296 32.7541L7.23181 34.9453C5.79691 34.268 4.04362 34.4872 2.85665 35.6722C1.35102 37.1803 1.35102 39.6339 2.85794 41.1432C4.36605 42.6488 6.81966 42.6486 8.3276 41.1432C9.51268 39.9568 9.73182 38.2031 9.05455 36.768L11.2456 34.577C12.6823 35.2573 14.4334 35.0361 15.6201 33.8493C16.8114 32.6557 17.0243 30.9056 16.3474 29.4751L18.4512 27.3713C19.1272 27.8194 19.8895 28.1472 20.7109 28.3146V36.4169C19.2136 36.9508 18.1327 38.3683 18.1327 40.0466C18.1327 42.1791 19.8675 43.9997 21.9999 43.9997C24.1324 43.9997 25.8671 42.1791 25.8671 40.0466C25.8671 38.3683 24.7862 36.9508 23.289 36.4169V28.3146C24.1104 28.1472 24.8726 27.8194 25.5486 27.3713L27.6526 29.4753C26.9744 30.9083 27.1908 32.6583 28.3797 33.8493C29.5656 35.035 31.3168 35.2577 32.754 34.5768L34.9452 36.7679C34.2679 38.203 34.4871 39.9571 35.6721 41.1431C37.1785 42.6469 39.6292 42.6506 41.1431 41.1418C42.6487 39.6337 42.6487 37.1802 41.1431 35.6721C39.956 34.4863 38.2022 34.2684 36.7679 34.9452L34.5769 32.7541C35.2572 31.3174 35.036 29.5664 33.8492 28.3797C32.706 27.2385 30.9158 27.0209 29.4854 27.6628L27.3712 25.5485C27.8193 24.8725 28.1471 24.1103 28.3145 23.2889H36.5027C37.0367 24.7861 38.4541 25.867 40.1325 25.867C42.2649 25.867 43.9997 24.1323 43.9997 21.9998C43.9997 19.8674 42.2653 18.1328 40.1328 18.1328Z" fill="currentColor"/></svg>';
 
@@ -362,65 +417,6 @@ try {
             insert('reviews_t', ['review_id'=>$rid,'lang_id'=>$lid,'quote'=>$quote,'text'=>$text,'author_name'=>$name,'author_title'=>$title_pos]);
         }
         $done[] = 'Reviews seeded (4 client testimonials)';
-    }
-
-    // ══════════════════════════════════════════════════════════════════════════
-    // 7b. ADD MISSING COLUMNS & TABLES (migration for existing DBs)
-    // ══════════════════════════════════════════════════════════════════════════
-    // Add mega_type column to nav_items
-    $has_mt = $pdo->query("SHOW COLUMNS FROM `nav_items` LIKE 'mega_type'")->fetch();
-    if (!$has_mt) {
-        $pdo->exec("ALTER TABLE `nav_items` ADD COLUMN `mega_type` VARCHAR(20) DEFAULT 'solutions'");
-        $pdo->exec("ALTER TABLE `nav_items` ADD COLUMN `mega_img_text` VARCHAR(500) DEFAULT ''");
-    }
-
-    $new_cols = [
-        ['home_content', 'why_subtitle',        "VARCHAR(300) DEFAULT ''"],
-        ['home_content', 'why_text',             "TEXT DEFAULT ''"],
-        ['home_content', 'solutions_text',       "TEXT DEFAULT ''"],
-        ['home_content', 'automation_btn1_text', "VARCHAR(100) DEFAULT ''"],
-        ['home_content', 'automation_btn2_text', "VARCHAR(100) DEFAULT ''"],
-        ['home_content', 'roadmap_title',        "VARCHAR(200) DEFAULT ''"],
-        ['home_content', 'roadmap_btn1_text',    "VARCHAR(100) DEFAULT ''"],
-        ['home_content', 'roadmap_btn1_url',     "VARCHAR(300) DEFAULT '#'"],
-        ['home_content', 'roadmap_btn2_text',    "VARCHAR(100) DEFAULT ''"],
-        ['home_content', 'roadmap_btn2_url',     "VARCHAR(300) DEFAULT '#'"],
-        ['home_content', 'roadmap_steps',        "TEXT DEFAULT ''"],
-        ['home_content', 'cta_text',             "TEXT DEFAULT ''"],
-        ['home_content', 'cta_item2',            "TEXT DEFAULT ''"],
-        ['home_content', 'cta_item3',            "TEXT DEFAULT ''"],
-        ['home_content', 'cta_form_title',       "VARCHAR(200) DEFAULT ''"],
-        ['home_content', 'presentation_title',   "VARCHAR(200) DEFAULT ''"],
-        ['home_content', 'presentation_subtitle',"VARCHAR(200) DEFAULT ''"],
-        ['home_content', 'presentation_text',    "TEXT DEFAULT ''"],
-        ['home_content', 'presentation_video',   "VARCHAR(500) DEFAULT ''"],
-    ];
-    foreach ($new_cols as [$tbl, $col, $def]) {
-        $exists = $pdo->query("SHOW COLUMNS FROM `$tbl` LIKE '$col'")->fetch();
-        if (!$exists) {
-            $pdo->exec("ALTER TABLE `$tbl` ADD COLUMN `$col` $def");
-        }
-    }
-
-    // Create home_blocks if missing
-    $pdo->exec("CREATE TABLE IF NOT EXISTS home_blocks (
-        id INT AUTO_INCREMENT PRIMARY KEY,
-        block_key VARCHAR(50) NOT NULL,
-        label VARCHAR(100) NOT NULL,
-        sort_order INT DEFAULT 0,
-        is_active TINYINT DEFAULT 1
-    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4");
-
-    $blocks_count = row('SELECT COUNT(*) as c FROM home_blocks')['c'];
-    if ((int)$blocks_count == 0) {
-        $default_blocks = [
-            ['hero','Hero Section'],['why','Why Us (Carousel)'],['automation','Automation Hub'],
-            ['solutions','Solutions / Tabs'],['projects','Projects Grid'],['reviews','Client Reviews'],
-            ['roadmap','Roadmap'],['getintouch','Get In Touch Form'],['presentation','Video Presentation'],
-        ];
-        foreach ($default_blocks as $i => [$key, $label]) {
-            insert('home_blocks', ['block_key'=>$key,'label'=>$label,'sort_order'=>$i,'is_active'=>1]);
-        }
     }
 
     $done[] = 'DB migration: added missing columns and home_blocks table';
