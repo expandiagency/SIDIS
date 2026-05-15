@@ -20,7 +20,7 @@ if ($method === 'GET') {
     }
     if ($action === 'pages') {
         $pages = rows('SELECT sp.*,spt.title,spt.description,m.path as image_path FROM solution_pages sp LEFT JOIN solution_pages_t spt ON sp.id=spt.page_id AND spt.lang_id=? LEFT JOIN media m ON sp.image_id=m.id ORDER BY sp.sort_order', [$lang_id]);
-        foreach ($pages as &$p) $p['image_url'] = $p['image_path'] ? UPLOAD_URL . $p['image_path'] : '';
+        foreach ($pages as &$p) $p['image_url'] = $p['image_path'] ? admin_url($p['image_path']) : '';
         json_response($pages);
     }
     if ($action === 'page_features' && $id) {

@@ -18,8 +18,8 @@ function case_full(int $id, int $lang_id): array {
                  LEFT JOIN media img ON c.featured_image_id=img.id
                  WHERE c.id=?', [$lang_id, $id]) ?? [];
     if ($case) {
-        $case['logo_url']  = $case['logo_path']  ? UPLOAD_URL . $case['logo_path']  : '';
-        $case['image_url'] = $case['image_path'] ? UPLOAD_URL . $case['image_path'] : '';
+        $case['logo_url']  = $case['logo_path']  ? admin_url($case['logo_path'])  : '';
+        $case['image_url'] = $case['image_path'] ? admin_url($case['image_path']) : '';
         $case['key_results']= rows('SELECT * FROM case_key_results WHERE case_id=? AND lang_id=? ORDER BY sort_order', [$id,$lang_id]);
         $case['challenges'] = rows('SELECT ch.*,ct.title as ch_title,ct.text as ch_text FROM case_challenges ch LEFT JOIN case_challenges_t ct ON ch.id=ct.challenge_id AND ct.lang_id=? WHERE ch.case_id=? ORDER BY ch.sort_order', [$lang_id,$id]);
         $case['tech_items'] = rows('SELECT * FROM case_tech_items WHERE case_id=? AND lang_id=? ORDER BY sort_order', [$id,$lang_id]);
@@ -32,7 +32,7 @@ function case_full(int $id, int $lang_id): array {
 if ($method === 'GET') {
     if ($id) { json_response(case_full($id, $lang_id)); }
     $list = rows('SELECT c.*, ct.title, img.path as image_path FROM cases c LEFT JOIN cases_t ct ON c.id=ct.case_id AND ct.lang_id=? LEFT JOIN media img ON c.featured_image_id=img.id ORDER BY c.sort_order, c.created_at DESC', [$lang_id]);
-    foreach ($list as &$item) $item['image_url'] = $item['image_path'] ? UPLOAD_URL . $item['image_path'] : '';
+    foreach ($list as &$item) $item['image_url'] = $item['image_path'] ? admin_url($item['image_path']) : '';
     json_response($list);
 }
 

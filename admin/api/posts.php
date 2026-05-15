@@ -17,7 +17,7 @@ function post_full(int $id, int $lang_id): array {
                  LEFT JOIN media img ON p.featured_image_id=img.id
                  WHERE p.id=?', [$lang_id, $id]) ?? [];
     if ($post) {
-        $post['image_url'] = $post['image_path'] ? UPLOAD_URL . $post['image_path'] : '';
+        $post['image_url'] = $post['image_path'] ? admin_url($post['image_path']) : '';
         $post['tags'] = rows('SELECT * FROM post_tags WHERE post_id=? AND lang_id=? ORDER BY sort_order', [$id,$lang_id]);
         $post['toc']  = rows('SELECT * FROM post_toc WHERE post_id=? AND lang_id=? ORDER BY sort_order', [$id,$lang_id]);
     }
@@ -27,7 +27,7 @@ function post_full(int $id, int $lang_id): array {
 if ($method === 'GET') {
     if ($id) { json_response(post_full($id, $lang_id)); }
     $list = rows('SELECT p.*,pt.title,img.path as image_path FROM posts p LEFT JOIN posts_t pt ON p.id=pt.post_id AND pt.lang_id=? LEFT JOIN media img ON p.featured_image_id=img.id ORDER BY p.published_at DESC', [$lang_id]);
-    foreach ($list as &$item) $item['image_url'] = $item['image_path'] ? UPLOAD_URL . $item['image_path'] : '';
+    foreach ($list as &$item) $item['image_url'] = $item['image_path'] ? admin_url($item['image_path']) : '';
     json_response($list);
 }
 

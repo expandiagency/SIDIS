@@ -9,18 +9,19 @@ $action  = $_GET['action'] ?? '';
 $lang_id = (int)($_GET['lang_id'] ?? 1);
 $id      = (int)($_GET['id'] ?? 0);
 
+
 if ($method === 'GET') {
     if ($action === 'why_slides') {
         json_response(rows('SELECT * FROM home_why_slides WHERE lang_id=? ORDER BY sort_order', [$lang_id]));
     }
     if ($action === 'partner_logos') {
         $logos = rows('SELECT l.*, m.path as image_path FROM home_partner_logos l LEFT JOIN media m ON l.image_id=m.id ORDER BY l.sort_order');
-        foreach ($logos as &$l) $l['image_url'] = $l['image_path'] ? UPLOAD_URL . $l['image_path'] : '';
+        foreach ($logos as &$l) $l['image_url'] = $l['image_path'] ? admin_url($l['image_path']) : '';
         json_response($logos);
     }
     if ($action === 'auto_images') {
         $imgs = rows('SELECT a.*, m.path as image_path FROM home_automation_images a LEFT JOIN media m ON a.image_id=m.id ORDER BY a.sort_order');
-        foreach ($imgs as &$i) $i['image_url'] = $i['image_path'] ? UPLOAD_URL . $i['image_path'] : '';
+        foreach ($imgs as &$i) $i['image_url'] = $i['image_path'] ? admin_url($i['image_path']) : '';
         json_response($imgs);
     }
     if ($action === 'reviews') {
@@ -35,8 +36,8 @@ if ($method === 'GET') {
             [$lang_id]
         );
         foreach ($reviews as &$r) {
-            $r['author_image_url'] = $r['author_image_path'] ? UPLOAD_URL . $r['author_image_path'] : '';
-            $r['rating_image_url'] = $r['rating_image_path'] ? UPLOAD_URL . $r['rating_image_path'] : '';
+            $r['author_image_url'] = $r['author_image_path'] ? admin_url($r['author_image_path']) : '';
+            $r['rating_image_url'] = $r['rating_image_path'] ? admin_url($r['rating_image_path']) : '';
         }
         json_response($reviews);
     }

@@ -11,7 +11,7 @@ $id      = (int)($_GET['id'] ?? 0);
 
 if ($method === 'GET') {
     $authors = rows('SELECT a.*, at_.name, at_.title as author_title, m.path as image_path FROM authors a LEFT JOIN authors_t at_ ON a.id=at_.author_id AND at_.lang_id=? LEFT JOIN media m ON a.image_id=m.id WHERE a.is_active=1 ORDER BY a.id', [$lang_id]);
-    foreach ($authors as &$a) $a['image_url'] = $a['image_path'] ? UPLOAD_URL . $a['image_path'] : '';
+    foreach ($authors as &$a) $a['image_url'] = $a['image_path'] ? admin_url($a['image_path']) : '';
     json_response($authors);
 }
 

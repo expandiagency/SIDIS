@@ -1,6 +1,14 @@
 <?php
 require_once __DIR__ . '/functions.php';
 
+// Converts any stored media path to an absolute URL safe for admin use
+function admin_url(string $path): string {
+    if (!$path) return '';
+    if (strpos($path, 'http') === 0 || $path[0] === '/') return $path;
+    if (strpos($path, './') === 0) return '/' . ltrim($path, './');
+    return UPLOAD_URL . $path;
+}
+
 function admin_session_start(): void {
     session_name(SESSION_NAME);
     session_start();

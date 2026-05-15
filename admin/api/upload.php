@@ -10,7 +10,7 @@ if (empty($_FILES['file'])) json_error('No file uploaded');
 try {
     $id = upload_file($_FILES['file']);
     $media = row('SELECT * FROM media WHERE id=?', [$id]);
-    $media['url'] = UPLOAD_URL . $media['path'];
+    $media['url'] = admin_url($media['path']);
     json_response(['ok' => true, 'media' => $media]);
 } catch (Exception $e) {
     json_error($e->getMessage());
