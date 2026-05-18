@@ -65,13 +65,12 @@
 
         <div class="catalog__items">
             <?php if (!empty($posts)): ?>
-            <?php foreach ($posts as $post): ?>
+            <?php $blog_fallbacks=['/assets/img/blog/image-4.webp','/assets/img/blog/image-3.webp','/assets/img/blog/image-2.webp','/assets/img/blog/image-1.jpg']; ?>
+            <?php foreach ($posts as $pi => $post): ?>
             <article class="catalog-card" data-fls-watcher="" data-fls-watcher-threshold="0.6">
                 <a href="/blog/<?= e($post['slug']) ?>/" class="catalog-card__link-wrap">
                     <div class="catalog-card__img">
-                        <?php if (!empty($post['image_path'])): ?>
-                        <img alt="<?= e($post['title'] ?? '') ?>" loading="lazy" src="<?= e(media_url($post['image_path'])) ?>">
-                        <?php endif; ?>
+                        <img alt="<?= e($post['title'] ?? '') ?>" loading="lazy" src="<?= !empty($post['image_path']) ? e(media_url($post['image_path'])) : $blog_fallbacks[$pi % 4] ?>">
                     </div>
                     <div class="catalog-card__info">
                         <?php if (!empty($post['published_at'])): ?>

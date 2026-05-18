@@ -443,12 +443,11 @@ if (!empty($c['selected_ids']) && is_array($c['selected_ids'])) {
         </div>
         <div data-fls-slider="" class="articles__slider swiper">
             <div class="articles__wrapper swiper-wrapper">
-                <?php foreach (array_values($block_posts) as $post): ?>
+                <?php $blog_fallbacks = ['/assets/img/blog/image-4.webp','/assets/img/blog/image-3.webp','/assets/img/blog/image-2.webp','/assets/img/blog/image-1.jpg']; ?>
+                <?php foreach (array_values($block_posts) as $pi => $post): ?>
                 <article class="article-card swiper-slide">
                     <div class="article-card__img">
-                        <?php if (!empty($post['image_path'])): ?>
-                        <img alt="<?= e($post['title'] ?? '') ?>" loading="lazy" src="<?= e(sol_url($post['image_path'] ?? '')) ?>">
-                        <?php endif; ?>
+                        <img alt="<?= e($post['title'] ?? '') ?>" loading="lazy" src="<?= !empty($post['image_path']) ? e(sol_url($post['image_path'])) : $blog_fallbacks[$pi % 4] ?>">
                         <a href="/blog/<?= e($post['slug'] ?? '') ?>/" class="article-card__arrow button button--icon">
                             <span class="button__text">Open article</span>
                             <span class="button__icon"><svg width="14" height="14" viewbox="0 0 14 14" fill="none"><path d="M0.707031 13L12.707 1M12.707 1L0.707031 1M12.707 1V12.8868" stroke="currentColor" stroke-width="2"/></svg></span>

@@ -516,12 +516,11 @@ require __DIR__ . '/layout.php';
         </div>
         <div data-fls-slider="" class="articles__slider swiper">
             <div class="articles__wrapper swiper-wrapper">
-                <?php foreach ($recent_posts as $post): ?>
+                <?php $blog_fallbacks = ['/assets/img/blog/image-4.webp','/assets/img/blog/image-3.webp','/assets/img/blog/image-2.webp','/assets/img/blog/image-1.jpg']; ?>
+                <?php foreach ($recent_posts as $pi => $post): ?>
                 <article class="article-card swiper-slide" data-fls-watcher="" data-fls-watcher-threshold="0.6">
                     <div class="article-card__img">
-                        <?php if (!empty($post['image_path'])): ?>
-                        <img alt="<?= e($post['title'] ?? '') ?>" loading="lazy" src="<?= e(media_url($post['image_path'])) ?>">
-                        <?php endif; ?>
+                        <img alt="<?= e($post['title'] ?? '') ?>" loading="lazy" src="<?= !empty($post['image_path']) ? e(media_url($post['image_path'])) : $blog_fallbacks[$pi % 4] ?>">
                         <a href="/blog/<?= e($post['slug'] ?? '') ?>" class="article-card__arrow button button--icon">
                             <span class="button__text">Open article</span>
                             <span class="button__icon">
