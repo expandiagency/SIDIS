@@ -321,13 +321,16 @@ function get_post(int $lang_id, string $slug): ?array {
  */
 function extract_toc_from_content(string $html): array {
     $toc = [];
-    if (preg_match_all('/<h([2-5])[^>]*\sid=["\']([^"\']+)["\'][^>]*>(.*?)<\/h\1>/is', $html, $matches, PREG_SET_ORDER)) {
-        foreach ($matches as $m) {
-            $title = strip_tags($m[3]);
-            $anchor = $m[2];
-            if (trim($title) && trim($anchor)) {
-                $toc[] = ['title' => $title, 'anchor' => $anchor];
-            }
+    if (!$html) return $toc;
+    // Simple line-by-line extraction to avoid PCRE backtrack limits on large content
+    $lines = explode("\n", $html);
+    foreach ($lines as $line) {
+        if (!preg_match('/<h[2-5][^>]+id=["\']([^"\']+)["\']/i', $line, $id_m)) continue;
+        $anchor = $id_m[1];
+        $title  = strip_tags($line);
+        $title  = trim($title);
+        if ($title && $anchor) {
+            $toc[] = ['title' => $title, 'anchor' => $anchor];
         }
     }
     return $toc;
