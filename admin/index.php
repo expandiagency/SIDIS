@@ -442,6 +442,7 @@ tr:hover td{background:#fafafa}
             </div>
             <div class="tabs" style="margin-bottom:0;border-bottom:none">
                 <button class="tab-btn" :class="{active:solutionsMainTab==='items'}" @click="solutionsMainTab='items'">Homepage Tabs</button>
+                <button class="tab-btn" :class="{active:solutionsMainTab==='pages'}" @click="solutionsMainTab='pages';loadSolPages()">Solution Pages</button>
                 <button class="tab-btn" :class="{active:solutionsMainTab==='blocks'}" @click="solutionsMainTab='blocks';loadSolBlocks()">Page Sections</button>
             </div>
             <div v-if="solutionsMainTab==='items'">
@@ -488,6 +489,251 @@ tr:hover td{background:#fafafa}
                                     <button class="btn btn--outline btn--sm" :disabled="i===0" @click="solBlocks[pt].splice(i-1,0,...solBlocks[pt].splice(i,1))">↑</button>
                                     <button class="btn btn--outline btn--sm" :disabled="i===(solBlocks[pt].length-1)" @click="solBlocks[pt].splice(i+1,0,...solBlocks[pt].splice(i,1))">↓</button>
                                 </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ── SOLUTION PAGES EDITOR ──────────────────────────────────── -->
+            <div v-if="solutionsMainTab==='pages'" style="margin-top:12px">
+
+                <!-- Page list -->
+                <div v-if="!editingSolPage">
+                    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
+                        <p style="font-size:13px;color:var(--muted)">Each row is a dedicated page at /solutions/slug, /departments/slug or /industries/slug. Click Edit to manage all content blocks.</p>
+                        <button class="btn btn--primary" @click="openSolPageEditor()">+ New Page</button>
+                    </div>
+                    <div class="tabs" style="margin-bottom:12px">
+                        <button v-for="t in ['solution','department','industry']" :key="t" class="tab-btn"
+                            :class="{active:solPagesTab===t}" @click="solPagesTab=t">
+                            {{ t.charAt(0).toUpperCase()+t.slice(1)+'s' }}
+                        </button>
+                    </div>
+                    <div class="card"><div class="table-wrap"><table>
+                        <thead><tr><th>Title</th><th>Slug</th><th>Active</th><th>Sort</th><th>Actions</th></tr></thead>
+                        <tbody>
+                            <tr v-for="p in solPagesList.filter(x=>x.type===solPagesTab)" :key="p.id">
+                                <td style="font-weight:500">{{ p.title || '—' }}</td>
+                                <td style="font-size:12px;color:var(--muted)">{{ p.slug }}</td>
+                                <td><span :class="'badge badge--'+(p.is_active?'on':'off')">{{ p.is_active?'Yes':'No' }}</span></td>
+                                <td>{{ p.sort_order }}</td>
+                                <td>
+                                    <button class="btn btn--outline btn--sm" @click="openSolPageEditor(p)">⚙ Settings</button>
+                                    <button class="btn btn--primary btn--sm" style="margin-left:4px" @click="openSolBlockEditor(p)">✏ Edit Blocks</button>
+                                    <button class="btn btn--danger btn--sm" style="margin-left:4px" @click="deleteSolPage(p)">Del</button>
+                                </td>
+                            </tr>
+                            <tr v-if="!solPagesList.filter(x=>x.type===solPagesTab).length">
+                                <td colspan="5" class="empty" style="padding:20px;text-align:center;color:var(--muted)">No pages yet. Click "+ New Page"</td>
+                            </tr>
+                        </tbody>
+                    </table></div></div>
+                </div>
+
+                <!-- Page settings editor -->
+                <div v-if="editingSolPage && !editingSolBlocks">
+                    <div style="display:flex;align-items:center;gap:12px;margin-bottom:20px">
+                        <button class="btn btn--outline" @click="editingSolPage=false">← Back</button>
+                        <h2 style="font-size:18px;font-weight:600">{{ solPageForm.id ? 'Edit' : 'New' }} Page Settings</h2>
+                        <button class="btn btn--primary" style="margin-left:auto" @click="saveSolPage">Save</button>
+                    </div>
+                    <div class="card"><div class="card__body">
+                        <div class="form-grid">
+                            <div class="field"><label>Type</label>
+                                <select v-model="solPageForm.type">
+                                    <option value="solution">Solution</option>
+                                    <option value="department">Department</option>
+                                    <option value="industry">Industry</option>
+                                </select>
+                            </div>
+                            <div class="field"><label>Slug (URL)</label>
+                                <input v-model="solPageForm.slug" @input="solPageForm.slug=slugify(solPageForm.slug)">
+                                <div class="slug-preview">/{{ solPageForm.type }}s/{{ solPageForm.slug }}/</div>
+                            </div>
+                            <div class="field field--full"><label>Title</label><input v-model="solPageForm.title"></div>
+                            <div class="field field--full"><label>Description</label><textarea v-model="solPageForm.description" rows="3"></textarea></div>
+                            <div class="field"><label>Button 1 Text</label><input v-model="solPageForm.btn1_text"></div>
+                            <div class="field"><label>Button 2 Text</label><input v-model="solPageForm.btn2_text"></div>
+                            <div class="field"><label>Featured Image</label>
+                                <div class="img-picker">
+                                    <img v-if="solPageForm.image_url" :src="solPageForm.image_url" class="img-thumb">
+                                    <button class="btn btn--outline btn--sm" @click="pickMedia(m=>{solPageForm.image_id=m.id;solPageForm.image_url=m.url})">Choose</button>
+                                    <button v-if="solPageForm.image_url" class="btn btn--sm" @click="solPageForm.image_id=null;solPageForm.image_url=''">Clear</button>
+                                </div>
+                            </div>
+                            <div class="field"><label>Sort Order</label><input type="number" v-model.number="solPageForm.sort_order"></div>
+                            <div class="field" style="flex-direction:row;align-items:center;gap:10px;padding-top:22px">
+                                <label class="toggle"><input type="checkbox" v-model="solPageForm.is_active" :true-value="1" :false-value="0"><span class="toggle__slider"></span></label>
+                                <span>Active</span>
+                            </div>
+                            <div class="field field--full"><label>Meta Title</label><input v-model="solPageForm.meta_title"></div>
+                            <div class="field field--full"><label>Meta Description</label><textarea v-model="solPageForm.meta_description" rows="2"></textarea></div>
+                        </div>
+                    </div></div>
+                </div>
+
+                <!-- Block content editor -->
+                <div v-if="editingSolBlocks">
+                    <div style="display:flex;align-items:center;gap:12px;margin-bottom:20px">
+                        <button class="btn btn--outline" @click="editingSolBlocks=false;editingSolPage=false">← Back to Pages</button>
+                        <h2 style="font-size:18px;font-weight:600">Blocks: {{ editingSolPageObj?.title }}</h2>
+                        <a :href="'/'+editingSolPageObj?.type+'s/'+editingSolPageObj?.slug+'/' " target="_blank" class="btn btn--outline btn--sm" style="margin-left:auto">↗ View Page</a>
+                    </div>
+
+                    <div v-for="(blk,bi) in solPageBlocks" :key="blk.id" class="card" style="margin-bottom:12px">
+                        <div class="card__head" style="cursor:pointer" @click="blk._open=!blk._open">
+                            <div style="display:flex;align-items:center;gap:12px;flex:1">
+                                <span class="drag-handle">⠿</span>
+                                <strong style="font-size:14px">{{ blk.label }}</strong>
+                                <span style="font-size:11px;color:var(--muted);font-family:monospace">{{ blk.block_key }}</span>
+                                <span :class="'badge badge--'+(blk.is_active?'on':'off')" style="margin-left:8px">{{ blk.is_active?'Shown':'Hidden' }}</span>
+                            </div>
+                            <div style="display:flex;gap:6px;align-items:center">
+                                <label class="toggle" @click.stop="">
+                                    <input type="checkbox" :checked="blk.is_active==1" @change="blk.is_active=blk.is_active?0:1;saveSolBlock(blk)">
+                                    <span class="toggle__slider"></span>
+                                </label>
+                                <button class="btn btn--outline btn--sm" :disabled="bi===0" @click.stop="solPageBlocks.splice(bi-1,0,...solPageBlocks.splice(bi,1));reorderSolBlocks()">↑</button>
+                                <button class="btn btn--outline btn--sm" :disabled="bi===solPageBlocks.length-1" @click.stop="solPageBlocks.splice(bi+1,0,...solPageBlocks.splice(bi,1));reorderSolBlocks()">↓</button>
+                            </div>
+                        </div>
+                        <div v-show="blk._open" class="card__body">
+
+                            <!-- PROMO block -->
+                            <div v-if="blk.block_key==='promo'" class="form-grid">
+                                <div class="field field--full"><label>Title</label><input v-model="blk.content_obj.title"></div>
+                                <div class="field field--full"><label>Text / Description</label><textarea v-model="blk.content_obj.text" rows="3"></textarea></div>
+                                <div class="field"><label>Button 1 Text</label><input v-model="blk.content_obj.btn1_text"></div>
+                                <div class="field"><label>Button 1 URL</label><input v-model="blk.content_obj.btn1_url"></div>
+                                <div class="field"><label>Button 2 Text</label><input v-model="blk.content_obj.btn2_text"></div>
+                                <div class="field"><label>Button 2 URL</label><input v-model="blk.content_obj.btn2_url"></div>
+                                <div class="field field--full"><label>Image</label>
+                                    <div class="img-picker">
+                                        <img v-if="blk.content_obj.image_url" :src="blk.content_obj.image_url" class="img-thumb">
+                                        <button class="btn btn--outline btn--sm" @click="pickMedia(m=>{blk.content_obj.image_id=m.id;blk.content_obj.image_url=m.url})">Choose Image</button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- FEATURES block -->
+                            <div v-else-if="blk.block_key==='features'">
+                                <div class="field" style="margin-bottom:16px"><label>Section Title</label><input v-model="blk.content_obj.title"></div>
+                                <div style="display:flex;justify-content:space-between;margin-bottom:8px"><strong style="font-size:13px">Slides</strong>
+                                    <button class="btn btn--outline btn--sm" @click="blk.content_obj.slides=blk.content_obj.slides||[];blk.content_obj.slides.push({title:'',text:''})">+ Add Slide</button>
+                                </div>
+                                <div class="repeat-list">
+                                    <div v-for="(sl,si) in (blk.content_obj.slides||[])" :key="si" class="repeat-item">
+                                        <div class="repeat-item__header"><span class="repeat-item__header-label">Slide {{ si+1 }}</span>
+                                            <div class="repeat-item__actions"><button class="btn btn--danger btn--sm btn--icon" @click="blk.content_obj.slides.splice(si,1)">×</button></div>
+                                        </div>
+                                        <div class="repeat-item__body form-grid">
+                                            <div class="field"><label>Title</label><input v-model="sl.title"></div>
+                                            <div class="field"><label>Text</label><textarea v-model="sl.text" rows="2"></textarea></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- PLANNING block -->
+                            <div v-else-if="blk.block_key==='planning'">
+                                <div style="display:flex;justify-content:space-between;margin-bottom:8px"><strong style="font-size:13px">Text Items</strong>
+                                    <button class="btn btn--outline btn--sm" @click="blk.content_obj.items=blk.content_obj.items||[];blk.content_obj.items.push({title:'',text:''})">+ Add</button>
+                                </div>
+                                <div class="repeat-list">
+                                    <div v-for="(it,ii) in (blk.content_obj.items||[])" :key="ii" class="repeat-item">
+                                        <div class="repeat-item__header"><span class="repeat-item__header-label">Item {{ ii+1 }}</span>
+                                            <div class="repeat-item__actions"><button class="btn btn--danger btn--sm btn--icon" @click="blk.content_obj.items.splice(ii,1)">×</button></div>
+                                        </div>
+                                        <div class="repeat-item__body form-grid">
+                                            <div class="field"><label>Title</label><input v-model="it.title"></div>
+                                            <div class="field field--full"><label>Text</label><textarea v-model="it.text" rows="3"></textarea></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <hr style="margin:16px 0;border:none;border-top:1px solid var(--border)">
+                                <div class="form-grid cols-1">
+                                    <div class="field"><label>Info Box Title</label><input v-model="blk.content_obj.info_title"></div>
+                                    <div class="field"><label>Info Button Text</label><input v-model="blk.content_obj.info_btn1_text"></div>
+                                    <div class="field"><label>Info Button URL</label><input v-model="blk.content_obj.info_btn1_url"></div>
+                                </div>
+                            </div>
+
+                            <!-- SOLVED block -->
+                            <div v-else-if="blk.block_key==='solved'">
+                                <div class="field" style="margin-bottom:16px"><label>Section Title</label><input v-model="blk.content_obj.title"></div>
+                                <div style="display:flex;justify-content:space-between;margin-bottom:8px"><strong style="font-size:13px">Slides</strong>
+                                    <button class="btn btn--outline btn--sm" @click="blk.content_obj.slides=blk.content_obj.slides||[];blk.content_obj.slides.push({title:'',text:''})">+ Add</button>
+                                </div>
+                                <div class="repeat-list">
+                                    <div v-for="(sl,si) in (blk.content_obj.slides||[])" :key="si" class="repeat-item">
+                                        <div class="repeat-item__header"><span class="repeat-item__header-label">Slide {{ si+1 }}</span>
+                                            <div class="repeat-item__actions"><button class="btn btn--danger btn--sm btn--icon" @click="blk.content_obj.slides.splice(si,1)">×</button></div>
+                                        </div>
+                                        <div class="repeat-item__body form-grid cols-1">
+                                            <div class="field"><label>Title</label><input v-model="sl.title"></div>
+                                            <div class="field"><label>Text</label><textarea v-model="sl.text" rows="4"></textarea></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- ROADMAP block -->
+                            <div v-else-if="blk.block_key==='roadmap'">
+                                <div class="form-grid" style="margin-bottom:16px">
+                                    <div class="field field--full"><label>Section Title</label><input v-model="blk.content_obj.title"></div>
+                                    <div class="field"><label>Button 1 Text</label><input v-model="blk.content_obj.btn1_text"></div>
+                                    <div class="field"><label>Button 1 URL</label><input v-model="blk.content_obj.btn1_url"></div>
+                                    <div class="field"><label>Button 2 Text</label><input v-model="blk.content_obj.btn2_text"></div>
+                                    <div class="field"><label>Button 2 URL</label><input v-model="blk.content_obj.btn2_url"></div>
+                                    <div class="field field--full"><label>Background Video Path</label><input v-model="blk.content_obj.video_path" placeholder="./assets/video/1-hero.mp4"></div>
+                                </div>
+                                <div style="display:flex;justify-content:space-between;margin-bottom:8px"><strong style="font-size:13px">Process Steps</strong>
+                                    <button class="btn btn--outline btn--sm" @click="blk.content_obj.steps=blk.content_obj.steps||[];blk.content_obj.steps.push({title:'',text:''})">+ Add Step</button>
+                                </div>
+                                <div class="repeat-list">
+                                    <div v-for="(st,si) in (blk.content_obj.steps||[])" :key="si" class="repeat-item">
+                                        <div class="repeat-item__header"><span class="repeat-item__header-label">Step {{ si+1 }}</span>
+                                            <div class="repeat-item__actions"><button class="btn btn--danger btn--sm btn--icon" @click="blk.content_obj.steps.splice(si,1)">×</button></div>
+                                        </div>
+                                        <div class="repeat-item__body form-grid">
+                                            <div class="field"><label>Title</label><input v-model="st.title"></div>
+                                            <div class="field"><label>Text</label><textarea v-model="st.text" rows="2"></textarea></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- FAQ block -->
+                            <div v-else-if="blk.block_key==='faq'">
+                                <div class="field" style="margin-bottom:16px"><label>Section Title</label><input v-model="blk.content_obj.title"></div>
+                                <div style="display:flex;justify-content:space-between;margin-bottom:8px"><strong style="font-size:13px">Q&A Items</strong>
+                                    <button class="btn btn--outline btn--sm" @click="blk.content_obj.items=blk.content_obj.items||[];blk.content_obj.items.push({q:'',a:''})">+ Add</button>
+                                </div>
+                                <div class="repeat-list">
+                                    <div v-for="(it,ii) in (blk.content_obj.items||[])" :key="ii" class="repeat-item">
+                                        <div class="repeat-item__header"><span class="repeat-item__header-label">Q {{ ii+1 }}</span>
+                                            <div class="repeat-item__actions"><button class="btn btn--danger btn--sm btn--icon" @click="blk.content_obj.items.splice(ii,1)">×</button></div>
+                                        </div>
+                                        <div class="repeat-item__body form-grid cols-1">
+                                            <div class="field"><label>Question</label><input v-model="it.q"></div>
+                                            <div class="field"><label>Answer</label><textarea v-model="it.a" rows="3"></textarea></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- AUTO blocks (projects, reviews, articles, getintouch) -->
+                            <div v-else>
+                                <div v-if="blk.block_key!=='getintouch'" class="field"><label>Section Title</label><input v-model="blk.content_obj.title"></div>
+                                <p v-if="blk.block_key==='projects'" style="font-size:12px;color:var(--muted);margin-top:8px">Shows last 4 case studies automatically</p>
+                                <p v-if="blk.block_key==='reviews'" style="font-size:12px;color:var(--muted);margin-top:8px">Shows all active reviews automatically</p>
+                                <p v-if="blk.block_key==='articles'" style="font-size:12px;color:var(--muted);margin-top:8px">Shows last 4 blog posts automatically</p>
+                                <p v-if="blk.block_key==='getintouch'" style="font-size:12px;color:var(--muted)">Contact form — uses global settings</p>
+                            </div>
+
+                            <div style="margin-top:16px;padding-top:12px;border-top:1px solid var(--border)">
+                                <button class="btn btn--primary btn--sm" @click="saveSolBlock(blk)">Save Block</button>
                             </div>
                         </div>
                     </div>
@@ -1223,6 +1469,48 @@ createApp({
             showAlert('Page sections saved!');
         };
 
+        /* ─── Solution Pages ─────────────────────────────────────────────── */
+        const solPagesTab   = ref('solution');
+        const solPagesList  = ref([]);
+        const editingSolPage = ref(false);
+        const editingSolBlocks = ref(false);
+        const editingSolPageObj = ref(null);
+        const solPageBlocks = ref([]);
+        const solPageForm = reactive({id:0,type:'solution',slug:'',title:'',description:'',btn1_text:'Try AI assistant',btn2_text:'Free audit',image_id:null,image_url:'',sort_order:0,is_active:1,meta_title:'',meta_description:''});
+
+        const loadSolPages = async () => {
+            solPagesList.value = await api(`/admin/api/sol_pages.php?action=list&lang_id=${langId.value}`);
+        };
+        const openSolPageEditor = (p=null) => {
+            Object.assign(solPageForm, p ? {...p,image_url:p.image_url||''} : {id:0,type:solPagesTab.value,slug:'',title:'',description:'',btn1_text:'Try AI assistant',btn2_text:'Free audit',image_id:null,image_url:'',sort_order:0,is_active:1,meta_title:'',meta_description:''});
+            editingSolBlocks.value = false;
+            editingSolPage.value = true;
+        };
+        const saveSolPage = async () => {
+            const r = await api(`/admin/api/sol_pages.php?action=save_page&lang_id=${langId.value}${solPageForm.id?'&id='+solPageForm.id:''}`,{method:'POST',body:JSON.stringify(solPageForm)});
+            if (r.ok) { editingSolPage.value=false; await loadSolPages(); showAlert('Page saved!'); }
+        };
+        const deleteSolPage = async p => {
+            if (!confirm(`Delete "${p.title||p.slug}"?`)) return;
+            await api(`/admin/api/sol_pages.php?action=delete_page&id=${p.id}`,{method:'POST'});
+            await loadSolPages(); showAlert('Deleted');
+        };
+        const openSolBlockEditor = async p => {
+            editingSolPageObj.value = p;
+            const blocks = await api(`/admin/api/sol_pages.php?action=blocks&page_id=${p.id}&lang_id=${langId.value}`);
+            solPageBlocks.value = blocks.map(b => ({...b, _open: false, content_obj: b.content_obj || {}}));
+            editingSolBlocks.value = true;
+            editingSolPage.value = false;
+        };
+        const saveSolBlock = async blk => {
+            await api(`/admin/api/sol_pages.php?action=save_block&lang_id=${langId.value}`,{method:'POST',body:JSON.stringify({page_id:editingSolPageObj.value?.id,block_key:blk.block_key,label:blk.label,sort_order:blk.sort_order,is_active:blk.is_active,content:blk.content_obj})});
+            showAlert('Block saved!');
+        };
+        const reorderSolBlocks = async () => {
+            const payload = { blocks: solPageBlocks.value.map((b,i)=>({page_id:editingSolPageObj.value?.id,block_key:b.block_key,is_active:b.is_active,sort_order:i})) };
+            await api(`/admin/api/sol_pages.php?action=reorder_blocks&lang_id=${langId.value}`,{method:'POST',body:JSON.stringify(payload)});
+        };
+
         const loadSolutionItems = async () => {
             solutionItems.value = await api(`/admin/api/solutions.php?action=items&type=${solutionsTab.value}&lang_id=${langId.value}`);
         };
@@ -1459,6 +1747,9 @@ createApp({
             openMegaEditor, saveMegaCategory, deleteMegaCategory, saveMegaSubitem, deleteMegaSubitem,
             solutionsTab, solutionsMainTab, solutionItems, solutionItemForm,
             solBlocks, loadSolBlocks, saveSolBlocksOrder,
+            solPagesTab, solPagesList, editingSolPage, editingSolBlocks, editingSolPageObj,
+            solPageBlocks, solPageForm, loadSolPages, openSolPageEditor, saveSolPage,
+            deleteSolPage, openSolBlockEditor, saveSolBlock, reorderSolBlocks,
             loadSolutionItems, openSolutionItemModal, saveSolutionItem, deleteSolutionItem,
             casesList, editingCase, caseTab, allTerms, caseForm,
             openCaseEditor, saveCase, deleteCase,

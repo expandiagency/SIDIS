@@ -126,6 +126,14 @@ function get_reviews(int $lang_id): array {
 
 /* ─── Solutions ─────────────────────────────────────────────────────────── */
 
+function get_sol_page_blocks(int $page_id, int $lang_id): array {
+    $blocks = rows('SELECT * FROM sol_page_blocks WHERE page_id=? AND lang_id=? AND is_active=1 ORDER BY sort_order', [$page_id, $lang_id]);
+    foreach ($blocks as &$b) {
+        $b['content'] = json_decode($b['content'] ?: '{}', true) ?: [];
+    }
+    return $blocks;
+}
+
 function get_solution_items(int $lang_id, string $type = null): array {
     $sql = 'SELECT si.*, sit.title, sit.description, sit.btn_text, sit.btn_url
             FROM solution_items si

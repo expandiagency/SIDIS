@@ -62,20 +62,24 @@ switch ($page) {
             $sol_page = get_solution_page($lang_id, $page . '/' . $segment);
             if (!$sol_page) $sol_page = get_solution_page($lang_id, $segment);
             if (!$sol_page) { render('404', $template_data); break; }
-            $template_data['solution_page'] = $sol_page;
-            $template_data['page_class'] = 'solutions-page';
+            $template_data['solution_page']   = $sol_page;
+            $template_data['sol_page_blocks'] = get_sol_page_blocks((int)$sol_page['id'], $lang_id);
+            $template_data['reviews']         = get_reviews($lang_id);
+            $template_data['recent_posts']    = get_posts($lang_id, [], 4);
+            $template_data['featured_cases']  = get_cases($lang_id, [], 4);
+            $template_data['page_class']      = 'solutions-page';
             render('solutions', $template_data);
         } else {
             $sol_page = get_solution_page($lang_id, $page);
             if (!$sol_page) {
-                $sol_page = [
-                    'title' => ucfirst($page),
-                    'type'  => $page,
-                    'items' => get_solution_items($lang_id, rtrim($page, 's')),
-                ];
+                $sol_page = ['id'=>0,'title' => ucfirst($page), 'type' => $page, 'items' => get_solution_items($lang_id, rtrim($page, 's'))];
             }
-            $template_data['solution_page'] = $sol_page;
-            $template_data['page_class'] = 'solutions-page';
+            $template_data['solution_page']   = $sol_page;
+            $template_data['sol_page_blocks'] = !empty($sol_page['id']) ? get_sol_page_blocks((int)$sol_page['id'], $lang_id) : [];
+            $template_data['reviews']         = get_reviews($lang_id);
+            $template_data['recent_posts']    = get_posts($lang_id, [], 4);
+            $template_data['featured_cases']  = get_cases($lang_id, [], 4);
+            $template_data['page_class']      = 'solutions-page';
             render('solutions', $template_data);
         }
         break;
