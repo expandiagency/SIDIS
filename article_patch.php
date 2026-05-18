@@ -18,7 +18,7 @@ $post_slug = 'automate-repetitive-tasks-with-rpa';
 // ── 1. Author ────────────────────────────────────────────────────────────────
 $author = row('SELECT a.id FROM authors a JOIN authors_t at_ ON a.id=at_.author_id AND at_.lang_id=? WHERE at_.name=?', [$lang_id, 'Alex Kovalsky']);
 if (!$author) {
-    $author_id = insert('authors', ['linkedin_url'=>'https://linkedin.com/in/alex-kovalsky','image_id'=>null,'sort_order'=>0,'is_active'=>1]);
+    $author_id = insert('authors', ['linkedin_url'=>'https://linkedin.com/in/alex-kovalsky','image_id'=>null]);
     insert('authors_t', ['author_id'=>$author_id,'lang_id'=>$lang_id,'name'=>'Alex Kovalsky','title'=>'Head of Marketing, NovaTech Industries']);
     echo "Author 'Alex Kovalsky' created (id=$author_id)\n";
 } else {
