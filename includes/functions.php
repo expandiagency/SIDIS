@@ -322,13 +322,18 @@ function get_post(int $lang_id, string $slug): ?array {
 function extract_toc_from_content(string $html): array {
     $toc = [];
     if (!$html) return $toc;
-    // Simple line-by-line extraction to avoid PCRE backtrack limits on large content
-    $lines = explode("\n", $html);
-    foreach ($lines as $line) {
-        if (!preg_match('/<h[2-5][^>]+id=["\']([^"\']+)["\']/i', $line, $id_m)) continue;
-        $anchor = $id_m[1];
-        $title  = strip_tags($line);
-        $title  = trim($title);
+    // Split at every heading opening tag — safe, no nested quantifiers
+    $parts = preg_split('/(<h[2-5][^>]*>)/i', $html, -1, PREG_SPLIT_DELIM_CAPTURE);
+    for ($i = 1; $i < count($parts); $i += 2) {
+        $tag   = $parts[$i];            // e.g. <h2 id="some-section-1">
+        $after = $parts[$i + 1] ?? '';  // text until next heading
+        // Extract id
+        if (!preg_match('/\bid=["\']([^"\']+)["\']/i', $tag, $id_m)) continue;
+        $anchor = trim($id_m[1]);
+        // Text before first < in the continuation (handles plain & nested tags)
+        $close = strpos($after, '</h');
+        $inner = $close !== false ? substr($after, 0, $close) : '';
+        $title = trim(strip_tags($inner));
         if ($title && $anchor) {
             $toc[] = ['title' => $title, 'anchor' => $anchor];
         }
