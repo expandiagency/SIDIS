@@ -127,11 +127,34 @@ function get_reviews(int $lang_id): array {
 /* ─── Solutions ─────────────────────────────────────────────────────────── */
 
 function get_sol_page_blocks(int $page_id, int $lang_id): array {
-    $blocks = rows('SELECT * FROM sol_page_blocks WHERE page_id=? AND lang_id=? AND is_active=1 ORDER BY sort_order', [$page_id, $lang_id]);
-    foreach ($blocks as &$b) {
-        $b['content'] = json_decode($b['content'] ?: '{}', true) ?: [];
+    if (!$page_id) return [];
+    $blocks = rows('SELECT * FROM sol_page_blocks WHERE page_id=? AND lang_id=? ORDER BY sort_order', [$page_id, $lang_id]);
+    if (empty($blocks)) {
+        // Lazy-init: insert default blocks so the page renders with placeholders
+        $defaults = [
+            ['promo',      'Hero / Promo',       0,  '{"title":"","text":"","btn1_text":"Try AI assistant","btn1_url":"#","btn2_text":"Free audit","btn2_url":"#getintouch","image_id":null,"image_url":""}'],
+            ['features',   'Features Slider',    1,  '{"title":"What you get","slides":[{"title":"Manual & Repetitive Tasks","text":"RPA automates repetitive tasks instantly, saving 30–50% of time spent on admin."},{"title":"Inaccurate Data & Human Errors","text":"Automated workflows eliminate human error and ensure consistent data quality across all systems."},{"title":"Slow Processes & Delays","text":"Smart automation cuts processing times from hours to minutes, accelerating every workflow."},{"title":"Lack of Integration Between Systems","text":"We connect your tools so data flows automatically, removing silos and manual data entry."}]}'],
+            ['planning',   'Planning / Process', 2,  '{"items":[{"title":"Enterprise Resource Planning (ERP)","text":"We help integrate a customized ERP system that includes specialized modules for inventory control, production scheduling, and supply chain management."},{"title":"CRM Integration","text":"Connect your customer data across all touchpoints for a unified view of every client relationship and interaction."}],"info_title":"Ready to get started?","info_btn1_text":"Contact us","info_btn1_url":"#getintouch"}'],
+            ['solved',     'Challenges Solved',  3,  '{"title":"Business Challenges Solved with RPA","slides":[{"title":"Maximise operational efficiency","text":"Accelerate time-to-market and reduce operational costs while eliminating bottlenecks in processes. We implement solutions powered by machine learning and intelligent automation to optimize scheduling and resource allocation."},{"title":"Make compliance-driven decisions","text":"Minimize risks and avoid costly incidents with built-in controls embedded directly into your business processes. Our compliance management expertise delivers comprehensive audit trails and automated documentation."},{"title":"Power business growth with integration","text":"Grow your business by eliminating data silos that limit strategic decision-making. Our integrated software solutions unlock new revenue opportunities by connecting all your systems into a single platform."}]}'],
+            ['roadmap',    'Roadmap',            4,  '{"title":"Our Development Process","btn1_text":"Get PDF","btn1_url":"#","btn2_text":"Free audit","btn2_url":"#getintouch","steps":[{"title":"Discovery Call","text":"Initial consultation. Project assessment. Solution overview."},{"title":"Strategy & Proposal","text":"Refine project scope. Define clear goals. Deliver tailored solutions."},{"title":"Integration","text":"Optimize workflows. Enhance collaboration. Accelerate growth."},{"title":"Support, Monitor & Scale","text":"Maximize uptime. Ensure peak performance. Drive continuous improvement."}],"video_path":"./assets/video/1-hero.mp4"}'],
+            ['projects',   'Case Studies',       5,  '{"title":"Implemented\nWorkflows"}'],
+            ['reviews',    'Client Reviews',     6,  '{"title":"What clients say about us"}'],
+            ['getintouch', 'Contact Form',       7,  '{}'],
+            ['faq',        'FAQ',                8,  '{"title":"Questions & answers","items":[{"q":"What are your pricing options?","a":"Our team is based in Eastern Europe, which gives us an advantage in operational costs — low taxes, rent, and payroll. We maintain a compact team of professionals and pass the savings to our clients."},{"q":"What is your typical project timeline?","a":"Most automation projects take 4–8 weeks from discovery to deployment. Complex integrations may take longer. We provide a clear timeline in the proposal stage."},{"q":"How do you handle customer feedback?","a":"We work in iterative cycles with regular check-ins. Client feedback is incorporated at each stage, and we offer a post-launch support period for adjustments."},{"q":"Can you provide case studies or testimonials?","a":"Yes — see our Case Studies section and client testimonials below. We can also provide references upon request."}]}'],
+            ['articles',   'Latest Articles',    9,  '{"title":"Latest Automation\nInsights"}'],
+        ];
+        foreach ($defaults as [$key, $label, $order, $content]) {
+            insert('sol_page_blocks', ['page_id'=>$page_id,'lang_id'=>$lang_id,'block_key'=>$key,'label'=>$label,'sort_order'=>$order,'is_active'=>1,'content'=>$content]);
+        }
+        $blocks = rows('SELECT * FROM sol_page_blocks WHERE page_id=? AND lang_id=? ORDER BY sort_order', [$page_id, $lang_id]);
     }
-    return $blocks;
+    $result = [];
+    foreach ($blocks as $b) {
+        if (!$b['is_active']) continue;
+        $b['content'] = json_decode($b['content'] ?: '{}', true) ?: [];
+        $result[] = $b;
+    }
+    return $result;
 }
 
 function get_solution_items(int $lang_id, string $type = null): array {

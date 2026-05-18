@@ -5,20 +5,18 @@ $sp     = $solution_page ?? [];
 $blocks = $sol_page_blocks ?? [];
 $h      = $home ?? [];
 
-// If no DB blocks, fallback to basic promo from solution_page data
-if (empty($blocks)) {
-    $blocks = [
-        ['block_key'=>'promo','is_active'=>1,'content'=>[]],
-        ['block_key'=>'features','is_active'=>1,'content'=>[]],
-        ['block_key'=>'projects','is_active'=>1,'content'=>['title'=>'Implemented Workflows']],
-        ['block_key'=>'reviews','is_active'=>1,'content'=>['title'=>'What clients say about us']],
-        ['block_key'=>'getintouch','is_active'=>1,'content'=>[]],
-    ];
-}
+// Blocks are lazy-initialized in get_sol_page_blocks() with full placeholder content
 
 $arrow_svg = '<svg width="14" height="14" viewbox="0 0 14 14" fill="none"><path d="M0.566406 12.8L12.5664 0.799988M12.5664 0.799988L0.566406 0.799988M12.5664 0.799988V12.6868" stroke="currentColor" stroke-width="1.6"/></svg>';
 $nav_prev  = '<svg style="margin-right:4px" width="11" height="18" viewbox="0 0 11 18" fill="none"><path d="M10.0527 0.523193L1.05273 8.52319L10.0527 16.5232" stroke="currentColor" stroke-width="1.4"/></svg>';
 $nav_next  = '<svg style="margin-left:4px" width="11" height="18" viewbox="0 0 11 18" fill="none"><path d="M0.464844 0.523193L9.46484 8.52319L0.464844 16.5232" stroke="currentColor" stroke-width="1.4"/></svg>';
+
+// Convert ./relative paths to /absolute for nested page URLs
+function sol_url(string $path): string {
+    if (!$path) return '';
+    if (strpos($path, './') === 0) return '/' . ltrim($path, './');
+    return media_url($path);
+}
 ?>
 <main class="page">
 
@@ -140,7 +138,7 @@ $nav_next  = '<svg style="margin-left:4px" width="11" height="18" viewbox="0 0 1
                         <?php if (!empty($c['images'])): ?>
                         <?php foreach ($c['images'] as $img): ?>
                         <div class="planning__slide swiper-slide">
-                            <img alt="Image" loading="lazy" src="<?= e(media_url($img['image_url'] ?? '')) ?>">
+                            <img alt="Image" loading="lazy" src="<?= e(sol_url($img['image_url'] ?? '')) ?>">
                         </div>
                         <?php endforeach; ?>
                         <?php else: ?>
@@ -226,7 +224,7 @@ $nav_next  = '<svg style="margin-left:4px" width="11" height="18" viewbox="0 0 1
     </div>
     <div class="roadmap__bg" data-video-autoplay="">
         <video muted loop playsinline>
-            <source src="<?= e($c['video_path'] ?? './assets/video/1-hero.mp4') ?>" type="video/mp4">
+            <source src="<?= e(sol_url($c['video_path'] ?? './assets/video/1-hero.mp4')) ?>" type="video/mp4">
         </video>
     </div>
 </section>
@@ -258,7 +256,7 @@ $nav_next  = '<svg style="margin-left:4px" width="11" height="18" viewbox="0 0 1
                 </div>
                 <?php if (!empty($case['image_path'])): ?>
                 <div class="projects-card__img">
-                    <img alt="<?= e($case['title'] ?? '') ?>" loading="lazy" src="<?= e(media_url($case['image_path'])) ?>">
+                    <img alt="<?= e($case['title'] ?? '') ?>" loading="lazy" src="<?= e(sol_url($case['image_path'] ?? '')) ?>">
                     <div class="projects-card__btn button">More</div>
                 </div>
                 <?php endif; ?>
@@ -292,7 +290,7 @@ $nav_next  = '<svg style="margin-left:4px" width="11" height="18" viewbox="0 0 1
                     <div class="reviews-card__text"><?= nl2br(e($r['text'] ?? '')) ?></div>
                     <div class="reviews-card__user">
                         <?php if (!empty($r['author_image_path'])): ?>
-                        <div class="reviews-card__user-img"><img alt="<?= e($r['author_name'] ?? '') ?>" loading="lazy" src="<?= e(media_url($r['author_image_path'])) ?>"></div>
+                        <div class="reviews-card__user-img"><img alt="<?= e($r['author_name'] ?? '') ?>" loading="lazy" src="<?= e(sol_url($r['author_image_path'] ?? '')) ?>"></div>
                         <?php endif; ?>
                         <div class="reviews-card__user-body">
                             <div class="reviews-card__user-head">
@@ -382,7 +380,7 @@ $nav_next  = '<svg style="margin-left:4px" width="11" height="18" viewbox="0 0 1
                 <article class="article-card swiper-slide">
                     <div class="article-card__img">
                         <?php if (!empty($post['image_path'])): ?>
-                        <img alt="<?= e($post['title'] ?? '') ?>" loading="lazy" src="<?= e(media_url($post['image_path'])) ?>">
+                        <img alt="<?= e($post['title'] ?? '') ?>" loading="lazy" src="<?= e(sol_url($post['image_path'] ?? '')) ?>">
                         <?php endif; ?>
                         <a href="/blog/<?= e($post['slug'] ?? '') ?>/" class="article-card__arrow button button--icon">
                             <span class="button__text">Open article</span>

@@ -1497,7 +1497,7 @@ createApp({
         };
         const openSolBlockEditor = async p => {
             editingSolPageObj.value = p;
-            const blocks = await api(`/admin/api/sol_pages.php?action=blocks&page_id=${p.id}&lang_id=${langId.value}`);
+            const blocks = await api(`/admin/api/sol_pages.php?action=blocks&id=${p.id}&lang_id=${langId.value}`);
             solPageBlocks.value = blocks.map(b => ({...b, _open: false, content_obj: b.content_obj || {}}));
             editingSolBlocks.value = true;
             editingSolPage.value = false;
