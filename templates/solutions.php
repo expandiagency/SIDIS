@@ -250,12 +250,32 @@ function sol_url(string $path): string {
 </section>
 <?php endif; ?>
 
-<?php if ($bk === 'projects' && !empty($featured_cases)): ?>
+<?php
+// Filter cases by selected_ids if specified
+$block_cases = $featured_cases ?? [];
+if (!empty($c['selected_ids']) && is_array($c['selected_ids'])) {
+    $sel = array_map('intval', $c['selected_ids']);
+    $block_cases = array_filter($block_cases ?? [], fn($x) => in_array((int)$x['id'], $sel));
+    if (empty($block_cases) && !empty($sel)) {
+        $block_cases = rows('SELECT c.*, ct.title, ct.description, img.path as image_path, c.company
+                             FROM cases c
+                             LEFT JOIN cases_t ct ON c.id=ct.case_id AND ct.lang_id=' . $lang_id . '
+                             LEFT JOIN media img ON c.featured_image_id=img.id
+                             WHERE c.id IN (' . implode(',', $sel) . ') AND c.is_active=1
+                             ORDER BY FIELD(c.id,' . implode(',', $sel) . ')');
+        foreach ($block_cases as &$bc) {
+            $bc['terms'] = rows('SELECT ct.type, tt.name FROM case_terms ct JOIN terms_t tt ON ct.term_id=tt.term_id AND tt.lang_id=? WHERE ct.case_id=?', [$lang_id, $bc['id']]);
+        }
+        unset($bc);
+    }
+}
+?>
+<?php if ($bk === 'projects' && !empty($block_cases)): ?>
 <section id="some-section-5" class="projects" data-scroll-section="">
     <div class="projects__container">
         <h2 class="projects__title title title--h1"><?= nl2br(e($c['title'] ?? "Implemented\nWorkflows")) ?></h2>
         <div class="projects__items">
-            <?php foreach (array_slice($featured_cases, 0, 4) as $case): ?>
+            <?php foreach (array_slice(array_values($block_cases), 0, 4) as $case): ?>
             <a href="/cases/<?= e($case['slug']) ?>/" class="projects-card" data-fls-watcher="" data-fls-watcher-threshold="0.5">
                 <div class="projects-card__body">
                     <div class="projects-card__head">
@@ -299,7 +319,15 @@ function sol_url(string $path): string {
 </section>
 <?php endif; ?>
 
-<?php if ($bk === 'reviews' && !empty($reviews)): ?>
+<?php
+// Filter reviews by selected_ids if specified
+$block_reviews = $reviews ?? [];
+if (!empty($c['selected_ids']) && is_array($c['selected_ids'])) {
+    $sel = array_map('intval', $c['selected_ids']);
+    $block_reviews = array_filter($reviews ?? [], fn($r) => in_array((int)$r['id'], $sel));
+}
+?>
+<?php if ($bk === 'reviews' && !empty($block_reviews)): ?>
 <section id="some-section-6" class="reviews" data-scroll-section="">
     <div class="reviews__container">
         <div class="reviews__head">
@@ -312,7 +340,7 @@ function sol_url(string $path): string {
         </div>
         <div data-fls-slider="" class="reviews__slider swiper">
             <div class="reviews__wrapper swiper-wrapper">
-                <?php foreach ($reviews as $r): ?>
+                <?php foreach ($block_reviews as $r): ?>
                 <div class="reviews-card swiper-slide">
                     <div class="reviews-card__title"><?= e($r['quote'] ?? '') ?></div>
                     <div class="reviews-card__text"><?= nl2br(e($r['text'] ?? '')) ?></div>
@@ -352,10 +380,13 @@ function sol_url(string $path): string {
             </div>
             <form class="getintouch__form" data-fls-form="dev" method="POST" action="/sendmail">
                 <div class="getintouch__form-title">Request a free Consultation</div>
-                <div class="input-field"><input class="input-field__input" type="text" name="name" placeholder="Name"></div>
-                <div class="input-field"><input class="input-field__input" type="email" name="email" placeholder="Email"></div>
+                <div class="input-field"><input required class="input-field__input input" type="text" name="form[name]" data-fls-form-errtext="Error" placeholder="Full name"></div>
+                <div class="input-field"><input required class="input-field__input input" type="email" name="form[email]" data-fls-form-errtext="Error" placeholder="Email"></div>
                 <div class="getintouch__form-bottom">
-                    <button type="submit" class="getintouch__send button button--third button--dark-hover">Send</button>
+                    <button type="submit" class="getintouch__send button button--third button--dark-hover">
+                        <span>Send</span>
+                        <svg width="20" height="20" viewbox="0 0 20 20" fill="none"><path fill-rule="evenodd" clip-rule="evenodd" d="M14.3072 5.69288L7.7071 10.2753L0.803747 7.97383C0.321882 7.81288 -0.00275487 7.36078 1.76209e-05 6.85287C0.00282659 6.34496 0.331184 5.89563 0.81491 5.7403L18.4644 0.0565164C18.8839 -0.0783506 19.3444 0.0323301 19.6561 0.34398C19.9677 0.655629 20.0784 1.11608 19.9435 1.53564L14.2597 19.1851C14.1044 19.6688 13.6551 19.9972 13.1472 20C12.6392 20.0028 12.1871 19.6781 12.0262 19.1963L9.71361 12.2595L14.3072 5.69288Z" fill="currentColor"></path></svg>
+                    </button>
                     <div class="getintouch__form-info">We'll contact you shortly</div>
                 </div>
             </form>
@@ -391,7 +422,15 @@ function sol_url(string $path): string {
 </section>
 <?php endif; ?>
 
-<?php if ($bk === 'articles' && !empty($recent_posts)): ?>
+<?php
+// Filter posts by selected_ids if specified
+$block_posts = $recent_posts ?? [];
+if (!empty($c['selected_ids']) && is_array($c['selected_ids'])) {
+    $sel = array_map('intval', $c['selected_ids']);
+    $block_posts = array_filter($recent_posts ?? [], fn($p) => in_array((int)$p['id'], $sel));
+}
+?>
+<?php if ($bk === 'articles' && !empty($block_posts)): ?>
 <section class="articles">
     <div class="articles__container">
         <div class="articles__head">
@@ -404,7 +443,7 @@ function sol_url(string $path): string {
         </div>
         <div data-fls-slider="" class="articles__slider swiper">
             <div class="articles__wrapper swiper-wrapper">
-                <?php foreach ($recent_posts as $post): ?>
+                <?php foreach (array_values($block_posts) as $post): ?>
                 <article class="article-card swiper-slide">
                     <div class="article-card__img">
                         <?php if (!empty($post['image_path'])): ?>

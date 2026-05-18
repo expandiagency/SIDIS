@@ -437,38 +437,11 @@ tr:hover td{background:#fafafa}
         <template v-if="currentView==='solutions'">
             <div class="section-head">
                 <h1>Solutions / Departments / Industries</h1>
-                <button v-if="solutionsMainTab==='items'" class="btn btn--primary" @click="openSolutionItemModal()">+ Add Item</button>
                 <button v-if="solutionsMainTab==='blocks'" class="btn btn--primary" @click="saveSolBlocksOrder">Save Block Order</button>
             </div>
             <div class="tabs" style="margin-bottom:0;border-bottom:none">
-                <button class="tab-btn" :class="{active:solutionsMainTab==='items'}" @click="solutionsMainTab='items'">Homepage Tabs</button>
                 <button class="tab-btn" :class="{active:solutionsMainTab==='pages'}" @click="solutionsMainTab='pages';loadSolPages()">Solution Pages</button>
                 <button class="tab-btn" :class="{active:solutionsMainTab==='blocks'}" @click="solutionsMainTab='blocks';loadSolBlocks()">Page Sections</button>
-            </div>
-            <div v-if="solutionsMainTab==='items'">
-                <div class="tabs" style="margin-top:4px">
-                    <button v-for="t in ['solution','department','industry']" :key="t" class="tab-btn"
-                        :class="{active:solutionsTab===t}" @click="solutionsTab=t;loadSolutionItems()">
-                        {{ t.charAt(0).toUpperCase()+t.slice(1)+'s' }}
-                    </button>
-                </div>
-                <div class="card"><div class="table-wrap"><table>
-                    <thead><tr><th>Icon</th><th>Title</th><th>Desc (preview)</th><th>Active</th><th>Sort</th><th>Actions</th></tr></thead>
-                    <tbody>
-                        <tr v-for="item in solutionItems" :key="item.id">
-                            <td><div v-if="item.icon_svg" v-html="item.icon_svg" style="width:32px;height:32px;overflow:hidden;flex-shrink:0"></div></td>
-                            <td style="font-weight:500">{{ item.title }}</td>
-                            <td style="max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:12px;color:var(--muted)">{{ item.description }}</td>
-                            <td><span :class="'badge badge--'+(item.is_active?'on':'off')">{{ item.is_active?'Yes':'No' }}</span></td>
-                            <td>{{ item.sort_order }}</td>
-                            <td>
-                                <button class="btn btn--outline btn--sm" @click="openSolutionItemModal(item)">Edit</button>
-                                <button class="btn btn--danger btn--sm" style="margin-left:6px" @click="deleteSolutionItem(item.id)">Del</button>
-                            </td>
-                        </tr>
-                        <tr v-if="!solutionItems.length"><td colspan="6" class="empty" style="padding:20px">No items yet. Click "+ Add Item"</td></tr>
-                    </tbody>
-                </table></div></div>
             </div>
 
             <div v-if="solutionsMainTab==='blocks'" style="margin-top:12px">
@@ -555,6 +528,15 @@ tr:hover td{background:#fafafa}
                             <div class="field field--full"><label>Description</label><textarea v-model="solPageForm.description" rows="3"></textarea></div>
                             <div class="field"><label>Button 1 Text</label><input v-model="solPageForm.btn1_text"></div>
                             <div class="field"><label>Button 2 Text</label><input v-model="solPageForm.btn2_text"></div>
+                            <div class="field field--full"><label>Icon SVG (for homepage tabs)</label>
+                                <div class="svg-field-row">
+                                    <div v-if="solPageForm.icon_svg" v-html="solPageForm.icon_svg" style="width:44px;height:44px;flex-shrink:0;overflow:hidden"></div>
+                                    <textarea v-model="solPageForm.icon_svg" rows="3" placeholder="Paste SVG code or upload file"></textarea>
+                                    <label class="btn btn--outline btn--sm" style="cursor:pointer;white-space:nowrap">
+                                        Upload SVG<input type="file" accept=".svg,image/svg+xml" style="display:none" @change="loadSvgInto($event,solPageForm,'icon_svg')">
+                                    </label>
+                                </div>
+                            </div>
                             <div class="field"><label>Featured Image</label>
                                 <div class="img-picker">
                                     <img v-if="solPageForm.image_url" :src="solPageForm.image_url" class="img-thumb">
@@ -727,10 +709,40 @@ tr:hover td{background:#fafafa}
 
                             <!-- AUTO blocks (projects, reviews, articles, getintouch) -->
                             <div v-else>
-                                <div v-if="blk.block_key!=='getintouch'" class="field"><label>Section Title</label><input v-model="blk.content_obj.title"></div>
-                                <p v-if="blk.block_key==='projects'" style="font-size:12px;color:var(--muted);margin-top:8px">Shows last 4 case studies automatically</p>
-                                <p v-if="blk.block_key==='reviews'" style="font-size:12px;color:var(--muted);margin-top:8px">Shows all active reviews automatically</p>
-                                <p v-if="blk.block_key==='articles'" style="font-size:12px;color:var(--muted);margin-top:8px">Shows last 4 blog posts automatically</p>
+                                <div v-if="blk.block_key!=='getintouch'" class="field" style="margin-bottom:14px"><label>Section Title</label><input v-model="blk.content_obj.title"></div>
+                                <!-- REVIEWS selector -->
+                                <div v-if="blk.block_key==='reviews'">
+                                    <div style="font-size:13px;font-weight:500;margin-bottom:8px">Select Reviews to show (leave none checked = show all active)</div>
+                                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;max-height:220px;overflow-y:auto;border:1px solid var(--border);border-radius:8px;padding:10px">
+                                        <label v-for="r in allReviews" :key="r.id" style="display:flex;align-items:center;gap:8px;font-size:13px;cursor:pointer">
+                                            <input type="checkbox" :value="r.id" v-model="blk.content_obj.selected_ids">
+                                            <span>{{ r.author_name }} — {{ r.quote?.slice(0,40) }}…</span>
+                                        </label>
+                                        <div v-if="!allReviews.length" style="color:var(--muted);font-size:12px">No reviews yet</div>
+                                    </div>
+                                </div>
+                                <!-- PROJECTS selector -->
+                                <div v-if="blk.block_key==='projects'">
+                                    <div style="font-size:13px;font-weight:500;margin-bottom:8px">Select Case Studies to show (leave none = show featured)</div>
+                                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;max-height:220px;overflow-y:auto;border:1px solid var(--border);border-radius:8px;padding:10px">
+                                        <label v-for="c in allCases" :key="c.id" style="display:flex;align-items:center;gap:8px;font-size:13px;cursor:pointer">
+                                            <input type="checkbox" :value="c.id" v-model="blk.content_obj.selected_ids">
+                                            <span>{{ c.title }}</span>
+                                        </label>
+                                        <div v-if="!allCases.length" style="color:var(--muted);font-size:12px">No cases yet</div>
+                                    </div>
+                                </div>
+                                <!-- ARTICLES selector -->
+                                <div v-if="blk.block_key==='articles'">
+                                    <div style="font-size:13px;font-weight:500;margin-bottom:8px">Select Articles to show (leave none = show latest 4)</div>
+                                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;max-height:220px;overflow-y:auto;border:1px solid var(--border);border-radius:8px;padding:10px">
+                                        <label v-for="p in allPosts" :key="p.id" style="display:flex;align-items:center;gap:8px;font-size:13px;cursor:pointer">
+                                            <input type="checkbox" :value="p.id" v-model="blk.content_obj.selected_ids">
+                                            <span>{{ p.title }}</span>
+                                        </label>
+                                        <div v-if="!allPosts.length" style="color:var(--muted);font-size:12px">No posts yet</div>
+                                    </div>
+                                </div>
                                 <p v-if="blk.block_key==='getintouch'" style="font-size:12px;color:var(--muted)">Contact form — uses global settings</p>
                             </div>
 
@@ -741,6 +753,30 @@ tr:hover td{background:#fafafa}
                     </div>
                 </div>
             </div>
+        </template>
+
+        <!-- ── REVIEWS ── -->
+        <template v-if="currentView==='reviews'">
+            <div class="section-head">
+                <h1>Client Reviews</h1>
+                <button class="btn btn--primary" @click="openReviewModal()">+ Add Review</button>
+            </div>
+            <div class="card"><div class="table-wrap"><table>
+                <thead><tr><th>Author</th><th>Position</th><th>Quote (headline)</th><th>Active</th><th>Actions</th></tr></thead>
+                <tbody>
+                    <tr v-for="r in reviews" :key="r.id">
+                        <td style="font-weight:500">{{ r.author_name }}</td>
+                        <td style="font-size:12px;color:var(--muted)">{{ r.author_title }}</td>
+                        <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ r.quote }}</td>
+                        <td><span :class="'badge badge--'+(r.is_active?'on':'off')">{{ r.is_active ? 'Yes' : 'No' }}</span></td>
+                        <td>
+                            <button class="btn btn--outline btn--sm" @click="openReviewModal(r)">Edit</button>
+                            <button class="btn btn--danger btn--sm" style="margin-left:6px" @click="deleteReview(r.id)">Del</button>
+                        </td>
+                    </tr>
+                    <tr v-if="!reviews.length"><td colspan="5" class="empty" style="padding:20px;text-align:center;color:var(--muted)">No reviews yet. Click "+ Add Review"</td></tr>
+                </tbody>
+            </table></div></div>
         </template>
 
         <!-- ── CASES ── -->
@@ -1312,6 +1348,7 @@ createApp({
             {id:'cases', label:'Case Studies', icon:'<svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>'},
             {id:'blog', label:'Blog', icon:'<svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4z"/></svg>'},
             {id:'authors', label:'Authors', icon:'<svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>'},
+            {id:'reviews', label:'Reviews', icon:'<svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>'},
             {id:'terms', label:'Taxonomy', icon:'<svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M20 4H8.12A5.37 5.37 0 0012 6a5.37 5.37 0 00-3.88 2H20v-4z"/><path d="M20 14H8.12A5.37 5.37 0 0012 16a5.37 5.37 0 00-3.88 2H20v-4z"/></svg>'},
             {id:'media', label:'Media Library', icon:'<svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>'},
             {id:'languages', label:'Languages', icon:'<svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg>'},
@@ -1445,7 +1482,7 @@ createApp({
 
         /* ─── Solutions ─────────────────────────────────────────────────── */
         const solutionsTab = ref('solution');
-        const solutionsMainTab = ref('items');
+        const solutionsMainTab = ref('pages');
         const solutionItems = ref([]);
         const solutionItemForm = reactive({id:0,type:'solution',title:'',description:'',btn_text:'Learn more',btn_url:'#',icon_svg:'',sort_order:0,is_active:1});
 
@@ -1478,13 +1515,16 @@ createApp({
         const editingSolBlocks = ref(false);
         const editingSolPageObj = ref(null);
         const solPageBlocks = ref([]);
-        const solPageForm = reactive({id:0,type:'solution',slug:'',title:'',description:'',btn1_text:'Try AI assistant',btn2_text:'Free audit',image_id:null,image_url:'',sort_order:0,is_active:1,meta_title:'',meta_description:''});
+        const solPageForm = reactive({id:0,type:'solution',slug:'',title:'',description:'',btn1_text:'Try AI assistant',btn2_text:'Free audit',icon_svg:'',image_id:null,image_url:'',sort_order:0,is_active:1,meta_title:'',meta_description:''});
+        const allReviews = ref([]);
+        const allCases   = ref([]);
+        const allPosts   = ref([]);
 
         const loadSolPages = async () => {
             solPagesList.value = await api(`/admin/api/sol_pages.php?action=list&lang_id=${langId.value}`);
         };
         const openSolPageEditor = (p=null) => {
-            Object.assign(solPageForm, p ? {...p,image_url:p.image_url||''} : {id:0,type:solPagesTab.value,slug:'',title:'',description:'',btn1_text:'Try AI assistant',btn2_text:'Free audit',image_id:null,image_url:'',sort_order:0,is_active:1,meta_title:'',meta_description:''});
+            Object.assign(solPageForm, p ? {...p,image_url:p.image_url||'',icon_svg:p.icon_svg||''} : {id:0,type:solPagesTab.value,slug:'',title:'',description:'',btn1_text:'Try AI assistant',btn2_text:'Free audit',icon_svg:'',image_id:null,image_url:'',sort_order:0,is_active:1,meta_title:'',meta_description:''});
             editingSolBlocks.value = false;
             editingSolPage.value = true;
         };
@@ -1499,8 +1539,20 @@ createApp({
         };
         const openSolBlockEditor = async p => {
             editingSolPageObj.value = p;
-            const blocks = await api(`/admin/api/sol_pages.php?action=blocks&id=${p.id}&lang_id=${langId.value}`);
-            solPageBlocks.value = blocks.map(b => ({...b, _open: false, content_obj: b.content_obj || {}}));
+            const [blocks, revs, cases, posts] = await Promise.all([
+                api(`/admin/api/sol_pages.php?action=blocks&id=${p.id}&lang_id=${langId.value}`),
+                api(`/admin/api/home.php?action=reviews&lang_id=${langId.value}`),
+                api(`/admin/api/cases.php?action=list&lang_id=${langId.value}`),
+                api(`/admin/api/posts.php?lang_id=${langId.value}`),
+            ]);
+            allReviews.value = revs;
+            allCases.value   = Array.isArray(cases) ? cases : (cases.items || []);
+            allPosts.value   = Array.isArray(posts) ? posts : (posts.items || []);
+            solPageBlocks.value = blocks.map(b => {
+                const co = b.content_obj || {};
+                if (!Array.isArray(co.selected_ids)) co.selected_ids = [];
+                return {...b, _open: false, content_obj: co};
+            });
             editingSolBlocks.value = true;
             editingSolPage.value = false;
         };
@@ -1694,13 +1746,17 @@ createApp({
         };
 
         /* ─── Lang Change ───────────────────────────────────────────────── */
+        const loadReviews = async () => {
+            reviews.value = await api(`/admin/api/home.php?action=reviews&lang_id=${langId.value}`);
+        };
+
         const onLangChange = () => {
             const v = currentView.value;
             if (v==='home') loadHome();
             else if (v==='cases') { editingCase.value=null; loadCases(); }
             else if (v==='blog') { editingPost.value=null; loadPosts(); }
             else if (v==='nav') loadNav();
-            else if (v==='solutions') loadSolutionItems();
+            else if (v==='reviews') loadReviews();
             else if (v==='terms') loadTerms();
             else if (v==='settings') loadSettings();
         };
@@ -1711,7 +1767,8 @@ createApp({
             else if (v==='cases') { editingCase.value=null; loadCases(); loadTerms(); }
             else if (v==='blog') { editingPost.value=null; loadPosts(); loadAuthors(); }
             else if (v==='nav') loadNav();
-            else if (v==='solutions') loadSolutionItems();
+            else if (v==='reviews') loadReviews();
+            else if (v==='solutions') { solutionsMainTab.value='pages'; loadSolPages(); }
             else if (v==='terms') loadTerms();
             else if (v==='authors') loadAuthors();
             else if (v==='media') loadMedia();
@@ -1753,6 +1810,7 @@ createApp({
             solPageBlocks, solPageForm, loadSolPages, openSolPageEditor, saveSolPage,
             deleteSolPage, openSolBlockEditor, saveSolBlock, reorderSolBlocks,
             loadSolutionItems, openSolutionItemModal, saveSolutionItem, deleteSolutionItem,
+            allReviews, allCases, allPosts, loadReviews,
             casesList, editingCase, caseTab, allTerms, caseForm,
             openCaseEditor, saveCase, deleteCase,
             postsList, editingPost, postTab, authorsList, postForm,

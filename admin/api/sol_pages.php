@@ -10,6 +10,9 @@ $action  = $_GET['action'] ?? '';
 $lang_id = (int)($_GET['lang_id'] ?? 1);
 $id      = (int)($_GET['id'] ?? 0);
 
+// ── Ensure icon_svg column exists on solution_pages ─────────────────────────
+try { $pdo->exec("ALTER TABLE solution_pages ADD COLUMN icon_svg MEDIUMTEXT DEFAULT NULL"); } catch(Exception $e) {}
+
 // ── Ensure sol_page_blocks table exists ─────────────────────────────────────
 $pdo->exec("CREATE TABLE IF NOT EXISTS sol_page_blocks (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -96,7 +99,7 @@ if ($method === 'GET') {
     }
 
     if ($action === 'page' && $id) {
-        $p = row('SELECT sp.*, spt.title, spt.description, spt.btn1_text, spt.btn2_text, spt.meta_title, spt.meta_description, m.path as image_path
+        $p = row('SELECT sp.*, sp.icon_svg, spt.title, spt.description, spt.btn1_text, spt.btn2_text, spt.meta_title, spt.meta_description, m.path as image_path
                   FROM solution_pages sp
                   LEFT JOIN solution_pages_t spt ON sp.id=spt.page_id AND spt.lang_id=?
                   LEFT JOIN media m ON sp.image_id=m.id
@@ -118,6 +121,7 @@ if ($method === 'POST') {
             'sort_order' => (int)($data['sort_order'] ?? 0),
             'is_active'  => (int)($data['is_active'] ?? 1),
             'image_id'   => ($data['image_id'] ?? null) ?: null,
+            'icon_svg'   => $data['icon_svg'] ?? null,
         ];
         if (!$id) $id = insert('solution_pages', $d);
         else update('solution_pages', $d, ['id' => $id]);

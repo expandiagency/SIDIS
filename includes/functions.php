@@ -165,13 +165,15 @@ function get_sol_page_blocks(int $page_id, int $lang_id): array {
 }
 
 function get_solution_items(int $lang_id, string $type = null): array {
-    $sql = 'SELECT si.*, sit.title, sit.description, sit.btn_text, sit.btn_url
-            FROM solution_items si
-            LEFT JOIN solution_items_t sit ON si.id=sit.item_id AND sit.lang_id=?
-            WHERE si.is_active=1';
+    $sql = "SELECT sp.id, sp.type, sp.sort_order, sp.is_active, sp.icon_svg,
+                   CONCAT('/', sp.type, 's/', sp.slug, '/') as btn_url,
+                   spt.title, spt.description, spt.btn1_text as btn_text
+            FROM solution_pages sp
+            LEFT JOIN solution_pages_t spt ON sp.id=spt.page_id AND spt.lang_id=?
+            WHERE sp.is_active=1";
     $params = [$lang_id];
-    if ($type) { $sql .= ' AND si.type=?'; $params[] = $type; }
-    $sql .= ' ORDER BY si.sort_order';
+    if ($type) { $sql .= ' AND sp.type=?'; $params[] = $type; }
+    $sql .= ' ORDER BY sp.sort_order';
     return rows($sql, $params);
 }
 
