@@ -131,6 +131,7 @@ function sol_url(string $path): string {
                     </div>
                     <?php endforeach; ?>
                 </div>
+                <div data-fls-dynamic=".planning__navigation, 992" class="swiper-pagination"></div>
             </div>
             <div class="planning__images">
                 <div data-fls-slider="" class="planning__slider swiper">
@@ -143,30 +144,49 @@ function sol_url(string $path): string {
                         <?php endforeach; ?>
                         <?php else: ?>
                         <div class="planning__slide swiper-slide">
+                            <img alt="Image" loading="lazy" src="/assets/img/automation/image.webp">
+                        </div>
+                        <div class="planning__slide swiper-slide">
                             <img alt="Image" loading="lazy" src="/assets/img/promo/image-1.webp">
                         </div>
                         <?php endif; ?>
                     </div>
                 </div>
-                <div class="planning__navigation">
+                <div data-fls-dynamic=".planning__body, 992" class="planning__navigation">
                     <button type="button" class="swiper-button-prev"><?= $nav_prev ?></button>
-                    <div class="swiper-pagination"></div>
                     <button type="button" class="swiper-button-next"><?= $nav_next ?></button>
                 </div>
-                <div class="planning__info">
-                    <?php if (!empty($c['info_title'])): ?>
-                    <div class="planning__info-body">
-                        <div class="planning__info-title"><?= e($c['info_title']) ?></div>
-                        <div class="planning__info-btns">
-                            <a href="<?= e($c['info_btn1_url'] ?? '#getintouch') ?>" class="button button--third button--dark-hover">
-                                <?= e($c['info_btn1_text'] ?? 'Contact us') ?>
-                            </a>
-                        </div>
-                    </div>
+            </div>
+        </div>
+        <div data-fls-marquee="" data-fls-marquee-space="60" data-fls-marquee-speed="765" class="planning__marquee">
+            <div class="planning__marquee-item"><img alt="Partner" loading="lazy" src="/assets/img/automation/partner-1.webp"></div>
+            <div class="planning__marquee-item"><img alt="Partner" loading="lazy" src="/assets/img/automation/partner-2.webp"></div>
+            <div class="planning__marquee-item"><img alt="Partner" loading="lazy" src="/assets/img/automation/partner-3.webp"></div>
+            <div class="planning__marquee-item"><img alt="Partner" loading="lazy" src="/assets/img/automation/partner-4.webp"></div>
+            <div class="planning__marquee-item"><img alt="Partner" loading="lazy" src="/assets/img/automation/partner-1.webp"></div>
+            <div class="planning__marquee-item"><img alt="Partner" loading="lazy" src="/assets/img/automation/partner-2.webp"></div>
+        </div>
+        <?php if (!empty($c['info_title'])): ?>
+        <div class="planning__info">
+            <div class="planning__info-img">
+                <img alt="Image" loading="lazy" src="/assets/img/projects/image-6.webp">
+            </div>
+            <div class="planning__info-body">
+                <div class="planning__info-title"><?= e($c['info_title']) ?></div>
+                <div class="planning__info-btns">
+                    <?php if (!empty($c['info_btn1_text'])): ?>
+                    <a href="<?= e($c['info_btn1_url'] ?? '#') ?>" class="planning__info-btn button"><?= e($c['info_btn1_text']) ?></a>
+                    <?php endif; ?>
+                    <?php if (!empty($c['info_btn2_text'])): ?>
+                    <a href="<?= e($c['info_btn2_url'] ?? '#getintouch') ?>" class="planning__info-btn button button--icon">
+                        <span class="button__text"><?= e($c['info_btn2_text']) ?></span>
+                        <span class="button__icon"><?= $arrow_svg ?></span>
+                    </a>
                     <?php endif; ?>
                 </div>
             </div>
         </div>
+        <?php endif; ?>
     </div>
 </section>
 <?php endif; ?>
@@ -233,13 +253,18 @@ function sol_url(string $path): string {
 <?php if ($bk === 'projects' && !empty($featured_cases)): ?>
 <section id="some-section-5" class="projects" data-scroll-section="">
     <div class="projects__container">
-        <h2 class="projects__title title title--h1"><?= nl2br(e($c['title'] ?? 'Implemented Workflows')) ?></h2>
+        <h2 class="projects__title title title--h1"><?= nl2br(e($c['title'] ?? "Implemented\nWorkflows")) ?></h2>
         <div class="projects__items">
             <?php foreach (array_slice($featured_cases, 0, 4) as $case): ?>
-            <a href="/cases/<?= e($case['slug']) ?>/" class="projects-card" data-fls-watcher="" data-fls-watcher-threshold="0.2">
+            <a href="/cases/<?= e($case['slug']) ?>/" class="projects-card" data-fls-watcher="" data-fls-watcher-threshold="0.5">
                 <div class="projects-card__body">
                     <div class="projects-card__head">
-                        <div class="projects-card__category"><?= e($case['title'] ?? '') ?></div>
+                        <?php if (!empty($case['logo_path'])): ?>
+                        <div class="projects-card__category"><img src="<?= e(media_url($case['logo_path'])) ?>" alt="" style="max-height:24px;object-fit:contain"></div>
+                        <?php else: ?>
+                        <div class="projects-card__category"><?= e($case['company'] ?? '') ?></div>
+                        <?php endif; ?>
+                        <div class="projects-card__title"><?= e($case['title'] ?? '') ?></div>
                     </div>
                     <div class="projects-card__descr">
                         <?php if (!empty($case['terms'])): ?>
@@ -254,12 +279,15 @@ function sol_url(string $path): string {
                         </div>
                     </div>
                 </div>
-                <?php if (!empty($case['image_path'])): ?>
                 <div class="projects-card__img">
+                    <?php if (!empty($case['image_path'])): ?>
                     <img alt="<?= e($case['title'] ?? '') ?>" loading="lazy" src="<?= e(sol_url($case['image_path'] ?? '')) ?>">
-                    <div class="projects-card__btn button">More</div>
+                    <?php endif; ?>
+                    <div class="projects-card__btn button button--icon button--border button--border-white">
+                        <span class="button__text">More</span>
+                        <span class="button__icon"><svg width="14" height="14" viewbox="0 0 14 14" fill="none"><path d="M0.566406 12.8L12.5664 0.800049M12.5664 0.800049L12.5664 12.8M12.5664 0.800049L0.679613 0.800049" stroke="currentColor" stroke-width="1.6"></path></svg></span>
+                    </div>
                 </div>
-                <?php endif; ?>
             </a>
             <?php endforeach; ?>
         </div>
