@@ -280,7 +280,7 @@ function get_posts(int $lang_id, array $filters = [], int $limit = 50, int $offs
 
 function get_post(int $lang_id, string $slug): ?array {
     $post = row(
-        'SELECT p.*, pt.title, pt.subtitle, pt.excerpt, pt.content, pt.meta_title, pt.meta_description, pt.extras,
+        'SELECT p.*, pt.title, pt.subtitle, pt.excerpt, pt.content, pt.meta_title, pt.meta_description,
                 img.path as image_path,
                 at_.name as author_name, at_.title as author_title, a.linkedin_url as author_linkedin,
                 am.path as author_image_path
@@ -296,15 +296,22 @@ function get_post(int $lang_id, string $slug): ?array {
     if ($post) {
         $post['tags'] = rows('SELECT tag_text FROM post_tags WHERE post_id=? AND lang_id=? ORDER BY sort_order', [$post['id'], $lang_id]);
         $post['toc']  = rows('SELECT * FROM post_toc WHERE post_id=? AND lang_id=? ORDER BY sort_order', [$post['id'], $lang_id]);
-        // Decode extras JSON
-        $extras_raw = $post['extras'] ?? null;
+        // Fetch extras safely — column may not exist yet on first deploy
+        $extras_raw = null;
+        try {
+            $er = row('SELECT extras FROM posts_t WHERE post_id=? AND lang_id=?', [$post['id'], $lang_id]);
+            $extras_raw = $er['extras'] ?? null;
+        } catch (Exception $e) {
+            // extras column not yet migrated; auto-create it
+            try { db()->exec("ALTER TABLE posts_t ADD COLUMN extras MEDIUMTEXT DEFAULT NULL"); } catch (Exception $e2) {}
+        }
         $post['extras'] = $extras_raw ? (json_decode($extras_raw, true) ?: []) : [];
         // Auto-generate TOC from content headings if no TOC entries
         if (empty($post['toc']) && !empty($post['content'])) {
             $post['toc'] = extract_toc_from_content($post['content']);
         }
         // Process shortcodes in content
-        $post['content'] = render_article_content($post['content'], $post['extras']);
+        $post['content'] = render_article_content($post['content'] ?? '', $post['extras']);
     }
     return $post;
 }

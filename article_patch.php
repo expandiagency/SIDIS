@@ -9,6 +9,9 @@
 
 require_once __DIR__ . '/includes/functions.php';
 
+// Ensure extras column exists before using it
+try { db()->exec("ALTER TABLE posts_t ADD COLUMN extras MEDIUMTEXT DEFAULT NULL"); } catch(Exception $e) {}
+
 $lang_id = 1;
 $post_slug = 'automate-repetitive-tasks-with-rpa';
 
