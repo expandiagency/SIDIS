@@ -1,6 +1,14 @@
 <?php require __DIR__ . '/layout.php';
 
 $arrow_svg = '<svg width="14" height="14" viewbox="0 0 14 14" fill="none"><path d="M0.566406 12.8L12.5664 0.800049M12.5664 0.800049L12.5664 12.8M12.5664 0.800049L0.679613 0.800049" stroke="currentColor" stroke-width="1.6"></path></svg>';
+$nav_prev  = '<svg style="margin-right:4px" width="11" height="18" viewbox="0 0 11 18" fill="none"><path d="M9.53516 0.523193L0.535156 8.52319L9.53516 16.5232" stroke="currentColor" stroke-width="1.4"></path></svg>';
+$nav_next  = '<svg style="margin-left:4px" width="11" height="18" viewbox="0 0 11 18" fill="none"><path d="M0.464844 0.523193L9.46484 8.52319L0.464844 16.5232" stroke="currentColor" stroke-width="1.4"></path></svg>';
+
+$extras       = $post['extras'] ?? [];
+$faq_items    = $extras['faq'] ?? [];
+$faq_title    = $extras['faq_title'] ?? 'Questions & answers';
+$related_posts_data = $related_posts ?? [];
+$articles_title = $extras['articles_title'] ?? 'Latest Automation Insights';
 ?>
 <main class="page">
 
@@ -95,7 +103,7 @@ $arrow_svg = '<svg width="14" height="14" viewbox="0 0 14 14" fill="none"><path 
                         <?php $article_url = 'https://' . ($_SERVER['HTTP_HOST'] ?? 'sidis.expandi.agency') . '/blog/' . e($post['slug']) . '/'; ?>
                         <a href="https://chat.openai.com/?q=Summarize+<?= urlencode($article_url) ?>" target="_blank" class="article-block__link">
                             <span>ChatGPT</span>
-                            <svg width="19" height="19" viewbox="0 0 19 19" fill="none"><path fill-rule="evenodd" clip-rule="evenodd" d="M17.1246 7.50412C17.333 6.88723 17.4053 6.23252 17.3366 5.58502C17.2679 4.93751 17.0598 4.31256 16.7266 3.75312C16.2257 2.90069 15.469 2.22771 14.5639 1.82974C13.6588 1.43177 12.6514 1.32903 11.6846 1.53612C11.2439 1.04824 10.7048 0.659146 10.103 0.394416C9.50115 0.129686 8.85009 -0.00468784 8.19261 0.000124853C6.15861 -0.00287515 4.35261 1.28912 3.72661 3.19912C3.08341 3.32807 2.47495 3.59223 1.94155 3.97409C1.40815 4.35595 0.961984 4.84681 0.632614 5.41412C0.134718 6.25917 -0.0780939 7.24199 0.0256328 8.21731C0.12936 9.19263 0.544121 10.1087 1.20861 10.8301C0.999943 11.4471 0.927378 12.1019 0.995911 12.7496C1.06444 13.3973 1.27245 14.0225 1.60561 14.5821C2.61961 16.3241 4.65761 17.2201 6.64761 16.7991C7.08835 17.2867 7.62724 17.6755 8.2289 17.9401C8.83056 18.2046 9.48138 18.3389 10.1386 18.3341C12.1746 18.3391 13.9806 17.0451 14.6066 15.1341C15.2503 15.0052 15.8593 14.7409 16.3931 14.3586C16.9269 13.9764 17.3732 13.485 17.7026 12.9171C18.1998 12.0721 18.412 11.0896 18.3079 10.1147C18.2038 9.13975 17.789 8.22517 17.1246 7.50412Z" fill="currentColor"/></svg>
+                            <svg width="20" height="20" viewbox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="20" height="20" rx="4" fill="currentColor"/><path d="M10.5 5.5C10.5 5.5 7.5 5.5 7.5 8.5C7.5 10 8.5 11 10 11.5V13.5H11.5V11.5C13 11 14 10 14 8.5C14 5.5 10.5 5.5 10.5 5.5Z" fill="white"/><circle cx="10" cy="15" r="1" fill="white"/></svg>
                         </a>
                         <a href="https://www.perplexity.ai/search/new?q=Summarize+<?= urlencode($article_url) ?>" target="_blank" class="article-block__link">
                             <span>Perplexity</span>
@@ -135,6 +143,85 @@ $arrow_svg = '<svg width="14" height="14" viewbox="0 0 14 14" fill="none"><path 
         </div>
     </div>
 </section>
+
+<?php if (!empty($faq_items)): ?>
+<?php $faq_half = (int)ceil(count($faq_items) / 2); ?>
+<section class="faq">
+    <div class="faq__container">
+        <h2 class="faq__title title title--h1"><?= e($faq_title) ?></h2>
+        <div data-fls-spollers="" data-fls-spollers-one="" class="faq__items spollers">
+            <div class="spollers__column">
+                <?php foreach (array_slice($faq_items, 0, $faq_half) as $item): ?>
+                <details class="spollers__item">
+                    <summary class="spollers__title"><?= e($item['q'] ?? '') ?></summary>
+                    <div class="spollers__body"><?= nl2br(e($item['a'] ?? '')) ?></div>
+                </details>
+                <?php endforeach; ?>
+            </div>
+            <div class="spollers__column">
+                <?php foreach (array_slice($faq_items, $faq_half) as $item): ?>
+                <details class="spollers__item">
+                    <summary class="spollers__title"><?= e($item['q'] ?? '') ?></summary>
+                    <div class="spollers__body"><?= nl2br(e($item['a'] ?? '')) ?></div>
+                </details>
+                <?php endforeach; ?>
+            </div>
+        </div>
+    </div>
+</section>
+<?php endif; ?>
+
+<?php if (!empty($related_posts_data)): ?>
+<section class="articles">
+    <div class="articles__container">
+        <div class="articles__head">
+            <h2 class="articles__title title title--h1"><?= nl2br(e($articles_title)) ?></h2>
+            <div class="articles__navigation">
+                <button type="button" class="swiper-button-prev"><?= $nav_prev ?></button>
+                <div class="swiper-pagination"></div>
+                <button type="button" class="swiper-button-next"><?= $nav_next ?></button>
+            </div>
+        </div>
+        <div data-fls-slider="" class="articles__slider swiper">
+            <div class="articles__wrapper swiper-wrapper">
+                <?php $blog_fallbacks = ['/assets/img/blog/image-4.webp','/assets/img/blog/image-3.webp','/assets/img/blog/image-2.webp','/assets/img/blog/image-1.jpg']; ?>
+                <?php foreach (array_values($related_posts_data) as $pi => $rp): ?>
+                <article class="article-card swiper-slide">
+                    <div class="article-card__img">
+                        <img alt="<?= e($rp['title'] ?? '') ?>" loading="lazy" src="<?= !empty($rp['image_path']) ? e(media_url($rp['image_path'])) : $blog_fallbacks[$pi % 4] ?>">
+                        <a href="/blog/<?= e($rp['slug'] ?? '') ?>/" class="article-card__arrow button button--icon">
+                            <span class="button__text">Open article</span>
+                            <span class="button__icon"><svg width="14" height="14" viewbox="0 0 14 14" fill="none"><path d="M0.707031 13L12.707 1M12.707 1L0.707031 1M12.707 1V12.8868" stroke="currentColor" stroke-width="2"/></svg></span>
+                        </a>
+                    </div>
+                    <a href="/blog/<?= e($rp['slug'] ?? '') ?>/" class="article-card__title"><?= e($rp['title'] ?? '') ?></a>
+                    <?php if (!empty($rp['published_at'])): ?>
+                    <div class="article-card__badges">
+                        <div class="article-card__badge"><?= date('j, F, Y', strtotime($rp['published_at'])) ?></div>
+                    </div>
+                    <?php endif; ?>
+                    <?php if (!empty($rp['author_name'])): ?>
+                    <div class="article-card__author">
+                        <?php if (!empty($rp['author_image_path'])): ?>
+                        <div class="article-card__author-img">
+                            <img alt="<?= e($rp['author_name']) ?>" loading="lazy" src="<?= e(media_url($rp['author_image_path'])) ?>">
+                        </div>
+                        <?php endif; ?>
+                        <div class="article-card__author-body">
+                            <div class="article-card__author-name"><?= e($rp['author_name']) ?></div>
+                            <?php if (!empty($rp['author_title'])): ?>
+                            <div class="article-card__author-position"><?= e($rp['author_title']) ?></div>
+                            <?php endif; ?>
+                        </div>
+                    </div>
+                    <?php endif; ?>
+                </article>
+                <?php endforeach; ?>
+            </div>
+        </div>
+    </div>
+</section>
+<?php endif; ?>
 
 </main>
 

@@ -4,13 +4,16 @@ require_once dirname(dirname(__DIR__)) . '/includes/functions.php';
 admin_session_start();
 admin_require_auth();
 
+// Auto-migrate: add extras column if not exists
+try { $pdo->exec("ALTER TABLE posts_t ADD COLUMN extras MEDIUMTEXT DEFAULT NULL"); } catch(Exception $e) {}
+
 $method  = $_SERVER['REQUEST_METHOD'];
 $action  = $_GET['action'] ?? '';
 $lang_id = (int)($_GET['lang_id'] ?? 1);
 $id      = (int)($_GET['id'] ?? 0);
 
 function post_full(int $id, int $lang_id): array {
-    $post = row('SELECT p.*,pt.title,pt.subtitle,pt.excerpt,pt.content,pt.meta_title,pt.meta_description,
+    $post = row('SELECT p.*,pt.title,pt.subtitle,pt.excerpt,pt.content,pt.meta_title,pt.meta_description,pt.extras,
                         img.path as image_path
                  FROM posts p
                  LEFT JOIN posts_t pt ON p.id=pt.post_id AND pt.lang_id=?
@@ -20,6 +23,9 @@ function post_full(int $id, int $lang_id): array {
         $post['image_url'] = $post['image_path'] ? admin_url($post['image_path']) : '';
         $post['tags'] = rows('SELECT * FROM post_tags WHERE post_id=? AND lang_id=? ORDER BY sort_order', [$id,$lang_id]);
         $post['toc']  = rows('SELECT * FROM post_toc WHERE post_id=? AND lang_id=? ORDER BY sort_order', [$id,$lang_id]);
+        // Decode extras
+        $extras_raw = $post['extras'] ?? null;
+        $post['extras'] = $extras_raw ? (json_decode($extras_raw, true) ?: []) : [];
     }
     return $post;
 }
@@ -43,10 +49,16 @@ if ($method === 'POST') {
         if (!$id) $id = insert('posts', $p);
         else update('posts', $p, ['id'=>$id]);
 
+        $extras_val = null;
+        if (!empty($data['extras']) && is_array($data['extras'])) {
+            $extras_val = json_encode($data['extras'], JSON_UNESCAPED_UNICODE);
+        }
+
         $t = ['post_id'=>$id,'lang_id'=>$lang_id,
               'title'=>$data['title']??'','subtitle'=>$data['subtitle']??'',
               'excerpt'=>$data['excerpt']??'','content'=>$data['content']??'',
-              'meta_title'=>$data['meta_title']??'','meta_description'=>$data['meta_description']??''];
+              'meta_title'=>$data['meta_title']??'','meta_description'=>$data['meta_description']??'',
+              'extras'=>$extras_val];
         $et = row('SELECT id FROM posts_t WHERE post_id=? AND lang_id=?', [$id,$lang_id]);
         if ($et) update('posts_t', $t, ['id'=>$et['id']]); else insert('posts_t', $t);
 

@@ -108,6 +108,20 @@ switch ($page) {
             $post = get_post($lang_id, $segment);
             if (!$post) { render('404', $template_data); break; }
             $template_data['post'] = $post;
+            // Load related posts if extras defines related_post_ids
+            $related_post_ids = isset($post['extras']['related_post_ids']) ? array_map('intval', (array)$post['extras']['related_post_ids']) : [];
+            if (!empty($related_post_ids)) {
+                $all_posts = get_posts($lang_id, [], 100, 0);
+                $related_posts = [];
+                foreach ($all_posts as $rp) {
+                    if (in_array((int)$rp['id'], $related_post_ids) && (int)$rp['id'] !== (int)$post['id']) {
+                        $related_posts[] = $rp;
+                    }
+                }
+                $template_data['related_posts'] = $related_posts;
+            } else {
+                $template_data['related_posts'] = [];
+            }
             $template_data['page_class'] = '';
             render('article', $template_data);
         } else {

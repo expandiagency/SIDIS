@@ -937,7 +937,7 @@ tr:hover td{background:#fafafa}
                     <button class="btn btn--primary" style="margin-left:auto" @click="savePost">Save</button>
                 </div>
                 <div class="tabs">
-                    <button v-for="t in ['Basic','Content','Tags & TOC','SEO']" :key="t"
+                    <button v-for="t in ['Basic','Content','Tags & TOC','SEO','Extras']" :key="t"
                         class="tab-btn" :class="{active:postTab===t}" @click="switchPostTab(t)">{{ t }}</button>
                 </div>
                 <div class="card"><div class="card__body">
@@ -994,6 +994,78 @@ tr:hover td{background:#fafafa}
                     <div v-if="postTab==='SEO'" class="form-grid cols-1">
                         <div class="field"><label>Meta Title</label><input v-model="postForm.meta_title"></div>
                         <div class="field"><label>Meta Description</label><textarea v-model="postForm.meta_description" rows="3"></textarea></div>
+                    </div>
+
+                    <div v-if="postTab==='Extras'">
+                        <!-- CTA Block -->
+                        <div style="margin-bottom:24px">
+                            <strong style="font-size:14px;display:block;margin-bottom:12px">CTA Block <span style="font-weight:400;font-size:12px;color:var(--muted)">(use <code>[cta]</code> shortcode in content)</span></strong>
+                            <div class="form-grid cols-1" style="gap:8px">
+                                <div class="field"><label>CTA Title</label><input v-model="postForm.extras.cta_title" placeholder="Curious which solution fits your business?"></div>
+                                <div class="form-grid">
+                                    <div class="field"><label>Button 1 Text</label><input v-model="postForm.extras.cta_btn1_text"></div>
+                                    <div class="field"><label>Button 1 URL</label><input v-model="postForm.extras.cta_btn1_url"></div>
+                                </div>
+                                <div class="form-grid">
+                                    <div class="field"><label>Button 2 Text</label><input v-model="postForm.extras.cta_btn2_text"></div>
+                                    <div class="field"><label>Button 2 URL</label><input v-model="postForm.extras.cta_btn2_url"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Gallery Shortcode Helper -->
+                        <div style="margin-bottom:24px;padding:12px;background:#f8f9fa;border-radius:8px">
+                            <strong style="font-size:14px;display:block;margin-bottom:8px">Gallery Shortcode Helper</strong>
+                            <div class="field" style="margin-bottom:8px"><label>Image URLs (comma-separated)</label><input v-model="postForm.extras._gallery_urls" placeholder="/assets/img/img1.webp,/assets/img/img2.webp"></div>
+                            <button class="btn btn--outline btn--sm" @click="copyGalleryShortcode()">Copy Shortcode</button>
+                            <code v-if="postForm.extras._gallery_urls" style="display:block;margin-top:8px;font-size:12px;color:var(--muted)">[gallery img="{{ postForm.extras._gallery_urls }}"]</code>
+                        </div>
+
+                        <!-- Media Shortcode Helper -->
+                        <div style="margin-bottom:24px;padding:12px;background:#f8f9fa;border-radius:8px">
+                            <strong style="font-size:14px;display:block;margin-bottom:8px">Media Shortcode Helper</strong>
+                            <div class="form-grid" style="margin-bottom:8px">
+                                <div class="field"><label>Image URL</label><input v-model="postForm.extras._media_img" placeholder="/assets/img/image.webp"></div>
+                                <div class="field"><label>Video URL</label><input v-model="postForm.extras._media_video" placeholder="/assets/video/video.mp4"></div>
+                            </div>
+                            <button class="btn btn--outline btn--sm" @click="copyMediaShortcode()">Copy Shortcode</button>
+                            <code v-if="postForm.extras._media_img||postForm.extras._media_video" style="display:block;margin-top:8px;font-size:12px;color:var(--muted)">[media img="{{ postForm.extras._media_img }}" video="{{ postForm.extras._media_video }}"]</code>
+                        </div>
+
+                        <!-- FAQ -->
+                        <div style="margin-bottom:24px">
+                            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+                                <strong style="font-size:14px">FAQ Section</strong>
+                                <button class="btn btn--outline btn--sm" @click="postForm.extras.faq.push({q:'',a:''})">+ Add Item</button>
+                            </div>
+                            <div class="field" style="margin-bottom:12px"><label>FAQ Section Title</label><input v-model="postForm.extras.faq_title"></div>
+                            <div class="repeat-list">
+                                <div v-for="(item,i) in postForm.extras.faq" :key="i" class="repeat-item">
+                                    <div class="repeat-item__header">
+                                        <span class="repeat-item__header-label">{{ item.q || 'FAQ Item '+(i+1) }}</span>
+                                        <div class="repeat-item__actions"><button class="btn btn--danger btn--sm btn--icon" @click="postForm.extras.faq.splice(i,1)">×</button></div>
+                                    </div>
+                                    <div class="repeat-item__body">
+                                        <div class="form-grid cols-1" style="gap:8px">
+                                            <div class="field"><label>Question</label><input v-model="item.q"></div>
+                                            <div class="field"><label>Answer</label><textarea v-model="item.a" rows="3"></textarea></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Related Articles -->
+                        <div>
+                            <strong style="font-size:14px;display:block;margin-bottom:8px">Related Articles</strong>
+                            <div class="field" style="margin-bottom:12px"><label>Section Title</label><textarea v-model="postForm.extras.articles_title" rows="2"></textarea></div>
+                            <div style="display:flex;flex-wrap:wrap;gap:8px">
+                                <label v-for="p in postsList.filter(x=>x.id!==postForm.id)" :key="p.id" style="display:flex;align-items:center;gap:6px;cursor:pointer;padding:4px 10px;background:#f8f9fa;border-radius:6px;font-size:13px">
+                                    <input type="checkbox" :value="p.id" v-model="postForm.extras.related_post_ids">
+                                    {{ p.title || p.slug }}
+                                </label>
+                            </div>
+                        </div>
                     </div>
                 </div></div>
             </div>
@@ -1609,7 +1681,8 @@ createApp({
         const editingPost = ref(null);
         const postTab = ref('Basic');
         const authorsList = ref([]);
-        const postForm = reactive({id:0,slug:'',title:'',subtitle:'',content:'',excerpt:'',meta_title:'',meta_description:'',is_active:1,featured_image_id:null,image_url:'',author_id:null,published_at:'',tags_text:'',tags:[],toc:[]});
+        const defaultExtras = () => ({cta_title:'',cta_btn1_text:'Try AI assistant',cta_btn1_url:'#',cta_btn2_text:'Free audit',cta_btn2_url:'#getintouch',faq_title:'Questions & answers',faq:[],articles_title:'Latest Automation\nInsights',related_post_ids:[],_gallery_urls:'',_media_img:'',_media_video:''});
+        const postForm = reactive({id:0,slug:'',title:'',subtitle:'',content:'',excerpt:'',meta_title:'',meta_description:'',is_active:1,featured_image_id:null,image_url:'',author_id:null,published_at:'',tags_text:'',tags:[],toc:[],extras:defaultExtras()});
 
         const loadPosts = async () => { postsList.value = await api(`/admin/api/posts.php?lang_id=${langId.value}`); };
         const loadAuthors = async () => { authorsList.value = await api(`/admin/api/authors.php?lang_id=${langId.value}`); };
@@ -1617,9 +1690,10 @@ createApp({
             postTab.value='Basic'; destroyTinyMCE();
             if (p) {
                 const full = await api(`/admin/api/posts.php?id=${p.id}&lang_id=${langId.value}`);
-                Object.assign(postForm,{...full,tags_text:(full.tags||[]).map(t=>t.tag_text).join('\n'),toc:full.toc||[]});
+                const loadedExtras = Object.assign(defaultExtras(), full.extras||{});
+                Object.assign(postForm,{...full,tags_text:(full.tags||[]).map(t=>t.tag_text).join('\n'),toc:full.toc||[],extras:loadedExtras});
             } else {
-                Object.assign(postForm,{id:0,slug:'',title:'',subtitle:'',content:'',excerpt:'',meta_title:'',meta_description:'',is_active:1,featured_image_id:null,image_url:'',author_id:null,published_at:new Date().toISOString().slice(0,16),tags_text:'',tags:[],toc:[]});
+                Object.assign(postForm,{id:0,slug:'',title:'',subtitle:'',content:'',excerpt:'',meta_title:'',meta_description:'',is_active:1,featured_image_id:null,image_url:'',author_id:null,published_at:new Date().toISOString().slice(0,16),tags_text:'',tags:[],toc:[],extras:defaultExtras()});
             }
             editingPost.value = true;
             if (!authorsList.value.length) await loadAuthors();
@@ -1643,10 +1717,22 @@ createApp({
         const destroyTinyMCE = () => { const ed=tinymce.get('tinymce-editor'); if(ed) { postForm.content=ed.getContent(); ed.remove(); } };
         const savePost = async () => {
             if (tinymce.get('tinymce-editor')) postForm.content = tinymce.get('tinymce-editor').getContent();
-            const payload = {...postForm, tags:postForm.tags_text.split('\n').filter(l=>l.trim())};
+            const payload = {...postForm, tags:postForm.tags_text.split('\n').filter(l=>l.trim()), extras:postForm.extras};
             const r = await api(`/admin/api/posts.php?action=save&lang_id=${langId.value}${postForm.id?'&id='+postForm.id:''}`,{method:'POST',body:JSON.stringify(payload)});
             if (r.ok) { postForm.id=r.id; showAlert('Post saved!'); }
             else showAlert(r.error||'Error','error');
+        };
+        const copyGalleryShortcode = () => {
+            const urls = postForm.extras._gallery_urls;
+            if (!urls) return;
+            navigator.clipboard.writeText(`[gallery img="${urls}"]`);
+            showAlert('Gallery shortcode copied!');
+        };
+        const copyMediaShortcode = () => {
+            const img = postForm.extras._media_img || '';
+            const video = postForm.extras._media_video || '';
+            navigator.clipboard.writeText(`[media img="${img}" video="${video}"]`);
+            showAlert('Media shortcode copied!');
         };
         const deletePost = async id => { if(!confirm('Delete this post?')) return; await api(`/admin/api/posts.php?action=delete&id=${id}`,{method:'POST'}); await loadPosts(); };
 
@@ -1813,8 +1899,8 @@ createApp({
             allReviews, allCases, allPosts, loadReviews,
             casesList, editingCase, caseTab, allTerms, caseForm,
             openCaseEditor, saveCase, deleteCase,
-            postsList, editingPost, postTab, authorsList, postForm,
-            openPostEditor, switchPostTab, savePost, deletePost,
+            postsList, editingPost, postTab, authorsList, postForm, defaultExtras,
+            openPostEditor, switchPostTab, savePost, deletePost, copyGalleryShortcode, copyMediaShortcode,
             termForm, openTermModal, saveTerm, deleteTerm,
             authorForm, openAuthorModal, saveAuthor, deleteAuthor,
             mediaList, uploadFiles, uploadAndPick, pickMedia, selectMedia, deleteMedia, copyUrl,

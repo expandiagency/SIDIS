@@ -280,7 +280,7 @@ function get_posts(int $lang_id, array $filters = [], int $limit = 50, int $offs
 
 function get_post(int $lang_id, string $slug): ?array {
     $post = row(
-        'SELECT p.*, pt.title, pt.subtitle, pt.excerpt, pt.content, pt.meta_title, pt.meta_description,
+        'SELECT p.*, pt.title, pt.subtitle, pt.excerpt, pt.content, pt.meta_title, pt.meta_description, pt.extras,
                 img.path as image_path,
                 at_.name as author_name, at_.title as author_title, a.linkedin_url as author_linkedin,
                 am.path as author_image_path
@@ -296,8 +296,78 @@ function get_post(int $lang_id, string $slug): ?array {
     if ($post) {
         $post['tags'] = rows('SELECT tag_text FROM post_tags WHERE post_id=? AND lang_id=? ORDER BY sort_order', [$post['id'], $lang_id]);
         $post['toc']  = rows('SELECT * FROM post_toc WHERE post_id=? AND lang_id=? ORDER BY sort_order', [$post['id'], $lang_id]);
+        // Decode extras JSON
+        $extras_raw = $post['extras'] ?? null;
+        $post['extras'] = $extras_raw ? (json_decode($extras_raw, true) ?: []) : [];
+        // Auto-generate TOC from content headings if no TOC entries
+        if (empty($post['toc']) && !empty($post['content'])) {
+            $post['toc'] = extract_toc_from_content($post['content']);
+        }
+        // Process shortcodes in content
+        $post['content'] = render_article_content($post['content'], $post['extras']);
     }
     return $post;
+}
+
+/**
+ * Extract TOC entries from heading tags (h2-h5) that have id attributes.
+ */
+function extract_toc_from_content(string $html): array {
+    $toc = [];
+    if (preg_match_all('/<h([2-5])[^>]*\sid=["\']([^"\']+)["\'][^>]*>(.*?)<\/h\1>/is', $html, $matches, PREG_SET_ORDER)) {
+        foreach ($matches as $m) {
+            $title = strip_tags($m[3]);
+            $anchor = $m[2];
+            if (trim($title) && trim($anchor)) {
+                $toc[] = ['title' => $title, 'anchor' => $anchor];
+            }
+        }
+    }
+    return $toc;
+}
+
+/**
+ * Process shortcodes in article content.
+ * Supported: [gallery img="..."], [media img="..." video="..."], [cta]
+ */
+function render_article_content(string $content, array $extras = []): string {
+    // [gallery img="/img1.webp,/img2.webp"]
+    $content = preg_replace_callback('/\[gallery\s+img=["\']([^"\']+)["\']\s*\]/i', function($m) {
+        $images = array_filter(array_map('trim', explode(',', $m[1])));
+        if (empty($images)) return '';
+        $arrow_prev = '<svg style="margin-right:4px" width="11" height="18" viewbox="0 0 11 18" fill="none"><path d="M9.53516 0.523193L0.535156 8.52319L9.53516 16.5232" stroke="currentColor" stroke-width="1.4"></path></svg>';
+        $arrow_next = '<svg style="margin-left:4px" width="11" height="18" viewbox="0 0 11 18" fill="none"><path d="M0.464844 0.523193L9.46484 8.52319L0.464844 16.5232" stroke="currentColor" stroke-width="1.4"></path></svg>';
+        $slides = '';
+        foreach ($images as $img) {
+            $slides .= '<div class="article-block__slide swiper-slide"><img src="' . htmlspecialchars($img, ENT_QUOTES, 'UTF-8') . '" alt="" loading="lazy"></div>';
+        }
+        return '<div class="article-block__slider swiper" data-fls-slider=""><div class="article-block__wrapper swiper-wrapper">' . $slides . '</div><button type="button" class="swiper-button-prev">' . $arrow_prev . '</button><button type="button" class="swiper-button-next">' . $arrow_next . '</button></div>';
+    }, $content);
+
+    // [media img="/img.webp" video="/video.mp4"]
+    $content = preg_replace_callback('/\[media\s+img=["\']([^"\']*)["\'](?:\s+video=["\']([^"\']*)["\'])?\s*\]/i', function($m) {
+        $img   = $m[1];
+        $video = isset($m[2]) ? $m[2] : '';
+        $img_html = $img ? '<div class="article-block__img"><img src="' . htmlspecialchars($img, ENT_QUOTES, 'UTF-8') . '" alt="" loading="lazy"></div>' : '';
+        $video_html = '';
+        if ($video) {
+            $video_html = '<div class="article-block__video video-paused"><div class="video-controlls"><video muted loop playsinline><source src="' . htmlspecialchars($video, ENT_QUOTES, 'UTF-8') . '" type="video/mp4"></video><div class="video-controlls__play"><button type="button" class="button button--icon button--white"><svg width="14" height="17" viewbox="0 0 14 17" fill="none"><path d="M1 1L13 8.5L1 16V1Z" fill="currentColor" stroke="currentColor" stroke-width="1.5"></path></svg></button></div></div></div>';
+        }
+        return '<div class="article-block__media">' . $img_html . $video_html . '</div>';
+    }, $content);
+
+    // [cta]
+    $content = preg_replace_callback('/\[cta\]/i', function($m) use ($extras) {
+        $title = htmlspecialchars($extras['cta_title'] ?? 'Curious which solution fits your business needs?', ENT_QUOTES, 'UTF-8');
+        $btn1_text = htmlspecialchars($extras['cta_btn1_text'] ?? 'Try AI assistant', ENT_QUOTES, 'UTF-8');
+        $btn1_url  = htmlspecialchars($extras['cta_btn1_url']  ?? '#', ENT_QUOTES, 'UTF-8');
+        $btn2_text = htmlspecialchars($extras['cta_btn2_text'] ?? 'Free audit', ENT_QUOTES, 'UTF-8');
+        $btn2_url  = htmlspecialchars($extras['cta_btn2_url']  ?? '#getintouch', ENT_QUOTES, 'UTF-8');
+        $arrow_svg = '<svg width="14" height="14" viewbox="0 0 14 14" fill="none"><path d="M0.566406 12.8L12.5664 0.800049M12.5664 0.800049L12.5664 12.8M12.5664 0.800049L0.679613 0.800049" stroke="currentColor" stroke-width="1.6"></path></svg>';
+        return '<div class="planning__info"><div class="planning__info-img"><img alt="Image" loading="lazy" src="/assets/img/projects/image-6.webp"></div><div class="planning__info-body"><div class="planning__info-title">' . $title . '</div><div class="planning__info-btns"><a href="' . $btn1_url . '" class="planning__info-btn button">' . $btn1_text . '</a><a href="' . $btn2_url . '" class="planning__info-btn button button--icon"><span class="button__text">' . $btn2_text . '</span><span class="button__icon">' . $arrow_svg . '</span></a></div></div></div>';
+    }, $content);
+
+    return $content;
 }
 
 /* ─── Terms (Taxonomy) ─────────────────────────────────────────────────── */
