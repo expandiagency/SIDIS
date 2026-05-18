@@ -654,8 +654,10 @@ tr:hover td{background:#fafafa}
                                 <hr style="margin:16px 0;border:none;border-top:1px solid var(--border)">
                                 <div class="form-grid cols-1">
                                     <div class="field"><label>Info Box Title</label><input v-model="blk.content_obj.info_title"></div>
-                                    <div class="field"><label>Info Button Text</label><input v-model="blk.content_obj.info_btn1_text"></div>
-                                    <div class="field"><label>Info Button URL</label><input v-model="blk.content_obj.info_btn1_url"></div>
+                                    <div class="field"><label>Button 1 Text</label><input v-model="blk.content_obj.info_btn1_text" placeholder="Try AI assistant"></div>
+                                    <div class="field"><label>Button 1 URL</label><input v-model="blk.content_obj.info_btn1_url" placeholder="#"></div>
+                                    <div class="field"><label>Button 2 Text (with arrow icon)</label><input v-model="blk.content_obj.info_btn2_text" placeholder="Free audit"></div>
+                                    <div class="field"><label>Button 2 URL</label><input v-model="blk.content_obj.info_btn2_url" placeholder="#getintouch"></div>
                                 </div>
                             </div>
 

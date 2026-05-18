@@ -74,6 +74,19 @@ if ($method === 'GET') {
             }
             $blocks = rows('SELECT * FROM sol_page_blocks WHERE page_id=? AND lang_id=? ORDER BY sort_order', [$id, $lang_id]);
         }
+        // Migrate planning block: add missing btn2 fields if absent
+        foreach ($blocks as $b) {
+            if ($b['block_key'] === 'planning') {
+                $c = json_decode($b['content'] ?: '{}', true) ?: [];
+                if (empty($c['info_btn2_text'])) {
+                    $c['info_btn2_text'] = 'Free audit';
+                    $c['info_btn2_url']  = '#getintouch';
+                    update('sol_page_blocks', ['content' => json_encode($c, JSON_UNESCAPED_UNICODE)], ['id' => $b['id']]);
+                }
+                break;
+            }
+        }
+        $blocks = rows('SELECT * FROM sol_page_blocks WHERE page_id=? AND lang_id=? ORDER BY sort_order', [$id, $lang_id]);
         foreach ($blocks as &$b) {
             $c = json_decode($b['content'] ?: '{}', true) ?: [];
             if (!empty($c['image_url'])) $c['image_url'] = admin_url($c['image_url']);

@@ -151,7 +151,14 @@ function get_sol_page_blocks(int $page_id, int $lang_id): array {
     $result = [];
     foreach ($blocks as $b) {
         if (!$b['is_active']) continue;
-        $b['content'] = json_decode($b['content'] ?: '{}', true) ?: [];
+        $c = json_decode($b['content'] ?: '{}', true) ?: [];
+        // Migrate planning block: add missing btn2 fields
+        if ($b['block_key'] === 'planning' && empty($c['info_btn2_text'])) {
+            $c['info_btn2_text'] = 'Free audit';
+            $c['info_btn2_url']  = '#getintouch';
+            update('sol_page_blocks', ['content' => json_encode($c, JSON_UNESCAPED_UNICODE)], ['id' => $b['id']]);
+        }
+        $b['content'] = $c;
         $result[] = $b;
     }
     return $result;
