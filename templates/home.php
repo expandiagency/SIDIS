@@ -245,10 +245,8 @@ require __DIR__ . '/layout.php';
             <a href="/cases/<?= e($case['slug']) ?>/" class="projects-card" data-fls-watcher="" data-fls-watcher-threshold="0.5">
                 <div class="projects-card__body">
                     <div class="projects-card__head">
-                        <?php if (!empty($case['logo_path'])): ?>
-                        <div class="projects-card__category"><img src="<?= e(media_url($case['logo_path'])) ?>" alt="" style="max-height:24px;object-fit:contain"></div>
-                        <?php else: ?>
-                        <div class="projects-card__category"><?= e($case['company'] ?? '') ?></div>
+                        <?php if (!empty($case['company_name'])): ?>
+                        <div class="projects-card__category"><?= e($case['company_name']) ?></div>
                         <?php endif; ?>
                         <div class="projects-card__title"><?= e($case['title'] ?? '') ?></div>
                     </div>

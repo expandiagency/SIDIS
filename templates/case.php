@@ -20,10 +20,10 @@ foreach ($case['terms'] ?? [] as $term) {
             <div class="promo-case__content">
                 <?php if (!empty($case['logo_path'])): ?>
                 <div class="promo-case__logo">
-                    <img alt="<?= e($case['company'] ?? '') ?>" loading="lazy" src="<?= e(media_url($case['logo_path'])) ?>">
+                    <img alt="<?= e($case['company_name'] ?? '') ?>" loading="lazy" src="<?= e(media_url($case['logo_path'])) ?>">
                 </div>
-                <?php elseif (!empty($case['company'])): ?>
-                <div class="promo-case__logo" style="font-size:18px;font-weight:600"><?= e($case['company']) ?></div>
+                <?php elseif (!empty($case['company_name'])): ?>
+                <div class="promo-case__logo" style="font-size:18px;font-weight:600"><?= e($case['company_name']) ?></div>
                 <?php endif; ?>
                 <div class="promo-case__info">
                     <h1 class="promo-case__title title title--h2"><?= e($case['title'] ?? '') ?></h1>
@@ -314,7 +314,7 @@ if (!empty($ex['tech_items'])) {
                     <a href="/cases/<?= e($rc['slug']) ?>/" class="catalog-card__img">
                         <img alt="<?= e($rc['title'] ?? '') ?>" loading="lazy" src="<?= !empty($rc['image_path']) ? e(media_url($rc['image_path'])) : $case_imgs[$ci % 4] ?>">
                     </a>
-                    <div class="catalog-card__category"><?= e($rc['company'] ?? '') ?></div>
+                    <?php if (!empty($rc['company_name'])): ?><div class="catalog-card__category"><?= e($rc['company_name']) ?></div><?php endif; ?>
                     <a href="/cases/<?= e($rc['slug']) ?>/" class="catalog-card__title"><?= e($rc['title'] ?? '') ?></a>
                     <div class="catalog-card__bottom">
                         <div class="catalog-card__bottom-inner">

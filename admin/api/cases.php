@@ -4,13 +4,16 @@ require_once dirname(dirname(__DIR__)) . '/includes/functions.php';
 admin_session_start();
 admin_require_auth();
 
+// Auto-migrate: add company_name column if not exists
+try { db()->exec("ALTER TABLE cases ADD COLUMN company_name VARCHAR(200) DEFAULT NULL"); } catch(Exception $e) {}
+
 $method  = $_SERVER['REQUEST_METHOD'];
 $action  = $_GET['action'] ?? '';
 $lang_id = (int)($_GET['lang_id'] ?? 1);
 $id      = (int)($_GET['id'] ?? 0);
 
 function case_full(int $id, int $lang_id): array {
-    $case = row('SELECT c.*, ct.title,ct.description,ct.overview_text,ct.location,ct.cooperation_period,ct.meta_title,ct.meta_description,
+    $case = row('SELECT c.*, c.company_name, ct.title,ct.description,ct.overview_text,ct.location,ct.cooperation_period,ct.meta_title,ct.meta_description,
                         logo.path as logo_path, img.path as image_path
                  FROM cases c
                  LEFT JOIN cases_t ct ON c.id=ct.case_id AND ct.lang_id=?
@@ -43,6 +46,7 @@ if ($method === 'POST') {
         $c = ['slug'=>slug($data['slug']??$data['title']??'case'),
               'is_active'=>(int)($data['is_active']??1), 'is_featured'=>(int)($data['is_featured']??0),
               'sort_order'=>(int)($data['sort_order']??0),
+              'company_name'=>$data['company_name']??'',
               'company_logo_id'=>($data['company_logo_id']??null)?:null,
               'featured_image_id'=>($data['featured_image_id']??null)?:null];
         if (!$id) $id = insert('cases', $c);

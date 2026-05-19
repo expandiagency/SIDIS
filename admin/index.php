@@ -817,6 +817,7 @@ tr:hover td{background:#fafafa}
                     <div v-if="caseTab==='Basic'" class="form-grid">
                         <div class="field field--full"><label>Title</label><input v-model="caseForm.title"></div>
                         <div class="field"><label>Slug (URL)</label><input v-model="caseForm.slug" @input="caseForm.slug=slugify(caseForm.slug)"><div class="slug-preview">/cases/{{ caseForm.slug }}/</div></div>
+                        <div class="field"><label>Company Name (shown in listings)</label><input v-model="caseForm.company_name" placeholder="e.g. Apex Agency"></div>
                         <div class="field"><label>Location</label><input v-model="caseForm.location"></div>
                         <div class="field"><label>Cooperation Period</label><input v-model="caseForm.cooperation_period"></div>
                         <div class="field field--full"><label>Short Description (for listing)</label><textarea v-model="caseForm.description" rows="3"></textarea></div>
@@ -1652,7 +1653,7 @@ createApp({
         const editingCase = ref(null);
         const caseTab = ref('Basic');
         const allTerms = ref([]);
-        const caseForm = reactive({id:0,slug:'',title:'',description:'',overview_text:'',location:'',cooperation_period:'',key_results_text:'',services_text:'',meta_title:'',meta_description:'',is_active:1,is_featured:0,sort_order:0,featured_image_id:null,company_logo_id:null,image_url:'',logo_url:'',challenges:[],tech_items:[],term_ids:[]});
+        const caseForm = reactive({id:0,slug:'',title:'',company_name:'',description:'',overview_text:'',location:'',cooperation_period:'',key_results_text:'',services_text:'',meta_title:'',meta_description:'',is_active:1,is_featured:0,sort_order:0,featured_image_id:null,company_logo_id:null,image_url:'',logo_url:'',challenges:[],tech_items:[],term_ids:[]});
 
         const loadCases = async () => { casesList.value = await api(`/admin/api/cases.php?lang_id=${langId.value}`); };
         const openCaseEditor = async (c=null) => {
@@ -1661,7 +1662,7 @@ createApp({
                 const full = await api(`/admin/api/cases.php?id=${c.id}&lang_id=${langId.value}`);
                 Object.assign(caseForm,{...full,key_results_text:(full.key_results||[]).map(r=>r.text).join('\n'),services_text:(full.services||[]).map(s=>s.service_name).join('\n'),challenges:full.challenges.map(ch=>({id:ch.id,title:ch.ch_title||'',text:ch.ch_text||''})),tech_items:full.tech_items||[],term_ids:full.term_ids||[]});
             } else {
-                Object.assign(caseForm,{id:0,slug:'',title:'',description:'',overview_text:'',location:'',cooperation_period:'',key_results_text:'',services_text:'',meta_title:'',meta_description:'',is_active:1,is_featured:0,sort_order:0,featured_image_id:null,company_logo_id:null,image_url:'',logo_url:'',challenges:[],tech_items:[],term_ids:[]});
+                Object.assign(caseForm,{id:0,slug:'',title:'',company_name:'',description:'',overview_text:'',location:'',cooperation_period:'',key_results_text:'',services_text:'',meta_title:'',meta_description:'',is_active:1,is_featured:0,sort_order:0,featured_image_id:null,company_logo_id:null,image_url:'',logo_url:'',challenges:[],tech_items:[],term_ids:[]});
             }
             editingCase.value = true;
         };

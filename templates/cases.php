@@ -75,8 +75,8 @@
                         <img alt="<?= e($case['title'] ?? '') ?>" loading="lazy" src="<?= e(media_url($case['image_path'])) ?>">
                         <?php endif; ?>
                     </div>
-                    <?php if (!empty($case['description'])): ?>
-                    <div class="catalog-card__category"><?= e(strip_tags($case['description'])) ?></div>
+                    <?php if (!empty($case['company_name'])): ?>
+                    <div class="catalog-card__category"><?= e($case['company_name']) ?></div>
                     <?php endif; ?>
                     <div class="catalog-card__title"><?= e($case['title'] ?? '') ?></div>
                     <div class="catalog-card__bottom">

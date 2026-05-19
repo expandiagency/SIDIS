@@ -202,7 +202,7 @@ function get_solution_page(int $lang_id, string $slug): ?array {
 /* ─── Cases ─────────────────────────────────────────────────────────────── */
 
 function get_cases(int $lang_id, array $filters = [], int $limit = 50, int $offset = 0): array {
-    $sql = 'SELECT c.*, ct.title, ct.description, ct.location, ct.cooperation_period,
+    $sql = 'SELECT c.*, c.company_name, ct.title, ct.description, ct.location, ct.cooperation_period,
                    logo.path as logo_path, img.path as image_path
             FROM cases c
             LEFT JOIN cases_t ct ON c.id=ct.case_id AND ct.lang_id=?
@@ -234,7 +234,7 @@ function get_cases(int $lang_id, array $filters = [], int $limit = 50, int $offs
 
 function get_case(int $lang_id, string $slug): ?array {
     $case = row(
-        'SELECT c.*, ct.title, ct.description, ct.overview_text, ct.location, ct.cooperation_period,
+        'SELECT c.*, c.company_name, ct.title, ct.description, ct.overview_text, ct.location, ct.cooperation_period,
                 ct.meta_title, ct.meta_description,
                 logo.path as logo_path, img.path as image_path
          FROM cases c
