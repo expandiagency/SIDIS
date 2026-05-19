@@ -11,7 +11,8 @@ $admin = admin_current();
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>SIDIS Admin</title>
 <script src="https://cdn.jsdelivr.net/npm/vue@3/dist/vue.global.prod.js"></script>
-<script src="https://cdn.tiny.cloud/1/no-api-key/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
+<link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/43.3.1/ckeditor5.css">
+<script src="https://cdn.ckeditor.com/ckeditor5/43.3.1/ckeditor5.umd.js"></script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 :root{--sidebar:#1a1a2e;--sidebar-hover:#252545;--accent:#772885;--accent2:#8e35a0;--bg:#f0f2f5;--card:#fff;--text:#1a1a1a;--muted:#666;--border:#e2e4e8;--red:#e53935;--green:#43a047}
@@ -60,6 +61,10 @@ a{color:inherit;text-decoration:none}
 .btn--icon{padding:7px;background:none;border:1px solid var(--border);color:var(--muted)}.btn--icon:hover{border-color:#aaa;color:var(--text)}
 /* Table */
 .table-wrap{overflow-x:auto}
+.ck-editor__editable{min-height:460px!important;font-size:15px;font-family:system-ui,sans-serif}
+.ck.ck-editor{border-radius:8px!important;border:1px solid var(--border)!important}
+.ck.ck-toolbar{border-radius:8px 8px 0 0!important;background:#f8f9fa!important;border-bottom:1px solid var(--border)!important}
+.ck-source-editing-area textarea{min-height:460px!important;font-family:monospace;font-size:13px}
 table{width:100%;border-collapse:collapse}
 th,td{padding:11px 14px;text-align:left;font-size:13px}
 th{background:#f8f9fa;color:var(--muted);font-weight:600;border-bottom:2px solid var(--border)}
@@ -962,7 +967,7 @@ tr:hover td{background:#fafafa}
                     </div>
 
                     <div v-show="postTab==='Content'">
-                        <textarea id="tinymce-editor" v-model="postForm.content"></textarea>
+                        <div id="ckeditor-mount" style="min-height:500px"></div>
                     </div>
 
                     <div v-if="postTab==='Tags & TOC'">
@@ -1785,19 +1790,41 @@ createApp({
                 await nextTick();
                 initTinyMCE();
             } else {
-                if (tinymce.get('tinymce-editor')) postForm.content = tinymce.get('tinymce-editor').getContent();
+                if (_ckEditor) postForm.content = _ckEditor.getData();
                 destroyTinyMCE();
                 postTab.value=t;
             }
         };
-        const initTinyMCE = () => {
-            if (tinymce.get('tinymce-editor')) return;
-            tinymce.init({selector:'#tinymce-editor',height:500,plugins:'lists link image code table',toolbar:'undo redo | bold italic underline | bullist numlist | link image | h2 h3 h4 | code',setup(ed){ed.on('change',()=>{postForm.content=ed.getContent();})}});
-            if (postForm.content) { setTimeout(()=>{ const ed=tinymce.get('tinymce-editor'); if(ed) ed.setContent(postForm.content); },500); }
+        let _ckEditor = null;
+        const initTinyMCE = async () => {
+            if (_ckEditor) return;
+            const el = document.getElementById('ckeditor-mount');
+            if (!el) return;
+            const { ClassicEditor, Essentials, Bold, Italic, Underline, Link, List,
+                    Heading, SourceEditing, Table, TableToolbar, Paragraph,
+                    GeneralHtmlSupport, HtmlComment } = CKEDITOR;
+            _ckEditor = await ClassicEditor.create(el, {
+                plugins: [ Essentials, Bold, Italic, Underline, Link, List,
+                           Heading, SourceEditing, Table, TableToolbar, Paragraph,
+                           GeneralHtmlSupport, HtmlComment ],
+                toolbar: ['undo','redo','|','heading','|','bold','italic','underline','|',
+                          'bulletedList','numberedList','|','link','insertTable','|','sourceEditing'],
+                heading: { options: [
+                    {model:'paragraph',title:'Paragraph',class:'ck-heading_paragraph'},
+                    {model:'heading2',view:'h2',title:'H2',class:'ck-heading_heading2'},
+                    {model:'heading3',view:'h3',title:'H3',class:'ck-heading_heading3'},
+                    {model:'heading4',view:'h4',title:'H4',class:'ck-heading_heading4'},
+                ]},
+                htmlSupport: { allow: [{name:/^(div|span|section|article|figure|img|video|source|br|ul|ol|li|table|tr|td|th|tbody|thead|blockquote|pre|code|a|p|h[1-6]|strong|em|u|s)$/,attributes:true,classes:true,styles:true}] },
+            });
+            _ckEditor.setData(postForm.content || '');
+            _ckEditor.model.document.on('change:data', () => { postForm.content = _ckEditor.getData(); });
         };
-        const destroyTinyMCE = () => { const ed=tinymce.get('tinymce-editor'); if(ed) { postForm.content=ed.getContent(); ed.remove(); } };
+        const destroyTinyMCE = () => {
+            if (_ckEditor) { postForm.content = _ckEditor.getData(); _ckEditor.destroy(); _ckEditor = null; }
+        };
         const savePost = async () => {
-            if (tinymce.get('tinymce-editor')) postForm.content = tinymce.get('tinymce-editor').getContent();
+            if (_ckEditor) postForm.content = _ckEditor.getData();
             const payload = {...postForm, tags:postForm.tags_text.split('\n').filter(l=>l.trim()), extras:postForm.extras};
             const r = await api(`/admin/api/posts.php?action=save&lang_id=${langId.value}${postForm.id?'&id='+postForm.id:''}`,{method:'POST',body:JSON.stringify(payload)});
             if (r.ok) { postForm.id=r.id; showAlert('Post saved!'); }
