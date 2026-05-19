@@ -1565,31 +1565,54 @@ tr:hover td{background:#fafafa}
     </div>
 </div>
 
-<!-- Media Shortcode Modal (img + video) -->
+<!-- Media Shortcode Modal — inline library, no nested modals -->
 <div v-if="modals.mediaShortcode" class="modal-overlay" @click.self="modals.mediaShortcode=false">
-    <div class="modal" style="max-width:600px">
-        <div class="modal__head"><h3>Insert Media Block (image + video)</h3><button class="btn btn--icon" @click="modals.mediaShortcode=false">×</button></div>
-        <div class="modal__body">
-            <div class="form-grid">
-                <div class="field">
-                    <label>Image (left)</label>
-                    <div style="display:flex;gap:8px;align-items:center;margin-top:4px">
-                        <img v-if="mediaScImg" :src="mediaScImg" style="width:80px;height:55px;object-fit:cover;border-radius:6px;border:1px solid var(--border)">
-                        <button class="btn btn--outline btn--sm" @click="pickMedia(m=>{mediaScImg=m.url})">{{ mediaScImg ? 'Change' : 'Pick Image' }}</button>
-                        <button v-if="mediaScImg" class="btn btn--sm" style="background:var(--red);color:#fff" @click="mediaScImg=''">×</button>
+    <div class="modal" style="max-width:900px;display:flex;flex-direction:column;max-height:90vh">
+        <div class="modal__head"><h3>Insert Media Block (2 slots)</h3><button class="btn btn--icon" @click="modals.mediaShortcode=false">×</button></div>
+        <div class="modal__body" style="overflow-y:auto;flex:1">
+            <!-- Slots -->
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px">
+                <div v-for="(slot,si) in mediaScSlots" :key="si"
+                     :style="`border:2px solid ${mediaScActiveSlot===si ? 'var(--accent)' : 'var(--border)'};border-radius:10px;padding:12px;cursor:pointer;background:${mediaScActiveSlot===si?'#faf0ff':'#fff'}`"
+                     @click="mediaScActiveSlot=si">
+                    <div style="font-size:12px;font-weight:600;color:var(--muted);margin-bottom:8px;text-transform:uppercase;letter-spacing:.5px">
+                        {{ si===0 ? 'Left slot' : 'Right slot' }}
+                        <span v-if="mediaScActiveSlot===si" style="color:var(--accent)">← active</span>
                     </div>
-                </div>
-                <div class="field">
-                    <label>Video URL (right)</label>
-                    <input v-model="mediaScVideo" placeholder="/assets/video/video.mp4" style="margin-top:4px">
-                    <button class="btn btn--outline btn--sm" style="margin-top:6px" @click="pickMedia(m=>{mediaScVideo=m.url})">Pick from Library</button>
+                    <div v-if="slot.url" style="position:relative">
+                        <img v-if="!slot.url.match(/\.mp4|\.webm|\.mov/i)" :src="slot.url" style="width:100%;height:100px;object-fit:cover;border-radius:6px;display:block">
+                        <div v-else style="background:#111;color:#fff;height:100px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:13px">
+                            🎬 {{ slot.url.split('/').pop() }}
+                        </div>
+                        <button @click.stop="slot.url=''" style="position:absolute;top:4px;right:4px;background:rgba(0,0,0,.6);color:#fff;border:none;border-radius:50%;width:22px;height:22px;cursor:pointer;font-size:14px;line-height:1">×</button>
+                    </div>
+                    <div v-else style="height:100px;border:2px dashed var(--border);border-radius:6px;display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:13px">
+                        Click to activate, then pick below
+                    </div>
+                    <input :value="slot.url" @input="slot.url=$event.target.value" placeholder="or paste URL directly" style="margin-top:8px;width:100%;padding:6px 10px;border:1px solid var(--border);border-radius:6px;font-size:12px">
                 </div>
             </div>
-            <code v-if="mediaScImg||mediaScVideo" style="display:block;margin-top:12px;font-size:12px;background:#f8f9fa;padding:8px;border-radius:6px;word-break:break-all">[media img="{{ mediaScImg }}" video="{{ mediaScVideo }}"]</code>
+            <!-- Active slot indicator -->
+            <div style="font-size:13px;font-weight:600;color:var(--accent);margin-bottom:10px;padding:8px 12px;background:#faf0ff;border-radius:6px">
+                Clicking a media item below will set it as the <strong>{{ mediaScActiveSlot===0 ? 'LEFT' : 'RIGHT' }} slot</strong>
+            </div>
+            <!-- Inline media library -->
+            <div style="display:flex;gap:8px;margin-bottom:12px">
+                <label class="btn btn--outline btn--sm" style="cursor:pointer">+ Upload New<input type="file" accept="image/*,video/*" style="display:none" @change="uploadAndPick"></label>
+            </div>
+            <div class="media-grid">
+                <div v-for="m in mediaList" :key="m.id" class="media-item" @click="mediaScPickSlot(m)">
+                    <img :src="m.url" :alt="m.alt_text" loading="lazy">
+                    <div class="media-item__name">{{ m.original_name }}</div>
+                </div>
+            </div>
         </div>
-        <div class="modal__foot">
-            <button class="btn btn--outline" @click="modals.mediaShortcode=false">Cancel</button>
-            <button class="btn btn--primary" @click="confirmMediaShortcode()" :disabled="!mediaScImg&&!mediaScVideo">Insert into Content</button>
+        <div class="modal__foot" style="border-top:1px solid var(--border);padding:12px 20px;display:flex;justify-content:space-between;align-items:center">
+            <code style="font-size:11px;color:var(--muted);flex:1;margin-right:12px;word-break:break-all">{{ buildMediaShortcodeFromSlots() }}</code>
+            <div style="display:flex;gap:8px">
+                <button class="btn btn--outline" @click="modals.mediaShortcode=false">Cancel</button>
+                <button class="btn btn--primary" @click="confirmMediaShortcode()" :disabled="!mediaScSlots[0].url&&!mediaScSlots[1].url">Insert into Content</button>
+            </div>
         </div>
     </div>
 </div>
@@ -2048,17 +2071,33 @@ createApp({
             multiSelectedMedia.value = [];
             mediaPickerIsMulti.value = false;
         };
-        // Media shortcode modal
-        const mediaScImg   = ref('');
-        const mediaScVideo = ref('');
-        const openMediaShortcodeModal = () => { mediaScImg.value=''; mediaScVideo.value=''; modals.mediaShortcode=true; };
+        // Media shortcode modal — two flexible slots, inline library
+        const mediaScSlots      = ref([{url:''},{url:''}]);
+        const mediaScActiveSlot = ref(0);
+        const openMediaShortcodeModal = () => {
+            mediaScSlots.value = [{url:''},{url:''}];
+            mediaScActiveSlot.value = 0;
+            modals.mediaShortcode = true;
+            if (!mediaList.value.length) loadMedia();
+        };
+        const mediaScPickSlot = m => { mediaScSlots.value[mediaScActiveSlot.value].url = m.url; };
+        const buildMediaShortcodeFromSlots = () => {
+            const a = mediaScSlots.value[0].url || '';
+            const b = mediaScSlots.value[1].url || '';
+            if (!a && !b) return '';
+            return `[media img="${a}" video="${b}"]`;
+        };
         const confirmMediaShortcode = () => {
-            const sc = `[media img="${mediaScImg.value}" video="${mediaScVideo.value}"]`;
+            const sc = buildMediaShortcodeFromSlots();
+            if (!sc) return;
             insertShortcode(sc);
-            postForm.extras._media_img_url   = mediaScImg.value;
-            postForm.extras._media_video_url = mediaScVideo.value;
+            postForm.extras._media_img_url   = mediaScSlots.value[0].url;
+            postForm.extras._media_video_url = mediaScSlots.value[1].url;
             modals.mediaShortcode = false;
         };
+        // Legacy compat refs (Extras tab still uses these)
+        const mediaScImg   = computed(()=>mediaScSlots.value[0].url);
+        const mediaScVideo = computed(()=>mediaScSlots.value[1].url);
         const deleteMedia = async id => { if(!confirm('Delete this file?')) return; await api(`/admin/api/media.php?action=delete&id=${id}`,{method:'POST',body:'{}'}); await loadMedia(); };
         const copyUrl = url => { navigator.clipboard.writeText(location.origin+url); showAlert('URL copied!'); };
 
@@ -2204,6 +2243,7 @@ createApp({
             postsList, editingPost, postTab, authorsList, postForm, defaultExtras,
             galleryAddImage, galleryMoveImg, buildGalleryShortcode, buildMediaShortcode, insertShortcode,
             mediaPickerIsMulti, multiSelectedMedia, openMultiPicker, toggleMultiSelect, confirmMultiSelect,
+            mediaScSlots, mediaScActiveSlot, mediaScPickSlot, buildMediaShortcodeFromSlots,
             mediaScImg, mediaScVideo, openMediaShortcodeModal, confirmMediaShortcode,
             openPostEditor, switchPostTab, savePost, deletePost, copyGalleryShortcode, copyMediaShortcode,
             termForm, openTermModal, saveTerm, deleteTerm,
