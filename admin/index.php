@@ -967,6 +967,18 @@ tr:hover td{background:#fafafa}
                     </div>
 
                     <div v-show="postTab==='Content'">
+                        <!-- Insert shortcode toolbar -->
+                        <div style="display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap">
+                            <button class="btn btn--outline btn--sm" @click="openMultiPicker()" style="display:flex;align-items:center;gap:5px">
+                                🖼 Insert Gallery
+                            </button>
+                            <button class="btn btn--outline btn--sm" @click="openMediaShortcodeModal()" style="display:flex;align-items:center;gap:5px">
+                                🎬 Insert Media (img+video)
+                            </button>
+                            <button class="btn btn--outline btn--sm" @click="insertShortcode('[cta]')" style="display:flex;align-items:center;gap:5px">
+                                📣 Insert CTA Block
+                            </button>
+                        </div>
                         <!-- Shortcode instructions -->
                         <details style="margin-bottom:12px;border:1px solid #e0e7ff;border-radius:8px;overflow:hidden">
                             <summary style="padding:10px 14px;background:#f0f4ff;cursor:pointer;font-size:13px;font-weight:600;color:#4338ca;list-style:none;display:flex;align-items:center;gap:6px">
@@ -1525,17 +1537,59 @@ tr:hover td{background:#fafafa}
 <!-- Media Picker Modal -->
 <div v-if="modals.mediaPicker" class="modal-overlay" @click.self="modals.mediaPicker=false">
     <div class="modal" style="max-width:900px">
-        <div class="modal__head"><h3>Choose Image</h3><button class="btn btn--icon" @click="modals.mediaPicker=false">×</button></div>
+        <div class="modal__head">
+            <h3>{{ mediaPickerIsMulti ? 'Select Images (click to select, click again to deselect)' : 'Choose Image' }}</h3>
+            <button class="btn btn--icon" @click="modals.mediaPicker=false">×</button>
+        </div>
         <div class="modal__body">
-            <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px">
+            <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;flex-wrap:wrap">
                 <label class="btn btn--outline" style="cursor:pointer">+ Upload New <input type="file" accept="image/*" style="display:none" @change="uploadAndPick"></label>
+                <template v-if="mediaPickerIsMulti">
+                    <span style="font-size:13px;color:var(--muted)">{{ multiSelectedMedia.length }} selected</span>
+                    <button class="btn btn--primary" :disabled="!multiSelectedMedia.length" @click="confirmMultiSelect()">Insert {{ multiSelectedMedia.length }} Image{{ multiSelectedMedia.length!==1?'s':'' }}</button>
+                </template>
             </div>
             <div class="media-grid">
-                <div v-for="m in mediaList" :key="m.id" class="media-item" @click="selectMedia(m)">
+                <div v-for="m in mediaList" :key="m.id" class="media-item"
+                     :style="multiSelectedMedia.find(x=>x.id===m.id) ? 'outline:3px solid var(--accent);border-radius:8px' : ''"
+                     @click="mediaPickerIsMulti ? toggleMultiSelect(m) : selectMedia(m)">
                     <img :src="m.url" :alt="m.alt_text" loading="lazy">
                     <div class="media-item__name">{{ m.original_name }}</div>
+                    <div v-if="mediaPickerIsMulti && multiSelectedMedia.find(x=>x.id===m.id)"
+                         style="position:absolute;top:4px;right:4px;background:var(--accent);color:#fff;border-radius:50%;width:20px;height:20px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700">
+                        {{ multiSelectedMedia.findIndex(x=>x.id===m.id)+1 }}
+                    </div>
                 </div>
             </div>
+        </div>
+    </div>
+</div>
+
+<!-- Media Shortcode Modal (img + video) -->
+<div v-if="modals.mediaShortcode" class="modal-overlay" @click.self="modals.mediaShortcode=false">
+    <div class="modal" style="max-width:600px">
+        <div class="modal__head"><h3>Insert Media Block (image + video)</h3><button class="btn btn--icon" @click="modals.mediaShortcode=false">×</button></div>
+        <div class="modal__body">
+            <div class="form-grid">
+                <div class="field">
+                    <label>Image (left)</label>
+                    <div style="display:flex;gap:8px;align-items:center;margin-top:4px">
+                        <img v-if="mediaScImg" :src="mediaScImg" style="width:80px;height:55px;object-fit:cover;border-radius:6px;border:1px solid var(--border)">
+                        <button class="btn btn--outline btn--sm" @click="pickMedia(m=>{mediaScImg=m.url})">{{ mediaScImg ? 'Change' : 'Pick Image' }}</button>
+                        <button v-if="mediaScImg" class="btn btn--sm" style="background:var(--red);color:#fff" @click="mediaScImg=''">×</button>
+                    </div>
+                </div>
+                <div class="field">
+                    <label>Video URL (right)</label>
+                    <input v-model="mediaScVideo" placeholder="/assets/video/video.mp4" style="margin-top:4px">
+                    <button class="btn btn--outline btn--sm" style="margin-top:6px" @click="pickMedia(m=>{mediaScVideo=m.url})">Pick from Library</button>
+                </div>
+            </div>
+            <code v-if="mediaScImg||mediaScVideo" style="display:block;margin-top:12px;font-size:12px;background:#f8f9fa;padding:8px;border-radius:6px;word-break:break-all">[media img="{{ mediaScImg }}" video="{{ mediaScVideo }}"]</code>
+        </div>
+        <div class="modal__foot">
+            <button class="btn btn--outline" @click="modals.mediaShortcode=false">Cancel</button>
+            <button class="btn btn--primary" @click="confirmMediaShortcode()" :disabled="!mediaScImg&&!mediaScVideo">Insert into Content</button>
         </div>
     </div>
 </div>
@@ -1600,7 +1654,7 @@ createApp({
         /* ─── Languages ─────────────────────────────────────────────────── */
         const langForm = reactive({id:0, code:'', name:'', is_active:1});
         const modals = reactive({lang:false, whySlide:false, review:false, nav:false, mega:false,
-                                  solutionItem:false, term:false, author:false, mediaPicker:false});
+                                  solutionItem:false, term:false, author:false, mediaPicker:false, mediaShortcode:false});
 
         const loadLanguages = async () => {
             languages.value = await api('/admin/api/languages.php');
@@ -1973,8 +2027,38 @@ createApp({
             if (r.media) { selectMedia({...r.media,url:r.media.url}); }
             await loadMedia();
         };
-        const pickMedia = callback => { mediaPickerCallback=callback; modals.mediaPicker=true; if(!mediaList.value.length) loadMedia(); };
+        const mediaPickerIsMulti = ref(false);
+        const multiSelectedMedia = ref([]);
+        const pickMedia = callback => { mediaPickerIsMulti.value=false; multiSelectedMedia.value=[]; mediaPickerCallback=callback; modals.mediaPicker=true; if(!mediaList.value.length) loadMedia(); };
         const selectMedia = m => { if(mediaPickerCallback) mediaPickerCallback(m); modals.mediaPicker=false; mediaPickerCallback=null; };
+        // Multi-select mode
+        const openMultiPicker = () => { mediaPickerIsMulti.value=true; multiSelectedMedia.value=[]; modals.mediaPicker=true; if(!mediaList.value.length) loadMedia(); };
+        const toggleMultiSelect = m => {
+            const idx = multiSelectedMedia.value.findIndex(x=>x.id===m.id);
+            if (idx>=0) multiSelectedMedia.value.splice(idx,1); else multiSelectedMedia.value.push(m);
+        };
+        const confirmMultiSelect = () => {
+            if (!multiSelectedMedia.value.length) return;
+            const urls = multiSelectedMedia.value.map(m=>m.url).join(',');
+            const sc = `[gallery img="${urls}"]`;
+            insertShortcode(sc);
+            // Also update extras gallery for Extras tab
+            postForm.extras._gallery_imgs = multiSelectedMedia.value.map(m=>({url:m.url}));
+            modals.mediaPicker = false;
+            multiSelectedMedia.value = [];
+            mediaPickerIsMulti.value = false;
+        };
+        // Media shortcode modal
+        const mediaScImg   = ref('');
+        const mediaScVideo = ref('');
+        const openMediaShortcodeModal = () => { mediaScImg.value=''; mediaScVideo.value=''; modals.mediaShortcode=true; };
+        const confirmMediaShortcode = () => {
+            const sc = `[media img="${mediaScImg.value}" video="${mediaScVideo.value}"]`;
+            insertShortcode(sc);
+            postForm.extras._media_img_url   = mediaScImg.value;
+            postForm.extras._media_video_url = mediaScVideo.value;
+            modals.mediaShortcode = false;
+        };
         const deleteMedia = async id => { if(!confirm('Delete this file?')) return; await api(`/admin/api/media.php?action=delete&id=${id}`,{method:'POST',body:'{}'}); await loadMedia(); };
         const copyUrl = url => { navigator.clipboard.writeText(location.origin+url); showAlert('URL copied!'); };
 
@@ -2119,6 +2203,8 @@ createApp({
             openCaseEditor, saveCase, deleteCase,
             postsList, editingPost, postTab, authorsList, postForm, defaultExtras,
             galleryAddImage, galleryMoveImg, buildGalleryShortcode, buildMediaShortcode, insertShortcode,
+            mediaPickerIsMulti, multiSelectedMedia, openMultiPicker, toggleMultiSelect, confirmMultiSelect,
+            mediaScImg, mediaScVideo, openMediaShortcodeModal, confirmMediaShortcode,
             openPostEditor, switchPostTab, savePost, deletePost, copyGalleryShortcode, copyMediaShortcode,
             termForm, openTermModal, saveTerm, deleteTerm,
             authorForm, openAuthorModal, saveAuthor, deleteAuthor,
