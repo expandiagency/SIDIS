@@ -6302,10 +6302,7 @@ textarea.input {
     height: 28px;
   }
   .hero__bg {
-    mask-image: url("../assets/img/mask-hero-mob.svg");
-    mask-repeat: no-repeat;
-    mask-position: top left;
-    mask-size: cover;
+    mask-image: none;
   }
   .why__slider:not(.swiper-initialized) .why__slide:nth-child(n+2) {
     display: none;
