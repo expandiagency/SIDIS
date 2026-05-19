@@ -11,6 +11,9 @@ $id      = (int)($_GET['id'] ?? 0);
 
 
 try { db()->exec("ALTER TABLE reviews ADD COLUMN clutch_url VARCHAR(500) DEFAULT NULL"); } catch(Exception $e) {}
+try { db()->exec("ALTER TABLE home_content ADD COLUMN solutions_ids TEXT DEFAULT NULL"); } catch(Exception $e) {}
+try { db()->exec("ALTER TABLE home_content ADD COLUMN departments_ids TEXT DEFAULT NULL"); } catch(Exception $e) {}
+try { db()->exec("ALTER TABLE home_content ADD COLUMN industries_ids TEXT DEFAULT NULL"); } catch(Exception $e) {}
 
 if ($method === 'GET') {
     if ($action === 'why_slides') {
@@ -45,6 +48,9 @@ if ($method === 'GET') {
     }
     // Main home content
     $content = row('SELECT * FROM home_content WHERE lang_id=?', [$lang_id]) ?? [];
+    foreach (['solutions_ids','departments_ids','industries_ids'] as $k) {
+        $content[$k] = json_decode($content[$k] ?? '[]', true) ?: [];
+    }
     json_response($content);
 }
 
@@ -60,6 +66,9 @@ if ($method === 'POST') {
                    'reviews_title','cta_title','cta_subtitle','cta_btn_text','cta_btn_url'];
         $save = ['lang_id' => $lang_id];
         foreach ($fields as $f) $save[$f] = $data[$f] ?? '';
+        $save['solutions_ids']  = json_encode(array_map('intval', $data['solutions_ids']  ?? []));
+        $save['departments_ids'] = json_encode(array_map('intval', $data['departments_ids'] ?? []));
+        $save['industries_ids'] = json_encode(array_map('intval', $data['industries_ids']  ?? []));
         $existing = row('SELECT id FROM home_content WHERE lang_id=?', [$lang_id]);
         if ($existing) {
             update('home_content', $save, ['lang_id' => $lang_id]);

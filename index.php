@@ -280,10 +280,14 @@ switch ($page) {
         $template_data['partners']   = get_partner_logos();
         $template_data['auto_imgs']  = get_automation_images();
         $template_data['reviews']    = get_reviews($lang_id);
+        $h = $template_data['home'];
+        $sol_ids  = json_decode($h['solutions_ids']  ?? '[]', true) ?: [];
+        $dept_ids = json_decode($h['departments_ids'] ?? '[]', true) ?: [];
+        $ind_ids  = json_decode($h['industries_ids']  ?? '[]', true) ?: [];
         $template_data['solutions_items'] = [
-            'solutions'   => get_solution_items($lang_id, 'solution'),
-            'departments' => get_solution_items($lang_id, 'department'),
-            'industries'  => get_solution_items($lang_id, 'industry'),
+            'solutions'   => get_solution_items($lang_id, 'solution',    $sol_ids),
+            'departments' => get_solution_items($lang_id, 'department',  $dept_ids),
+            'industries'  => get_solution_items($lang_id, 'industry',    $ind_ids),
         ];
         $template_data['featured_cases'] = get_cases($lang_id, ['is_featured'=>1], 4);
         if (empty($template_data['featured_cases'])) {

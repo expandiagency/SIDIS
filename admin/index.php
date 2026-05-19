@@ -351,6 +351,22 @@ tr:hover td{background:#fafafa}
                     <div class="field"><label>Why Section Subtitle</label><input v-model="homeData.why_subtitle"></div>
                     <div class="field"><label>Why Section Text</label><textarea v-model="homeData.why_text" rows="3"></textarea></div>
                 </div>
+
+                <hr style="margin:24px 0;border:none;border-top:1px solid var(--border)">
+                <p style="font-size:15px;font-weight:600;margin-bottom:4px">Items shown in Automation Solutions block</p>
+                <p style="font-size:12px;color:var(--muted);margin-bottom:16px">Leave all unchecked = show all active items</p>
+
+                <div v-for="group in [{key:'solutions_ids',label:'Solutions',type:'solution'},{key:'departments_ids',label:'Departments',type:'department'},{key:'industries_ids',label:'Industries',type:'industry'}]" :key="group.key" style="margin-bottom:20px">
+                    <p style="font-size:13px;font-weight:600;margin-bottom:8px">{{ group.label }}</p>
+                    <div style="display:flex;flex-wrap:wrap;gap:8px">
+                        <label v-for="p in allSolPages.filter(x=>x.type===group.type)" :key="p.id"
+                               style="display:flex;align-items:center;gap:6px;cursor:pointer;padding:4px 10px;background:#f8f9fa;border-radius:6px;font-size:13px">
+                            <input type="checkbox" :value="p.id" v-model="homeData[group.key]">
+                            {{ p.title || p.slug }}
+                        </label>
+                        <span v-if="!allSolPages.filter(x=>x.type===group.type).length" style="font-size:12px;color:var(--muted)">No items yet</span>
+                    </div>
+                </div>
             </div></div>
 
             <!-- Roadmap & CTA -->
@@ -1676,16 +1692,21 @@ createApp({
         const partnerLogos = ref([]);
         const autoImages = ref([]);
         const reviews = ref([]);
+        const allSolPages = ref([]);
         const whySlideForm = reactive({id:0,sort_order:0,title:'',text:'',icon_svg:''});
         const reviewForm = reactive({id:0,sort_order:0,quote:'',text:'',author_name:'',author_title:'',linkedin_url:'',clutch_url:'',author_image_id:null,author_image_url:'',is_active:1});
 
         const loadHome = async () => {
             const d = await api(`/admin/api/home.php?lang_id=${langId.value}`);
+            if (!Array.isArray(d.solutions_ids)) d.solutions_ids = [];
+            if (!Array.isArray(d.departments_ids)) d.departments_ids = [];
+            if (!Array.isArray(d.industries_ids)) d.industries_ids = [];
             Object.assign(homeData, d);
             whySlides.value = await api(`/admin/api/home.php?action=why_slides&lang_id=${langId.value}`);
             partnerLogos.value = await api(`/admin/api/home.php?action=partner_logos&lang_id=${langId.value}`);
             autoImages.value = await api(`/admin/api/home.php?action=auto_images&lang_id=${langId.value}`);
             reviews.value = await api(`/admin/api/home.php?action=reviews&lang_id=${langId.value}`);
+            allSolPages.value = await api(`/admin/api/sol_pages.php?action=list&lang_id=${langId.value}`);
         };
         const saveHome = async () => {
             await api(`/admin/api/home.php?action=save_content&lang_id=${langId.value}`,{method:'POST',body:JSON.stringify(homeData)});
@@ -2212,7 +2233,7 @@ createApp({
             modals, langForm, openLangModal, saveLang, deleteLang, setDefaultLang,
             homeTab, homeData, whySlides, partnerLogos, autoImages, reviews,
             whySlideForm, reviewForm,
-            saveHome, openWhySlideModal, saveWhySlide, deleteWhySlide,
+            saveHome, allSolPages, openWhySlideModal, saveWhySlide, deleteWhySlide,
             openReviewModal, saveReview, deleteReview,
             addPartnerLogo, deletePartnerLogo, addAutoImage, deleteAutoImage,
             navLocation, navItems_data, navForm, megaNavItem, megaCategories,

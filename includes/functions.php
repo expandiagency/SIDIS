@@ -164,7 +164,7 @@ function get_sol_page_blocks(int $page_id, int $lang_id): array {
     return $result;
 }
 
-function get_solution_items(int $lang_id, string $type = null): array {
+function get_solution_items(int $lang_id, string $type = null, array $ids = []): array {
     $sql = "SELECT sp.id, sp.type, sp.sort_order, sp.is_active, sp.icon_svg,
                    CONCAT('/', sp.type, 's/', sp.slug, '/') as btn_url,
                    spt.title, spt.description, spt.btn1_text as btn_text
@@ -173,6 +173,11 @@ function get_solution_items(int $lang_id, string $type = null): array {
             WHERE sp.is_active=1";
     $params = [$lang_id];
     if ($type) { $sql .= ' AND sp.type=?'; $params[] = $type; }
+    if (!empty($ids)) {
+        $ph = implode(',', array_fill(0, count($ids), '?'));
+        $sql .= " AND sp.id IN ($ph)";
+        $params = array_merge($params, array_map('intval', $ids));
+    }
     $sql .= ' ORDER BY sp.sort_order';
     return rows($sql, $params);
 }
