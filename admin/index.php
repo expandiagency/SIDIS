@@ -1305,6 +1305,7 @@ tr:hover td{background:#fafafa}
                 <div class="field"><label>Author Name</label><input v-model="reviewForm.author_name"></div>
                 <div class="field"><label>Author Title / Position</label><input v-model="reviewForm.author_title"></div>
                 <div class="field"><label>LinkedIn URL</label><input v-model="reviewForm.linkedin_url"></div>
+                <div class="field"><label>Clutch Review URL</label><input v-model="reviewForm.clutch_url" placeholder="https://clutch.co/profile/..."></div>
                 <div class="field"><label>Author Photo</label>
                     <div class="img-picker"><img v-if="reviewForm.author_image_url" :src="reviewForm.author_image_url" class="img-thumb"><button class="btn btn--outline btn--sm" @click="pickMedia(m=>{reviewForm.author_image_id=m.id;reviewForm.author_image_url=m.url})">Choose</button></div>
                 </div>
@@ -1676,7 +1677,7 @@ createApp({
         const autoImages = ref([]);
         const reviews = ref([]);
         const whySlideForm = reactive({id:0,sort_order:0,title:'',text:'',icon_svg:''});
-        const reviewForm = reactive({id:0,sort_order:0,quote:'',text:'',author_name:'',author_title:'',linkedin_url:'',author_image_id:null,author_image_url:'',is_active:1});
+        const reviewForm = reactive({id:0,sort_order:0,quote:'',text:'',author_name:'',author_title:'',linkedin_url:'',clutch_url:'',author_image_id:null,author_image_url:'',is_active:1});
 
         const loadHome = async () => {
             const d = await api(`/admin/api/home.php?lang_id=${langId.value}`);
@@ -1700,7 +1701,7 @@ createApp({
             await api(`/admin/api/home.php?action=delete_why_slide&id=${id}&lang_id=${langId.value}`,{method:'POST'});
             whySlides.value = await api(`/admin/api/home.php?action=why_slides&lang_id=${langId.value}`);
         };
-        const openReviewModal = (r=null) => { Object.assign(reviewForm,r?{...r,author_image_url:r.author_image_url||''}:{id:0,sort_order:reviews.value.length,quote:'',text:'',author_name:'',author_title:'',linkedin_url:'',author_image_id:null,author_image_url:'',is_active:1}); modals.review=true; };
+        const openReviewModal = (r=null) => { Object.assign(reviewForm,r?{...r,author_image_url:r.author_image_url||''}:{id:0,sort_order:reviews.value.length,quote:'',text:'',author_name:'',author_title:'',linkedin_url:'',clutch_url:'',author_image_id:null,author_image_url:'',is_active:1}); modals.review=true; };
         const saveReview = async () => {
             await api(`/admin/api/home.php?action=save_review&lang_id=${langId.value}${reviewForm.id?'&id='+reviewForm.id:''}`,{method:'POST',body:JSON.stringify(reviewForm)});
             modals.review=false; reviews.value = await api(`/admin/api/home.php?action=reviews&lang_id=${langId.value}`); showAlert('Saved!');

@@ -313,12 +313,13 @@ require __DIR__ . '/layout.php';
                                     <img src="./assets/img/icons/linkedin.svg" alt="LinkedIn" loading="lazy">
                                 </a>
                                 <?php endif; ?>
+                                <?php $clutch_href = !empty($r['clutch_url']) ? $r['clutch_url'] : (get_setting('clutch_url') ?: '#'); ?>
                                 <?php if (!empty($r['rating_image_path'])): ?>
-                                <a href="#" class="reviews-card__user-social">
+                                <a href="<?= e($clutch_href) ?>" class="reviews-card__user-social" target="_blank" rel="noopener">
                                     <img src="<?= e(media_url($r['rating_image_path'])) ?>" alt="Rating" loading="lazy">
                                 </a>
                                 <?php else: ?>
-                                <a href="#" class="reviews-card__user-social">
+                                <a href="<?= e($clutch_href) ?>" class="reviews-card__user-social" target="_blank" rel="noopener">
                                     <img src="./assets/img/header/Rating%20Container.svg" alt="Rating" loading="lazy">
                                 </a>
                                 <?php endif; ?>

@@ -10,6 +10,8 @@ $lang_id = (int)($_GET['lang_id'] ?? 1);
 $id      = (int)($_GET['id'] ?? 0);
 
 
+try { db()->exec("ALTER TABLE reviews ADD COLUMN clutch_url VARCHAR(500) DEFAULT NULL"); } catch(Exception $e) {}
+
 if ($method === 'GET') {
     if ($action === 'why_slides') {
         json_response(rows('SELECT * FROM home_why_slides WHERE lang_id=? ORDER BY sort_order', [$lang_id]));
@@ -97,6 +99,7 @@ if ($method === 'POST') {
         $r = ['sort_order'=>(int)($data['sort_order']??0),
               'author_image_id'=>($data['author_image_id']??null)?:(null),
               'linkedin_url'=>$data['linkedin_url']??'',
+              'clutch_url'=>$data['clutch_url']??'',
               'rating_image_id'=>($data['rating_image_id']??null)?:(null),
               'is_active'=>(int)($data['is_active']??1)];
         if (!$id) $id = insert('reviews', $r);
