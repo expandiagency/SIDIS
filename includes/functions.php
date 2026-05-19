@@ -424,13 +424,17 @@ function render_article_content(string $content, array $extras = []): string {
         return '<div class="article-block__media">' . _render_media_slot($left) . _render_media_slot($right) . '</div>';
     }, $content);
 
-    // [cta]
-    $content = preg_replace_callback('/\[cta\]/i', function($m) use ($extras) {
-        $title = htmlspecialchars($extras['cta_title'] ?? 'Curious which solution fits your business needs?', ENT_QUOTES, 'UTF-8');
-        $btn1_text = htmlspecialchars($extras['cta_btn1_text'] ?? 'Try AI assistant', ENT_QUOTES, 'UTF-8');
-        $btn1_url  = htmlspecialchars($extras['cta_btn1_url']  ?? '#', ENT_QUOTES, 'UTF-8');
-        $btn2_text = htmlspecialchars($extras['cta_btn2_text'] ?? 'Free audit', ENT_QUOTES, 'UTF-8');
-        $btn2_url  = htmlspecialchars($extras['cta_btn2_url']  ?? '#getintouch', ENT_QUOTES, 'UTF-8');
+    // [cta] or [cta title="..." btn1_text="..." btn1_url="..." btn2_text="..." btn2_url="..."]
+    $content = preg_replace_callback('/\[cta([^\]]*)\]/i', function($m) use ($extras) {
+        $attrs = [];
+        if (preg_match_all('/(\w+)=["\']([^"\']*)["\']/', $m[1], $am, PREG_SET_ORDER)) {
+            foreach ($am as $a) $attrs[$a[1]] = $a[2];
+        }
+        $title = htmlspecialchars($attrs['title'] ?? $extras['cta_title'] ?? 'Curious which solution fits your business needs?', ENT_QUOTES, 'UTF-8');
+        $btn1_text = htmlspecialchars($attrs['btn1_text'] ?? $extras['cta_btn1_text'] ?? 'Try AI assistant', ENT_QUOTES, 'UTF-8');
+        $btn1_url  = htmlspecialchars($attrs['btn1_url']  ?? $extras['cta_btn1_url']  ?? '#', ENT_QUOTES, 'UTF-8');
+        $btn2_text = htmlspecialchars($attrs['btn2_text'] ?? $extras['cta_btn2_text'] ?? 'Free audit', ENT_QUOTES, 'UTF-8');
+        $btn2_url  = htmlspecialchars($attrs['btn2_url']  ?? $extras['cta_btn2_url']  ?? '#getintouch', ENT_QUOTES, 'UTF-8');
         $arrow_svg = '<svg width="14" height="14" viewbox="0 0 14 14" fill="none"><path d="M0.566406 12.8L12.5664 0.800049M12.5664 0.800049L12.5664 12.8M12.5664 0.800049L0.679613 0.800049" stroke="currentColor" stroke-width="1.6"></path></svg>';
         return '<div class="planning__info"><div class="planning__info-img"><img alt="Image" loading="lazy" src="/assets/img/projects/image-6.webp"></div><div class="planning__info-body"><div class="planning__info-title">' . $title . '</div><div class="planning__info-btns"><a href="' . $btn1_url . '" class="planning__info-btn button">' . $btn1_text . '</a><a href="' . $btn2_url . '" class="planning__info-btn button button--icon"><span class="button__text">' . $btn2_text . '</span><span class="button__icon">' . $arrow_svg . '</span></a></div></div></div>';
     }, $content);

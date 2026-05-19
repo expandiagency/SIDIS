@@ -975,26 +975,26 @@ tr:hover td{background:#fafafa}
                             <button class="btn btn--outline btn--sm" @click="openMediaShortcodeModal()" style="display:flex;align-items:center;gap:5px">
                                 🎬 Insert Media (img+video)
                             </button>
-                            <button class="btn btn--outline btn--sm" @click="insertShortcode('[cta]')" style="display:flex;align-items:center;gap:5px">
+                            <button class="btn btn--outline btn--sm" @click="openCtaModal()" style="display:flex;align-items:center;gap:5px">
                                 📣 Insert CTA Block
                             </button>
                         </div>
                         <!-- Shortcode instructions -->
                         <details style="margin-bottom:12px;border:1px solid #e0e7ff;border-radius:8px;overflow:hidden">
                             <summary style="padding:10px 14px;background:#f0f4ff;cursor:pointer;font-size:13px;font-weight:600;color:#4338ca;list-style:none;display:flex;align-items:center;gap:6px">
-                                📋 Shortcode Instructions — click to expand
+                                📋 Как вставлять блоки — нажмите чтобы развернуть
                             </summary>
                             <div style="padding:14px 16px;font-size:13px;line-height:1.7;background:#fff">
-                                <p style="margin-bottom:10px;color:#555">Use the <strong>Source Editing</strong> button (<code>&lt;&gt;</code>) in the toolbar to switch to HTML view and paste shortcodes. Or use the builders in the <strong>Extras</strong> tab and click <strong>"Insert into Content"</strong>.</p>
+                                <p style="margin-bottom:12px;color:#555">Используйте кнопки панели инструментов выше — они открывают визуальные конструкторы и вставляют блоки прямо в текст в позиции курсора.</p>
                                 <table style="width:100%;border-collapse:collapse;font-size:12px">
-                                    <thead><tr style="background:#f8f9fa"><th style="padding:6px 10px;text-align:left;border:1px solid #e2e4e8">Shortcode</th><th style="padding:6px 10px;text-align:left;border:1px solid #e2e4e8">What it inserts</th><th style="padding:6px 10px;text-align:left;border:1px solid #e2e4e8">How to use</th></tr></thead>
+                                    <thead><tr style="background:#f0f4ff"><th style="padding:7px 10px;text-align:left;border:1px solid #e2e4e8">Кнопка</th><th style="padding:7px 10px;text-align:left;border:1px solid #e2e4e8">Что вставляет</th><th style="padding:7px 10px;text-align:left;border:1px solid #e2e4e8">Как работает</th></tr></thead>
                                     <tbody>
-                                        <tr><td style="padding:6px 10px;border:1px solid #e2e4e8"><code>[gallery img="url1,url2"]</code></td><td style="padding:6px 10px;border:1px solid #e2e4e8">Image carousel / slider</td><td style="padding:6px 10px;border:1px solid #e2e4e8">Use <strong>Gallery Builder</strong> in Extras tab → Insert into Content</td></tr>
-                                        <tr style="background:#fafafa"><td style="padding:6px 10px;border:1px solid #e2e4e8"><code>[media img="..." video="..."]</code></td><td style="padding:6px 10px;border:1px solid #e2e4e8">Image on left + video on right</td><td style="padding:6px 10px;border:1px solid #e2e4e8">Use <strong>Media Builder</strong> in Extras tab → Insert into Content</td></tr>
-                                        <tr><td style="padding:6px 10px;border:1px solid #e2e4e8"><code>[cta]</code></td><td style="padding:6px 10px;border:1px solid #e2e4e8">Call-to-action block with buttons</td><td style="padding:6px 10px;border:1px solid #e2e4e8">Fill in CTA fields in Extras tab, then type <code>[cta]</code> where you want it</td></tr>
+                                        <tr><td style="padding:6px 10px;border:1px solid #e2e4e8">🖼 Insert Gallery</td><td style="padding:6px 10px;border:1px solid #e2e4e8">Карусель изображений</td><td style="padding:6px 10px;border:1px solid #e2e4e8">Откроется библиотека медиа — кликайте фото в нужном порядке (номера появятся на картинках), затем нажмите "Insert N Images"</td></tr>
+                                        <tr style="background:#fafafa"><td style="padding:6px 10px;border:1px solid #e2e4e8">🎬 Insert Media</td><td style="padding:6px 10px;border:1px solid #e2e4e8">Блок: фото + видео/фото</td><td style="padding:6px 10px;border:1px solid #e2e4e8">Два слота (левый и правый). Кликните слот → выберите из библиотеки. Переключатель Library / YouTube для каждого слота.</td></tr>
+                                        <tr><td style="padding:6px 10px;border:1px solid #e2e4e8">📣 Insert CTA</td><td style="padding:6px 10px;border:1px solid #e2e4e8">Блок призыва к действию</td><td style="padding:6px 10px;border:1px solid #e2e4e8">Откроется форма — заполните заголовок и кнопки, нажмите "Insert"</td></tr>
                                     </tbody>
                                 </table>
-                                <p style="margin-top:10px;color:#888;font-size:12px">💡 Tip: Headings H2, H3, H4 are automatically added to the Table of Contents sidebar. Use H2 for main sections, H3 for subsections.</p>
+                                <p style="margin-top:10px;color:#888;font-size:12px">💡 Заголовки H2, H3, H4 автоматически попадают в боковое меню (Table of Contents) статьи. Используйте H2 для основных разделов, H3 для подразделов.</p>
                             </div>
                         </details>
                         <div id="ckeditor-mount" style="min-height:500px"></div>
@@ -1033,83 +1033,6 @@ tr:hover td{background:#fafafa}
                     </div>
 
                     <div v-if="postTab==='Extras'">
-                        <!-- CTA Block -->
-                        <div style="margin-bottom:24px">
-                            <strong style="font-size:14px;display:block;margin-bottom:12px">CTA Block <span style="font-weight:400;font-size:12px;color:var(--muted)">(use <code>[cta]</code> shortcode in content)</span></strong>
-                            <div class="form-grid cols-1" style="gap:8px">
-                                <div class="field"><label>CTA Title</label><input v-model="postForm.extras.cta_title" placeholder="Curious which solution fits your business?"></div>
-                                <div class="form-grid">
-                                    <div class="field"><label>Button 1 Text</label><input v-model="postForm.extras.cta_btn1_text"></div>
-                                    <div class="field"><label>Button 1 URL</label><input v-model="postForm.extras.cta_btn1_url"></div>
-                                </div>
-                                <div class="form-grid">
-                                    <div class="field"><label>Button 2 Text</label><input v-model="postForm.extras.cta_btn2_text"></div>
-                                    <div class="field"><label>Button 2 URL</label><input v-model="postForm.extras.cta_btn2_url"></div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Gallery Shortcode Builder -->
-                        <div style="margin-bottom:24px;border:1px solid var(--border);border-radius:10px;overflow:hidden">
-                            <div style="background:#f8f9fa;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border)">
-                                <div>
-                                    <strong style="font-size:14px">🖼 Gallery Builder</strong>
-                                    <span style="font-size:12px;color:var(--muted);margin-left:8px">→ вставляет блок с каруселью изображений</span>
-                                </div>
-                                <div style="display:flex;gap:8px">
-                                    <button class="btn btn--outline btn--sm" @click="pickMedia(m=>galleryAddImage(m))">+ Add Image</button>
-                                    <button v-if="postForm.extras._gallery_imgs.length" class="btn btn--primary btn--sm" @click="insertShortcode(buildGalleryShortcode())">Insert into Content</button>
-                                </div>
-                            </div>
-                            <div style="padding:12px 16px">
-                                <div v-if="!postForm.extras._gallery_imgs.length" style="color:var(--muted);font-size:13px;padding:12px 0;text-align:center">No images selected. Click "+ Add Image" to pick from Media Library.</div>
-                                <div v-else style="display:flex;flex-wrap:wrap;gap:10px;margin-bottom:12px">
-                                    <div v-for="(img,i) in postForm.extras._gallery_imgs" :key="i" style="position:relative;width:100px">
-                                        <img :src="img.url" style="width:100px;height:70px;object-fit:cover;border-radius:6px;display:block;border:1px solid var(--border)">
-                                        <div style="display:flex;gap:2px;margin-top:4px;justify-content:center">
-                                            <button class="btn btn--icon btn--sm" style="font-size:14px;padding:2px 6px" @click="galleryMoveImg(i,-1)" :disabled="i===0" title="Move left">←</button>
-                                            <button class="btn btn--icon btn--sm" style="font-size:14px;padding:2px 6px" @click="galleryMoveImg(i,1)" :disabled="i===postForm.extras._gallery_imgs.length-1" title="Move right">→</button>
-                                            <button class="btn btn--sm" style="background:var(--red);color:#fff;padding:2px 6px;font-size:12px" @click="postForm.extras._gallery_imgs.splice(i,1)" title="Remove">×</button>
-                                        </div>
-                                    </div>
-                                </div>
-                                <code v-if="postForm.extras._gallery_imgs.length" style="font-size:11px;color:var(--muted);word-break:break-all">{{ buildGalleryShortcode() }}</code>
-                            </div>
-                        </div>
-
-                        <!-- Media Shortcode Builder -->
-                        <div style="margin-bottom:24px;border:1px solid var(--border);border-radius:10px;overflow:hidden">
-                            <div style="background:#f8f9fa;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border)">
-                                <div>
-                                    <strong style="font-size:14px">🎬 Media Builder</strong>
-                                    <span style="font-size:12px;color:var(--muted);margin-left:8px">→ блок: изображение слева + видео справа</span>
-                                </div>
-                                <button v-if="postForm.extras._media_img_url||postForm.extras._media_video_url" class="btn btn--primary btn--sm" @click="insertShortcode(buildMediaShortcode())">Insert into Content</button>
-                            </div>
-                            <div style="padding:12px 16px">
-                                <div class="form-grid" style="margin-bottom:12px">
-                                    <div class="field">
-                                        <label>Image (left side)</label>
-                                        <div style="display:flex;gap:8px;align-items:center">
-                                            <img v-if="postForm.extras._media_img_url" :src="postForm.extras._media_img_url" style="width:60px;height:42px;object-fit:cover;border-radius:4px;border:1px solid var(--border)">
-                                            <div style="display:flex;flex-direction:column;gap:4px;flex:1">
-                                                <button class="btn btn--outline btn--sm" @click="pickMedia(m=>{postForm.extras._media_img_url=m.url})">{{ postForm.extras._media_img_url ? 'Change Image' : 'Pick Image' }}</button>
-                                                <button v-if="postForm.extras._media_img_url" class="btn btn--sm" style="background:var(--red);color:#fff" @click="postForm.extras._media_img_url=''">Remove</button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="field">
-                                        <label>Video URL (right side)</label>
-                                        <input v-model="postForm.extras._media_video_url" placeholder="/assets/video/video.mp4">
-                                        <div style="margin-top:4px;display:flex;gap:6px">
-                                            <button class="btn btn--outline btn--sm" @click="pickMedia(m=>{postForm.extras._media_video_url=m.url})">Pick from Library</button>
-                                        </div>
-                                    </div>
-                                </div>
-                                <code v-if="postForm.extras._media_img_url||postForm.extras._media_video_url" style="font-size:11px;color:var(--muted);word-break:break-all">{{ buildMediaShortcode() }}</code>
-                            </div>
-                        </div>
-
                         <!-- FAQ -->
                         <div style="margin-bottom:24px">
                             <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
@@ -1629,6 +1552,29 @@ tr:hover td{background:#fafafa}
     </div>
 </div>
 
+<!-- CTA Modal -->
+<div v-if="modals.ctaModal" class="modal-overlay" @click.self="modals.ctaModal=false">
+    <div class="modal" style="max-width:560px">
+        <div class="modal__head"><h3>📣 Insert CTA Block</h3><button class="btn btn--icon" @click="modals.ctaModal=false">×</button></div>
+        <div class="modal__body">
+            <div class="form-grid cols-1" style="gap:12px">
+                <div class="field"><label>Title</label><input v-model="ctaForm.title" placeholder="Curious which solution fits your business needs?"></div>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+                    <div class="field"><label>Button 1 Text</label><input v-model="ctaForm.btn1_text" placeholder="Try AI assistant"></div>
+                    <div class="field"><label>Button 1 URL</label><input v-model="ctaForm.btn1_url" placeholder="#"></div>
+                    <div class="field"><label>Button 2 Text</label><input v-model="ctaForm.btn2_text" placeholder="Free audit"></div>
+                    <div class="field"><label>Button 2 URL</label><input v-model="ctaForm.btn2_url" placeholder="#getintouch"></div>
+                </div>
+            </div>
+            <code style="display:block;margin-top:14px;font-size:11px;background:#f8f9fa;padding:8px;border-radius:6px;word-break:break-all">{{ buildCtaShortcode() }}</code>
+        </div>
+        <div class="modal__foot">
+            <button class="btn btn--outline" @click="modals.ctaModal=false">Cancel</button>
+            <button class="btn btn--primary" @click="confirmCta()">Insert into Content</button>
+        </div>
+    </div>
+</div>
+
 </div><!-- #app -->
 
 <script>
@@ -1689,7 +1635,7 @@ createApp({
         /* ─── Languages ─────────────────────────────────────────────────── */
         const langForm = reactive({id:0, code:'', name:'', is_active:1});
         const modals = reactive({lang:false, whySlide:false, review:false, nav:false, mega:false,
-                                  solutionItem:false, term:false, author:false, mediaPicker:false, mediaShortcode:false});
+                                  solutionItem:false, term:false, author:false, mediaPicker:false, mediaShortcode:false, ctaModal:false});
 
         const loadLanguages = async () => {
             languages.value = await api('/admin/api/languages.php');
@@ -2107,6 +2053,18 @@ createApp({
             postForm.extras._media_video_url = mediaScSlots.value[1].url;
             modals.mediaShortcode = false;
         };
+        // CTA modal
+        const ctaForm = reactive({title:'', btn1_text:'Try AI assistant', btn1_url:'#', btn2_text:'Free audit', btn2_url:'#getintouch'});
+        const openCtaModal = () => { modals.ctaModal = true; };
+        const buildCtaShortcode = () => {
+            const e = (s) => s.replace(/"/g, '&quot;');
+            return `[cta title="${e(ctaForm.title)}" btn1_text="${e(ctaForm.btn1_text)}" btn1_url="${e(ctaForm.btn1_url)}" btn2_text="${e(ctaForm.btn2_text)}" btn2_url="${e(ctaForm.btn2_url)}"]`;
+        };
+        const confirmCta = () => {
+            insertShortcode(buildCtaShortcode());
+            modals.ctaModal = false;
+        };
+
         // Legacy compat refs (Extras tab still uses these)
         const mediaScImg   = computed(()=>mediaScSlots.value[0].url);
         const mediaScVideo = computed(()=>mediaScSlots.value[1].url);
@@ -2257,6 +2215,7 @@ createApp({
             mediaPickerIsMulti, multiSelectedMedia, openMultiPicker, toggleMultiSelect, confirmMultiSelect,
             mediaScSlots, mediaScActiveSlot, mediaScPickSlot, buildMediaShortcodeFromSlots,
             mediaScImg, mediaScVideo, openMediaShortcodeModal, confirmMediaShortcode,
+            ctaForm, openCtaModal, buildCtaShortcode, confirmCta,
             openPostEditor, switchPostTab, savePost, deletePost, copyGalleryShortcode, copyMediaShortcode,
             termForm, openTermModal, saveTerm, deleteTerm,
             authorForm, openAuthorModal, saveAuthor, deleteAuthor,
