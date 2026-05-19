@@ -407,7 +407,10 @@ function get_terms(int $lang_id, string $type): array {
 
 function media_url($path): string {
     if (!$path) return '';
-    if ($path[0] === '/' || strpos($path, 'http') === 0 || strpos($path, './') === 0) return $path;
+    if ($path[0] === '/') return $path;
+    if (strpos($path, 'http') === 0) return $path;
+    // ./assets/img/... → /assets/img/... (relative paths break on sub-URLs)
+    if (strpos($path, './') === 0) return '/' . substr($path, 2);
     return UPLOAD_URL . $path;
 }
 
