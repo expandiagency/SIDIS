@@ -23,6 +23,8 @@ $default_challenges = [
 ];
 
 // Default tech items (from case.html)
+// case_tech_items table columns: case_id, lang_id, name, icon_svg, sort_order (no description)
+// descriptions are stored in extras.tech_items[]
 $default_tech = [
     ['name'=>"Backend\nDevelopment",  'description'=>'We built a robust, scalable backend using Node.js and PostgreSQL, designed to handle high transaction volumes with minimal latency.'],
     ['name'=>"Frontend\nDevelopment", 'description'=>'React-based frontend delivers a seamless user experience across all devices with real-time data updates.'],
@@ -35,6 +37,13 @@ $default_tech = [
 $default_extras = [
     'challenges_text'   => 'SIDIS helps SMEs replace manual, time-consuming processes with intelligent automation. From auditing workflows to integrating RPA with your existing systems, we streamline operations, reduce errors, and save your team valuable time and costs.',
     'tech_text'         => 'To effectively automate tasks, our team selected a suite of technologies designed to enhance campaign management, customer engagement, and data analysis.',
+    'tech_items'        => [
+        ['name'=>"Backend\nDevelopment",  'description'=>'We built a robust, scalable backend using Node.js and PostgreSQL, designed to handle high transaction volumes with minimal latency.'],
+        ['name'=>"Frontend\nDevelopment", 'description'=>'React-based frontend delivers a seamless user experience across all devices with real-time data updates.'],
+        ['name'=>"Database\nManagement",  'description'=>'PostgreSQL for structured data, Redis for caching — ensuring peak performance and reliability under load.'],
+        ['name'=>"Cloud\nInfrastructure", 'description'=>'AWS-hosted infrastructure with auto-scaling, load balancing, and 99.9% uptime SLA.'],
+        ['name'=>"AI &\nAutomation",      'description'=>'Machine learning models and RPA workflows automate repetitive tasks and surface actionable insights.'],
+    ],
     'solution_subtitle' => 'The Solution',
     'solution_title'    => 'End-to-end automation and digital transformation delivered in parallel',
     'solution_text1'    => '<p>The range of services provided by SIDIS covers full-cycle product development and includes business analysis, product design, software architecture, data science, software development, quality assurance and implementation. Thanks to our ability to adjust the delivery volume quickly, <b>SIDIS has grown the dedicated team from 10 to 50 specialists</b> in just the first three months of our partnership.</p><ul><li>Full workflow audit and automation blueprint delivered in week one.</li><li>Custom RPA bots deployed for invoice processing, data entry, and reporting.</li><li>CRM integration connecting sales, support, and billing into one unified view.</li><li>AI-powered dashboard providing real-time operational insights.</li></ul>',
@@ -101,11 +110,11 @@ foreach ($all_cases as $c) {
         echo "Challenges already exist.\n";
     }
 
-    // Seed tech items if none
+    // Seed tech items if none (table has: case_id, lang_id, name, icon_svg, sort_order — no description)
     $tech_count = row('SELECT COUNT(*) as c FROM case_tech_items WHERE case_id=?', [$case_id])['c'];
     if ((int)$tech_count === 0) {
         foreach ($default_tech as $i => $t) {
-            insert('case_tech_items', ['case_id'=>$case_id,'lang_id'=>$lang_id,'name'=>$t['name'],'description'=>$t['description'],'sort_order'=>$i]);
+            insert('case_tech_items', ['case_id'=>$case_id,'lang_id'=>$lang_id,'name'=>$t['name'],'icon_svg'=>'','sort_order'=>$i]);
         }
         echo "Tech items seeded.\n";
     } else {
