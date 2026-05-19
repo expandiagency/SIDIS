@@ -251,6 +251,13 @@ require __DIR__ . '/layout.php';
                         <div class="projects-card__title"><?= e($case['title'] ?? '') ?></div>
                     </div>
                     <div class="projects-card__descr">
+                        <?php if (!empty($case['terms'])): ?>
+                        <div class="projects-card__tags">
+                            <?php foreach (array_slice($case['terms'], 0, 3) as $term): ?>
+                            <div class="projects-card__tag"><?= e($term['name']) ?></div>
+                            <?php endforeach; ?>
+                        </div>
+                        <?php endif; ?>
                         <div class="projects-card__descr-inner">
                             <div class="projects-card__text"><?= e($case['description'] ?? '') ?></div>
                         </div>
