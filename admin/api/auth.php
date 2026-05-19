@@ -15,7 +15,9 @@ if ($action === 'login') {
 
 if ($action === 'logout') {
     admin_logout();
-    json_response(['ok' => true]);
+    // Redirect for direct navigation; Vue logout also does location.href after this
+    header('Location: /admin/login.php');
+    exit;
 }
 
 if ($action === 'check') {
