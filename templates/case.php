@@ -45,11 +45,14 @@ foreach ($case['terms'] ?? [] as $term) {
                 <?php endif; ?>
             </div>
             <div class="promo-case__img">
-                <?php if (!empty($case['image_path'])): ?>
-                <img alt="<?= e($case['title'] ?? '') ?>" loading="lazy" src="<?= e(media_url($case['image_path'])) ?>">
-                <?php else: ?>
-                <img alt="<?= e($case['title'] ?? '') ?>" loading="lazy" src="/assets/img/promo/image-4.webp">
-                <?php endif; ?>
+                <picture>
+                    <source srcset="/assets/img/promo/image-3-mob.webp" media="(max-width: 650px)">
+                    <?php if (!empty($case['image_path'])): ?>
+                    <img alt="<?= e($case['title'] ?? '') ?>" loading="lazy" src="<?= e(media_url($case['image_path'])) ?>">
+                    <?php else: ?>
+                    <img alt="<?= e($case['title'] ?? '') ?>" loading="lazy" src="/assets/img/promo/image-4.webp">
+                    <?php endif; ?>
+                </picture>
             </div>
         </div>
     </div>
@@ -131,7 +134,14 @@ foreach ($case['terms'] ?? [] as $term) {
 
 <!-- ═══ TECH STACK ══════════════════════════════════════════════════════════ -->
 <?php if (!empty($case['tech_items']) || !empty($ex['tech_items'])): ?>
-<?php $tech_items = !empty($case['tech_items']) ? $case['tech_items'] : ($ex['tech_items'] ?? []); ?>
+<?php
+// Prefer extras tech_items as they include descriptions; fall back to DB items
+if (!empty($ex['tech_items'])) {
+    $tech_items = $ex['tech_items'];
+} else {
+    $tech_items = $case['tech_items'] ?? [];
+}
+?>
 <section class="tech">
     <div class="tech__container">
         <div class="tech__head">
