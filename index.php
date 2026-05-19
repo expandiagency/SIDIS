@@ -79,6 +79,11 @@ if (($_GET['seed_taxonomy'] ?? '') === 'sidis2026') {
         $s = preg_replace('/[^a-z0-9]+/', '-', $s);
         return trim($s, '-');
     }
+    $desc_templates = [
+        'solution'   => 'SIDIS delivers intelligent %s solutions — automating workflows, eliminating manual work, and driving measurable efficiency gains for growing businesses.',
+        'department' => 'We automate processes for %s teams, connecting your tools, removing repetitive tasks, and freeing your staff for high-value strategic work.',
+        'industry'   => 'SIDIS builds custom automation for %s businesses — faster processes, lower operational costs, and scalable growth without the overhead.',
+    ];
     $solutions = [
         'Business process automation','AI implementation for business','Custom CRM development',
         'Custom ERP development','Internal business systems development','SaaS platform development',
@@ -111,14 +116,22 @@ if (($_GET['seed_taxonomy'] ?? '') === 'sidis2026') {
             $sl = make_slug($name);
             $url = $g['prefix'] . $sl . '/';
             // solution_page
+            $desc = sprintf($desc_templates[$type], strtolower($name));
             $ex = row('SELECT id FROM solution_pages WHERE slug=? AND type=?', [$sl, $type]);
             if (!$ex) {
                 $pid = insert('solution_pages', ['slug'=>$sl,'type'=>$type,'sort_order'=>$i,'is_active'=>1,'image_id'=>null]);
                 $te = row('SELECT id FROM solution_pages_t WHERE page_id=? AND lang_id=?', [$pid,$lid]);
-                if ($te) update('solution_pages_t',['title'=>$name,'description'=>'','btn1_text'=>'','btn2_text'=>'','meta_title'=>$name,'meta_description'=>''],['id'=>$te['id']]);
-                else insert('solution_pages_t',['page_id'=>$pid,'lang_id'=>$lid,'title'=>$name,'description'=>'','btn1_text'=>'','btn2_text'=>'','meta_title'=>$name,'meta_description'=>'']);
+                if ($te) update('solution_pages_t',['title'=>$name,'description'=>$desc,'btn1_text'=>'','btn2_text'=>'','meta_title'=>$name,'meta_description'=>$desc],['id'=>$te['id']]);
+                else insert('solution_pages_t',['page_id'=>$pid,'lang_id'=>$lid,'title'=>$name,'description'=>$desc,'btn1_text'=>'','btn2_text'=>'','meta_title'=>$name,'meta_description'=>$desc]);
                 echo "  Created page: $sl\n";
-            } else { echo "  Page exists: $sl\n"; }
+            } else {
+                // Update description if empty
+                $te = row('SELECT id, description FROM solution_pages_t WHERE page_id=(SELECT id FROM solution_pages WHERE slug=? AND type=?) AND lang_id=?', [$sl,$type,$lid]);
+                if ($te && empty($te['description'])) {
+                    update('solution_pages_t',['title'=>$name,'description'=>$desc,'meta_title'=>$name,'meta_description'=>$desc],['id'=>$te['id']]);
+                    echo "  Updated desc: $sl\n";
+                } else { echo "  Page exists: $sl\n"; }
+            }
             // term
             $et = row('SELECT t.id FROM terms t JOIN terms_t tt ON t.id=tt.term_id AND tt.lang_id=? WHERE t.type=? AND tt.name=?', [$lid,$type,$name]);
             if (!$et) {

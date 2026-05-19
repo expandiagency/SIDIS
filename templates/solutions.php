@@ -31,16 +31,17 @@ function sol_url(string $path): string {
     <div class="promo-category__container">
         <div class="promo-category__body">
             <div class="promo-category__content">
-                <h1 class="promo-category__title title title--h2"><?= e($c['title'] ?? $sp['title'] ?? '') ?></h1>
-                <?php if (!empty($c['text'] ?? $sp['description'])): ?>
-                <div class="promo-category__text"><?= nl2br(e($c['text'] ?? $sp['description'] ?? '')) ?></div>
+                <h1 class="promo-category__title title title--h2"><?= e($c['title'] ?: ($sp['title'] ?? '')) ?></h1>
+                <?php $promo_text = $c['text'] ?: ($sp['description'] ?? ''); ?>
+                <?php if (!empty($promo_text)): ?>
+                <div class="promo-category__text"><?= nl2br(e($promo_text)) ?></div>
                 <?php endif; ?>
                 <div class="promo-category__btns">
-                    <?php $btn1 = $c['btn1_text'] ?? $sp['btn1_text'] ?? 'Try AI assistant'; ?>
-                    <?php $btn1url = $c['btn1_url'] ?? '#'; ?>
+                    <?php $btn1 = ($c['btn1_text'] ?: ($sp['btn1_text'] ?? '')) ?: 'Try AI assistant'; ?>
+                    <?php $btn1url = $c['btn1_url'] ?: '#'; ?>
                     <a href="<?= e($btn1url) ?>" class="promo-category__btn button"><?= e($btn1) ?></a>
-                    <?php $btn2 = $c['btn2_text'] ?? $sp['btn2_text'] ?? 'Free audit'; ?>
-                    <?php $btn2url = $c['btn2_url'] ?? '#getintouch'; ?>
+                    <?php $btn2 = ($c['btn2_text'] ?: ($sp['btn2_text'] ?? '')) ?: 'Free audit'; ?>
+                    <?php $btn2url = $c['btn2_url'] ?: '#getintouch'; ?>
                     <a href="<?= e($btn2url) ?>" class="promo-category__btn button button--icon">
                         <span class="button__text"><?= e($btn2) ?></span>
                         <span class="button__icon"><?= $arrow_svg ?></span>
@@ -48,7 +49,7 @@ function sol_url(string $path): string {
                 </div>
             </div>
             <div class="promo-category__image">
-                <?php $img = media_url($c['image_url'] ?? $sp['image_path'] ?? './assets/img/promo/image-1.webp'); ?>
+                <?php $img = media_url($c['image_url'] ?: ($sp['image_path'] ?: '/assets/img/promo/image-1.webp')); ?>
                 <img alt="<?= e($sp['title'] ?? '') ?>" loading="lazy" src="<?= e($img) ?>">
                 <div class="promo-category__rating">
                     <div class="promo-category__rating-body">
