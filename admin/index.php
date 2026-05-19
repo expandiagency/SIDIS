@@ -938,7 +938,7 @@ tr:hover td{background:#fafafa}
             <!-- Post Editor -->
             <div v-if="editingPost">
                 <div style="display:flex;align-items:center;gap:12px;margin-bottom:20px">
-                    <button class="btn btn--outline" @click="destroyTinyMCE();editingPost=null;loadPosts()">← Back</button>
+                    <button class="btn btn--outline" @click="backFromPost()">← Back</button>
                     <h2 style="font-size:18px;font-weight:600">{{ postForm.id ? 'Edit' : 'New' }} Blog Post</h2>
                     <button class="btn btn--primary" style="margin-left:auto" @click="savePost">Save</button>
                 </div>
@@ -1036,9 +1036,16 @@ tr:hover td{background:#fafafa}
                         <!-- FAQ -->
                         <div style="margin-bottom:24px">
                             <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
-                                <strong style="font-size:14px">FAQ Section</strong>
+                                <div style="display:flex;align-items:center;gap:12px">
+                                    <strong style="font-size:14px">FAQ Section</strong>
+                                    <label style="display:flex;align-items:center;gap:6px;cursor:pointer;font-size:13px;font-weight:normal">
+                                        <input type="checkbox" v-model="postForm.extras.faq_enabled">
+                                        Show on page
+                                    </label>
+                                </div>
                                 <button class="btn btn--outline btn--sm" @click="postForm.extras.faq.push({q:'',a:''})">+ Add Item</button>
                             </div>
+                            <div v-show="postForm.extras.faq_enabled">
                             <div class="field" style="margin-bottom:12px"><label>FAQ Section Title</label><input v-model="postForm.extras.faq_title"></div>
                             <div class="repeat-list">
                                 <div v-for="(item,i) in postForm.extras.faq" :key="i" class="repeat-item">
@@ -1054,6 +1061,7 @@ tr:hover td{background:#fafafa}
                                     </div>
                                 </div>
                             </div>
+                            </div><!-- end v-show faq_enabled -->
                         </div>
 
                         <!-- Related Articles -->
@@ -1862,7 +1870,7 @@ createApp({
         const editingPost = ref(null);
         const postTab = ref('Basic');
         const authorsList = ref([]);
-        const defaultExtras = () => ({cta_title:'',cta_btn1_text:'Try AI assistant',cta_btn1_url:'#',cta_btn2_text:'Free audit',cta_btn2_url:'#getintouch',faq_title:'Questions & answers',faq:[],articles_title:'Latest Automation\nInsights',related_post_ids:[],_gallery_imgs:[],_media_img_url:'',_media_video_url:''});
+        const defaultExtras = () => ({cta_title:'',cta_btn1_text:'Try AI assistant',cta_btn1_url:'#',cta_btn2_text:'Free audit',cta_btn2_url:'#getintouch',faq_title:'Questions & answers',faq_enabled:true,faq:[],articles_title:'Latest Automation\nInsights',related_post_ids:[],_gallery_imgs:[],_media_img_url:'',_media_video_url:''});
         const postForm = reactive({id:0,slug:'',title:'',subtitle:'',content:'',excerpt:'',meta_title:'',meta_description:'',is_active:1,featured_image_id:null,image_url:'',author_id:null,published_at:'',tags_text:'',tags:[],toc:[],extras:defaultExtras()});
 
         const loadPosts = async () => { postsList.value = await api(`/admin/api/posts.php?lang_id=${langId.value}`); };
@@ -1917,6 +1925,14 @@ createApp({
         };
         const destroyTinyMCE = () => {
             if (_ckEditor) { postForm.content = _ckEditor.getData(); _ckEditor.destroy(); _ckEditor = null; }
+        };
+        const backFromPost = async () => {
+            if (_ckEditor) {
+                try { postForm.content = _ckEditor.getData(); await _ckEditor.destroy(); } catch(e) {}
+                _ckEditor = null;
+            }
+            editingPost.value = null;
+            loadPosts();
         };
         const savePost = async () => {
             if (_ckEditor) postForm.content = _ckEditor.getData();
@@ -2216,7 +2232,7 @@ createApp({
             mediaScSlots, mediaScActiveSlot, mediaScPickSlot, buildMediaShortcodeFromSlots,
             mediaScImg, mediaScVideo, openMediaShortcodeModal, confirmMediaShortcode,
             ctaForm, openCtaModal, buildCtaShortcode, confirmCta,
-            openPostEditor, switchPostTab, savePost, deletePost, copyGalleryShortcode, copyMediaShortcode,
+            openPostEditor, switchPostTab, savePost, deletePost, backFromPost, copyGalleryShortcode, copyMediaShortcode,
             termForm, openTermModal, saveTerm, deleteTerm,
             authorForm, openAuthorModal, saveAuthor, deleteAuthor,
             mediaList, uploadFiles, uploadAndPick, pickMedia, selectMedia, deleteMedia, copyUrl,

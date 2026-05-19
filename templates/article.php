@@ -7,6 +7,7 @@ $nav_next  = '<svg style="margin-left:4px" width="11" height="18" viewbox="0 0 1
 $extras       = $post['extras'] ?? [];
 $faq_items    = $extras['faq'] ?? [];
 $faq_title    = $extras['faq_title'] ?? 'Questions & answers';
+$faq_enabled  = $extras['faq_enabled'] ?? true;
 $related_posts_data = $related_posts ?? [];
 $articles_title = $extras['articles_title'] ?? 'Latest Automation Insights';
 ?>
@@ -144,7 +145,7 @@ $articles_title = $extras['articles_title'] ?? 'Latest Automation Insights';
     </div>
 </section>
 
-<?php if (!empty($faq_items)): ?>
+<?php if (!empty($faq_items) && $faq_enabled): ?>
 <?php $faq_half = (int)ceil(count($faq_items) / 2); ?>
 <section class="faq">
     <div class="faq__container">
