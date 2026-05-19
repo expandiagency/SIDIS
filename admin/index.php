@@ -1570,42 +1570,54 @@ tr:hover td{background:#fafafa}
     <div class="modal" style="max-width:900px;display:flex;flex-direction:column;max-height:90vh">
         <div class="modal__head"><h3>Insert Media Block (2 slots)</h3><button class="btn btn--icon" @click="modals.mediaShortcode=false">×</button></div>
         <div class="modal__body" style="overflow-y:auto;flex:1">
-            <!-- Slots -->
+            <!-- Two slots -->
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px">
                 <div v-for="(slot,si) in mediaScSlots" :key="si"
-                     :style="`border:2px solid ${mediaScActiveSlot===si ? 'var(--accent)' : 'var(--border)'};border-radius:10px;padding:12px;cursor:pointer;background:${mediaScActiveSlot===si?'#faf0ff':'#fff'}`"
-                     @click="mediaScActiveSlot=si">
-                    <div style="font-size:12px;font-weight:600;color:var(--muted);margin-bottom:8px;text-transform:uppercase;letter-spacing:.5px">
-                        {{ si===0 ? 'Left slot' : 'Right slot' }}
-                        <span v-if="mediaScActiveSlot===si" style="color:var(--accent)">← active</span>
-                    </div>
-                    <div v-if="slot.url" style="position:relative">
-                        <img v-if="!slot.url.match(/\.mp4|\.webm|\.mov/i)" :src="slot.url" style="width:100%;height:100px;object-fit:cover;border-radius:6px;display:block">
-                        <div v-else style="background:#111;color:#fff;height:100px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:13px">
-                            🎬 {{ slot.url.split('/').pop() }}
+                     :style="`border:2px solid ${mediaScActiveSlot===si ? 'var(--accent)' : 'var(--border)'};border-radius:10px;padding:12px;background:${mediaScActiveSlot===si?'#faf0ff':'#fff'}`">
+                    <!-- Slot label + mode toggle -->
+                    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+                        <span style="font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px">
+                            {{ si===0 ? '◀ Left' : '▶ Right' }}
+                            <span v-if="mediaScActiveSlot===si" style="color:var(--accent)"> ← active</span>
+                        </span>
+                        <div style="display:flex;gap:4px">
+                            <button class="btn btn--sm" :style="slot.mode!=='youtube'?'background:var(--accent);color:#fff':''" @click.stop="slot.mode='library'">Library</button>
+                            <button class="btn btn--sm" :style="slot.mode==='youtube'?'background:#ff0000;color:#fff':''" @click.stop="slot.mode='youtube';slot.url=''">YouTube</button>
                         </div>
-                        <button @click.stop="slot.url=''" style="position:absolute;top:4px;right:4px;background:rgba(0,0,0,.6);color:#fff;border:none;border-radius:50%;width:22px;height:22px;cursor:pointer;font-size:14px;line-height:1">×</button>
                     </div>
-                    <div v-else style="height:100px;border:2px dashed var(--border);border-radius:6px;display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:13px">
-                        Click to activate, then pick below
+                    <!-- YouTube URL input -->
+                    <div v-if="slot.mode==='youtube'" style="margin-bottom:8px">
+                        <input v-model="slot.url" placeholder="https://youtube.com/watch?v=..." style="width:100%;padding:7px 10px;border:1px solid var(--border);border-radius:6px;font-size:13px">
+                        <div v-if="slot.url && slot.url.match(/youtu/)" style="margin-top:6px;font-size:11px;color:var(--green)">✓ YouTube URL detected</div>
                     </div>
-                    <input :value="slot.url" @input="slot.url=$event.target.value" placeholder="or paste URL directly" style="margin-top:8px;width:100%;padding:6px 10px;border:1px solid var(--border);border-radius:6px;font-size:12px">
+                    <!-- Preview from library -->
+                    <div v-else>
+                        <div v-if="slot.url" style="position:relative;cursor:pointer" @click="mediaScActiveSlot=si">
+                            <img v-if="!slot.url.match(/\.(mp4|webm|mov)/i)" :src="slot.url" style="width:100%;height:90px;object-fit:cover;border-radius:6px;display:block">
+                            <div v-else style="background:#111;color:#fff;height:90px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:13px">🎬 {{ slot.url.split('/').pop() }}</div>
+                            <button @click.stop="slot.url=''" style="position:absolute;top:4px;right:4px;background:rgba(0,0,0,.65);color:#fff;border:none;border-radius:50%;width:22px;height:22px;cursor:pointer;font-size:16px;line-height:1.1">×</button>
+                        </div>
+                        <div v-else style="height:90px;border:2px dashed var(--border);border-radius:6px;display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:12px;cursor:pointer" @click="mediaScActiveSlot=si">
+                            Click here, then pick image below
+                        </div>
+                    </div>
                 </div>
             </div>
-            <!-- Active slot indicator -->
-            <div style="font-size:13px;font-weight:600;color:var(--accent);margin-bottom:10px;padding:8px 12px;background:#faf0ff;border-radius:6px">
-                Clicking a media item below will set it as the <strong>{{ mediaScActiveSlot===0 ? 'LEFT' : 'RIGHT' }} slot</strong>
-            </div>
-            <!-- Inline media library -->
-            <div style="display:flex;gap:8px;margin-bottom:12px">
-                <label class="btn btn--outline btn--sm" style="cursor:pointer">+ Upload New<input type="file" accept="image/*,video/*" style="display:none" @change="uploadAndPick"></label>
-            </div>
-            <div class="media-grid">
-                <div v-for="m in mediaList" :key="m.id" class="media-item" @click="mediaScPickSlot(m)">
-                    <img :src="m.url" :alt="m.alt_text" loading="lazy">
-                    <div class="media-item__name">{{ m.original_name }}</div>
+            <!-- Active slot indicator + library -->
+            <template v-if="mediaScSlots[mediaScActiveSlot].mode!=='youtube'">
+                <div style="font-size:13px;font-weight:600;color:var(--accent);margin-bottom:10px;padding:8px 12px;background:#faf0ff;border-radius:6px">
+                    Click any image below → goes into the <strong>{{ mediaScActiveSlot===0 ? 'LEFT' : 'RIGHT' }}</strong> slot
                 </div>
-            </div>
+                <div style="display:flex;gap:8px;margin-bottom:12px">
+                    <label class="btn btn--outline btn--sm" style="cursor:pointer">+ Upload New<input type="file" accept="image/*,video/*" style="display:none" @change="uploadAndPick"></label>
+                </div>
+                <div class="media-grid">
+                    <div v-for="m in mediaList" :key="m.id" class="media-item" @click="mediaScPickSlot(m)">
+                        <img :src="m.url" :alt="m.alt_text" loading="lazy">
+                        <div class="media-item__name">{{ m.original_name }}</div>
+                    </div>
+                </div>
+            </template>
         </div>
         <div class="modal__foot" style="border-top:1px solid var(--border);padding:12px 20px;display:flex;justify-content:space-between;align-items:center">
             <code style="font-size:11px;color:var(--muted);flex:1;margin-right:12px;word-break:break-all">{{ buildMediaShortcodeFromSlots() }}</code>
@@ -2075,7 +2087,7 @@ createApp({
         const mediaScSlots      = ref([{url:''},{url:''}]);
         const mediaScActiveSlot = ref(0);
         const openMediaShortcodeModal = () => {
-            mediaScSlots.value = [{url:''},{url:''}];
+            mediaScSlots.value = [{url:'',mode:'library'},{url:'',mode:'library'}];
             mediaScActiveSlot.value = 0;
             modals.mediaShortcode = true;
             if (!mediaList.value.length) loadMedia();

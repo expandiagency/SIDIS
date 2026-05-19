@@ -381,6 +381,25 @@ function extract_toc_from_content(string $html): array {
 }
 
 /**
+ * Render a single media slot: auto-detects image / local video / YouTube.
+ */
+function _render_media_slot(string $url): string {
+    if (!$url) return '';
+    $safe = htmlspecialchars($url, ENT_QUOTES, 'UTF-8');
+    // YouTube
+    if (preg_match('/(?:youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]+)/i', $url, $ym)) {
+        $vid = htmlspecialchars($ym[1], ENT_QUOTES, 'UTF-8');
+        return '<div class="article-block__video"><div class="video-controlls"><iframe src="https://www.youtube.com/embed/' . $vid . '" frameborder="0" allow="accelerometer;autoplay;clipboard-write;encrypted-media;gyroscope;picture-in-picture" allowfullscreen style="width:100%;aspect-ratio:16/9;border-radius:inherit;display:block"></iframe></div></div>';
+    }
+    // Local video file
+    if (preg_match('/\.(mp4|webm|mov|ogv)(\?.*)?$/i', $url)) {
+        return '<div class="article-block__video video-paused"><div class="video-controlls"><video muted loop playsinline><source src="' . $safe . '" type="video/mp4"></video><div class="video-controlls__play"><button type="button" class="button button--icon button--white"><svg width="14" height="17" viewbox="0 0 14 17" fill="none"><path d="M1 1L13 8.5L1 16V1Z" fill="currentColor" stroke="currentColor" stroke-width="1.5"/></svg></button></div></div></div>';
+    }
+    // Image (default)
+    return '<div class="article-block__img"><img src="' . $safe . '" alt="" loading="lazy"></div>';
+}
+
+/**
  * Process shortcodes in article content.
  * Supported: [gallery img="..."], [media img="..." video="..."], [cta]
  */
@@ -398,16 +417,11 @@ function render_article_content(string $content, array $extras = []): string {
         return '<div class="article-block__slider swiper" data-fls-slider=""><div class="article-block__wrapper swiper-wrapper">' . $slides . '</div><button type="button" class="swiper-button-prev">' . $arrow_prev . '</button><button type="button" class="swiper-button-next">' . $arrow_next . '</button></div>';
     }, $content);
 
-    // [media img="/img.webp" video="/video.mp4"]
+    // [media img="..." video="..."] — auto-detects image/video/youtube for each slot
     $content = preg_replace_callback('/\[media\s+img=["\']([^"\']*)["\'](?:\s+video=["\']([^"\']*)["\'])?\s*\]/i', function($m) {
-        $img   = $m[1];
-        $video = isset($m[2]) ? $m[2] : '';
-        $img_html = $img ? '<div class="article-block__img"><img src="' . htmlspecialchars($img, ENT_QUOTES, 'UTF-8') . '" alt="" loading="lazy"></div>' : '';
-        $video_html = '';
-        if ($video) {
-            $video_html = '<div class="article-block__video video-paused"><div class="video-controlls"><video muted loop playsinline><source src="' . htmlspecialchars($video, ENT_QUOTES, 'UTF-8') . '" type="video/mp4"></video><div class="video-controlls__play"><button type="button" class="button button--icon button--white"><svg width="14" height="17" viewbox="0 0 14 17" fill="none"><path d="M1 1L13 8.5L1 16V1Z" fill="currentColor" stroke="currentColor" stroke-width="1.5"></path></svg></button></div></div></div>';
-        }
-        return '<div class="article-block__media">' . $img_html . $video_html . '</div>';
+        $left  = trim($m[1]);
+        $right = isset($m[2]) ? trim($m[2]) : '';
+        return '<div class="article-block__media">' . _render_media_slot($left) . _render_media_slot($right) . '</div>';
     }, $content);
 
     // [cta]
