@@ -5618,6 +5618,18 @@ textarea.input {
   }
   .solutions__navigation .swiper-pagination {
     display: flex;
+    flex: 1 1 0;
+    min-width: 0;
+    overflow: hidden;
+    gap: 6px;
+  }
+  .solutions__navigation .swiper-pagination .swiper-pagination-bullet {
+    width: 8px;
+    height: 8px;
+    flex-shrink: 0;
+  }
+  .solutions__navigation .swiper-pagination .swiper-pagination-bullet-active {
+    width: 22px;
   }
   .solutions__slider {
     min-height: 550px;
