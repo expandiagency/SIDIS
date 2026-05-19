@@ -3,6 +3,8 @@
 $nav_prev = '<svg style="margin-right:4px" width="11" height="18" viewbox="0 0 11 18" fill="none"><path d="M10.0527 0.523193L1.05273 8.52319L10.0527 16.5232" stroke="currentColor" stroke-width="1.4"/></svg>';
 $nav_next = '<svg style="margin-left:4px" width="11" height="18" viewbox="0 0 11 18" fill="none"><path d="M0.464844 0.523193L9.46484 8.52319L0.464844 16.5232" stroke="currentColor" stroke-width="1.4"/></svg>';
 
+$ex = $case['extras'] ?? [];
+
 // Group terms by type
 $termsByType = [];
 foreach ($case['terms'] ?? [] as $term) {
@@ -103,15 +105,19 @@ foreach ($case['terms'] ?? [] as $term) {
 </section>
 
 <!-- ═══ CHALLENGES ══════════════════════════════════════════════════════════ -->
-<?php if (!empty($case['challenges'])): ?>
+<?php if (!empty($case['challenges']) || !empty($ex['challenges'])): ?>
+<?php $challenges = !empty($case['challenges']) ? $case['challenges'] : ($ex['challenges'] ?? []); ?>
 <section class="advantages">
     <div class="advantages__container">
         <div class="advantages__body">
             <div class="advantages__head" data-fls-header-scroll="" data-fls-header-scroll-show="">
                 <h2 class="advantages__title title title--h1">Challenges to Resolve</h2>
+                <?php if (!empty($ex['challenges_text'])): ?>
+                <div class="advantages__text"><?= nl2br(e($ex['challenges_text'])) ?></div>
+                <?php endif; ?>
             </div>
             <div class="advantages__items">
-                <?php foreach ($case['challenges'] as $ch): ?>
+                <?php foreach ($challenges as $ch): ?>
                 <div class="advantages__item" data-fls-watcher="" data-fls-watcher-threshold="0.6">
                     <div class="advantages__item-title"><?= e($ch['title'] ?? '') ?></div>
                     <div class="advantages__item-text"><?= nl2br(e($ch['text'] ?? '')) ?></div>
@@ -124,12 +130,16 @@ foreach ($case['terms'] ?? [] as $term) {
 <?php endif; ?>
 
 <!-- ═══ TECH STACK ══════════════════════════════════════════════════════════ -->
-<?php if (!empty($case['tech_items'])): ?>
+<?php if (!empty($case['tech_items']) || !empty($ex['tech_items'])): ?>
+<?php $tech_items = !empty($case['tech_items']) ? $case['tech_items'] : ($ex['tech_items'] ?? []); ?>
 <section class="tech">
     <div class="tech__container">
         <div class="tech__head">
             <div class="tech__info">
                 <h2 class="tech__title title title--h1">Tech Stack Used</h2>
+                <?php if (!empty($ex['tech_text'])): ?>
+                <div class="tech__text"><?= nl2br(e($ex['tech_text'])) ?></div>
+                <?php endif; ?>
             </div>
             <div class="tech__navigation">
                 <button type="button" class="swiper-button-prev"><?= $nav_prev ?></button>
@@ -139,7 +149,7 @@ foreach ($case['terms'] ?? [] as $term) {
         </div>
         <div data-fls-slider="" class="tech__slider swiper">
             <div class="tech__wrapper swiper-wrapper">
-                <?php foreach ($case['tech_items'] as $i => $tech): ?>
+                <?php foreach ($tech_items as $i => $tech): ?>
                 <div class="tech__slide swiper-slide">
                     <div class="tech__slide-num"><?= str_pad($i + 1, 2, '0', STR_PAD_LEFT) ?></div>
                     <div class="tech__slide-body">
@@ -150,6 +160,95 @@ foreach ($case['terms'] ?? [] as $term) {
                     </div>
                 </div>
                 <?php endforeach; ?>
+            </div>
+        </div>
+    </div>
+</section>
+<?php endif; ?>
+
+<!-- ═══ THE SOLUTION (descrblock) ═══════════════════════════════════════════ -->
+<?php if (!empty($ex['solution_title'])): ?>
+<section class="descrblock">
+    <div class="descrblock__container">
+        <div class="descrblock__body">
+            <div class="descrblock__content">
+                <div class="descrblock__subtitle title title--h6"><?= e($ex['solution_subtitle'] ?? 'The Solution') ?></div>
+                <h2 class="descrblock__title title title--h1"><?= e($ex['solution_title']) ?></h2>
+                <div class="descrblock__texts">
+                    <?php if (!empty($ex['solution_text1'])): ?>
+                    <div class="descrblock__text"><?= $ex['solution_text1'] ?></div>
+                    <?php endif; ?>
+                    <?php if (!empty($ex['solution_text2'])): ?>
+                    <div class="descrblock__text"><?= $ex['solution_text2'] ?></div>
+                    <?php endif; ?>
+                </div>
+            </div>
+            <?php if (!empty($ex['solution_image'])): ?>
+            <div class="descrblock__img">
+                <picture>
+                    <img alt="Solution" loading="lazy" src="<?= e($ex['solution_image']) ?>">
+                </picture>
+            </div>
+            <?php endif; ?>
+        </div>
+    </div>
+</section>
+<?php endif; ?>
+
+<!-- ═══ FINAL RESULTS ═══════════════════════════════════════════════════════ -->
+<?php if (!empty($ex['results'])): ?>
+<section class="advantages">
+    <div class="advantages__container">
+        <div class="advantages__body">
+            <div class="advantages__head" data-fls-header-scroll="" data-fls-header-scroll-show="">
+                <h2 class="advantages__title title title--h1"><?= e($ex['results_title'] ?? 'Final Results') ?></h2>
+                <?php if (!empty($ex['results_text'])): ?>
+                <div class="advantages__text"><?= nl2br(e($ex['results_text'])) ?></div>
+                <?php endif; ?>
+            </div>
+            <div class="advantages__items">
+                <?php foreach ($ex['results'] as $r): ?>
+                <div class="advantages__item" data-fls-watcher="" data-fls-watcher-threshold="0.6">
+                    <div class="advantages__item-title"><?= e($r['title'] ?? '') ?></div>
+                    <div class="advantages__item-text"><?= nl2br(e($r['text'] ?? '')) ?></div>
+                </div>
+                <?php endforeach; ?>
+                <?php if (!empty($ex['results_image'])): ?>
+                <div class="advantages__img">
+                    <img alt="Results" loading="lazy" src="<?= e($ex['results_image']) ?>">
+                </div>
+                <?php endif; ?>
+            </div>
+        </div>
+    </div>
+</section>
+<?php endif; ?>
+
+<!-- ═══ TESTIMONIAL (result) ════════════════════════════════════════════════ -->
+<?php if (!empty($ex['result_quote'])): ?>
+<section class="result">
+    <div class="result__container">
+        <div class="result__body">
+            <div class="result__text">"<?= e($ex['result_quote']) ?>"</div>
+            <div class="result__user">
+                <?php if (!empty($ex['result_user_image'])): ?>
+                <div class="result__user-img">
+                    <img alt="<?= e($ex['result_user_name'] ?? '') ?>" loading="lazy" src="<?= e($ex['result_user_image']) ?>">
+                </div>
+                <?php endif; ?>
+                <div class="result__user-body">
+                    <div class="result__user-head">
+                        <div class="result__user-name"><?= e($ex['result_user_name'] ?? '') ?></div>
+                        <div class="result__user-work"><?= e($ex['result_user_work'] ?? '') ?></div>
+                    </div>
+                    <div class="result__user-socials">
+                        <?php if (!empty($ex['result_linkedin'])): ?>
+                        <a href="<?= e($ex['result_linkedin']) ?>" class="result__user-social" target="_blank">
+                            <img src="/assets/img/icons/linkedin.svg" alt="LinkedIn" loading="lazy">
+                        </a>
+                        <?php endif; ?>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -183,6 +282,49 @@ foreach ($case['terms'] ?? [] as $term) {
         </div>
     </div>
 </section>
+
+<!-- ═══ MORE RELATED CASES ══════════════════════════════════════════════════ -->
+<?php if (!empty($related_cases)): ?>
+<section class="cases">
+    <div class="cases__container">
+        <div class="cases__head">
+            <h2 class="cases__title title title--h1">More related cases</h2>
+            <a href="/cases/" class="cases__link">View All Projects</a>
+            <div class="cases__navigation">
+                <button type="button" class="swiper-button-prev"><?= $nav_prev ?></button>
+                <div class="swiper-pagination"></div>
+                <button type="button" class="swiper-button-next"><?= $nav_next ?></button>
+            </div>
+        </div>
+        <div data-fls-slider="" class="cases__slider swiper">
+            <div class="cases__wrapper swiper-wrapper">
+                <?php $case_imgs = ['/assets/img/projects/image-1.webp','/assets/img/projects/image-2.webp','/assets/img/projects/image-3.webp','/assets/img/projects/image-4.webp']; ?>
+                <?php foreach ($related_cases as $ci => $rc): ?>
+                <article class="catalog-card swiper-slide" data-fls-watcher="" data-fls-watcher-threshold="0.6">
+                    <a href="/cases/<?= e($rc['slug']) ?>/" class="catalog-card__img">
+                        <img alt="<?= e($rc['title'] ?? '') ?>" loading="lazy" src="<?= !empty($rc['image_path']) ? e(media_url($rc['image_path'])) : $case_imgs[$ci % 4] ?>">
+                    </a>
+                    <div class="catalog-card__category"><?= e($rc['company'] ?? '') ?></div>
+                    <a href="/cases/<?= e($rc['slug']) ?>/" class="catalog-card__title"><?= e($rc['title'] ?? '') ?></a>
+                    <div class="catalog-card__bottom">
+                        <div class="catalog-card__bottom-inner">
+                            <div class="catalog-card__tags">
+                                <?php foreach (array_slice($rc['terms'] ?? [], 0, 3) as $t): ?>
+                                <div class="catalog-card__tag"><?= e($t['name']) ?></div>
+                                <?php endforeach; ?>
+                            </div>
+                            <div class="catalog-card__arrow">
+                                <svg width="14" height="14" viewbox="0 0 14 14" fill="none"><path d="M0.707031 13L12.707 1M12.707 12.8868V1L0.707031 1" stroke="currentColor" stroke-width="2"/></svg>
+                            </div>
+                        </div>
+                    </div>
+                </article>
+                <?php endforeach; ?>
+            </div>
+        </div>
+    </div>
+</section>
+<?php endif; ?>
 
 </main>
 

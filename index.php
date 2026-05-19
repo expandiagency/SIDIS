@@ -89,6 +89,11 @@ switch ($page) {
             $case = get_case($lang_id, $segment);
             if (!$case) { render('404', $template_data); break; }
             $template_data['case'] = $case;
+            // Load related cases (all other active cases, exclude current)
+            $all_cases = get_cases($lang_id, [], 10);
+            $template_data['related_cases'] = array_values(array_filter($all_cases, function($c) use ($case) {
+                return (int)$c['id'] !== (int)$case['id'];
+            }));
             $template_data['page_class'] = '';
             render('case', $template_data);
         } else {

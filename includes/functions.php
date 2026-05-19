@@ -250,6 +250,15 @@ function get_case(int $lang_id, string $slug): ?array {
         $case['tech_items']  = rows('SELECT * FROM case_tech_items WHERE case_id=? AND lang_id=? ORDER BY sort_order', [$case['id'], $lang_id]);
         $case['services']    = rows('SELECT * FROM case_services WHERE case_id=? AND lang_id=? ORDER BY sort_order', [$case['id'], $lang_id]);
         $case['terms']       = rows('SELECT ct.type, tt.name FROM case_terms ct JOIN terms_t tt ON ct.term_id=tt.term_id AND tt.lang_id=? WHERE ct.case_id=?', [$lang_id, $case['id']]);
+        // Load extras safely (column may not exist yet)
+        $extras_raw = null;
+        try {
+            $er = row('SELECT extras FROM cases_t WHERE case_id=? AND lang_id=?', [$case['id'], $lang_id]);
+            $extras_raw = $er['extras'] ?? null;
+        } catch (Exception $e) {
+            try { db()->exec("ALTER TABLE cases_t ADD COLUMN extras MEDIUMTEXT DEFAULT NULL"); } catch (Exception $e2) {}
+        }
+        $case['extras'] = $extras_raw ? (json_decode($extras_raw, true) ?: []) : [];
     }
     return $case;
 }
