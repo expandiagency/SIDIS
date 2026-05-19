@@ -1,6 +1,31 @@
 <?php
 require_once __DIR__ . '/includes/functions.php';
 
+/* ─── Seed admin user trigger: ?seed_admin=sidis2026 ───────────────────── */
+if (($_GET['seed_admin'] ?? '') === 'sidis2026') {
+    try { db()->exec("ALTER TABLE admin_users ADD COLUMN role VARCHAR(20) NOT NULL DEFAULT 'administrator'"); } catch(Exception $e) {}
+    // Set all existing users to administrator role
+    db()->exec("UPDATE admin_users SET role='administrator' WHERE role='' OR role IS NULL");
+    $email = 'vladyslav.havrylevskyj@gmail.com';
+    $name  = 'Vladyslav';
+    $pass  = 'Sidis@Admin2026';
+    $ex = row('SELECT id FROM admin_users WHERE email=?', [$email]);
+    if ($ex) {
+        update('admin_users', ['name'=>$name,'role'=>'administrator','is_active'=>1,'password_hash'=>password_hash($pass,PASSWORD_DEFAULT)], ['id'=>$ex['id']]);
+        echo '<pre>User updated: ' . $email . '</pre>';
+    } else {
+        insert('admin_users', ['name'=>$name,'email'=>$email,'password_hash'=>password_hash($pass,PASSWORD_DEFAULT),'role'=>'administrator','is_active'=>1]);
+        echo '<pre>User created: ' . $email . '</pre>';
+    }
+    echo '<pre style="background:#1a1a2e;color:#0f0;padding:20px;border-radius:8px">
+Login: ' . $email . '
+Password: ' . $pass . '
+
+Change your password after first login via Admin → Users!
+</pre>';
+    exit;
+}
+
 /* ─── Site password protection ─────────────────────────────────────────── */
 $_site_pass = get_setting('site_password');
 if ($_site_pass) {

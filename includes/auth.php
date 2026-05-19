@@ -31,9 +31,10 @@ function admin_require_auth(): void {
 function admin_login(string $email, string $pass): bool {
     $user = row('SELECT * FROM admin_users WHERE email=? AND is_active=1', [$email]);
     if (!$user || !password_verify($pass, $user['password_hash'])) return false;
-    $_SESSION['admin_id']   = $user['id'];
+    $_SESSION['admin_id']    = $user['id'];
     $_SESSION['admin_email'] = $user['email'];
-    $_SESSION['admin_name'] = $user['name'];
+    $_SESSION['admin_name']  = $user['name'];
+    $_SESSION['admin_role']  = $user['role'] ?? 'administrator';
     return true;
 }
 
@@ -43,6 +44,12 @@ function admin_logout(): void {
 
 function admin_current(): ?array {
     if (!admin_logged_in()) return null;
-    return row('SELECT id, name, email FROM admin_users WHERE id=?', [$_SESSION['admin_id']]);
+    $u = row('SELECT id, name, email, role FROM admin_users WHERE id=?', [$_SESSION['admin_id']]);
+    if ($u && empty($_SESSION['admin_role'])) $_SESSION['admin_role'] = $u['role'] ?? 'administrator';
+    return $u;
+}
+
+function admin_is_admin(): bool {
+    return ($_SESSION['admin_role'] ?? '') === 'administrator';
 }
 
