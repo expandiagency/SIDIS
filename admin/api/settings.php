@@ -7,7 +7,12 @@ admin_require_auth();
 $method  = $_SERVER['REQUEST_METHOD'];
 $lang_id = (int)($_GET['lang_id'] ?? 0);
 
-$global_keys = ['site_name', 'site_email', 'social_linkedin', 'social_whatsapp'];
+$global_keys = [
+    'site_name', 'site_email', 'site_password',
+    'social_linkedin', 'social_whatsapp', 'social_twitter', 'social_facebook', 'social_instagram',
+    'clutch_url', 'footer_design_url', 'footer_dev_url',
+    'header_logo_url', 'footer_logo_url',
+];
 $lang_keys   = ['site_description', 'footer_copyright', 'contact_address', 'contact_phone'];
 
 if ($method === 'GET') {

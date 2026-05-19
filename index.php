@@ -1,6 +1,40 @@
 <?php
 require_once __DIR__ . '/includes/functions.php';
 
+/* ─── Site password protection ─────────────────────────────────────────── */
+$_site_pass = get_setting('site_password');
+if ($_site_pass) {
+    if (session_status() === PHP_SESSION_NONE) session_start();
+    if (($_POST['sidis_pass'] ?? '') === $_site_pass) {
+        $_SESSION['sidis_auth'] = $_site_pass;
+    }
+    if (($_SESSION['sidis_auth'] ?? '') !== $_site_pass) {
+        $_pass_err = !empty($_POST['sidis_pass']);
+        header('Content-Type: text/html; charset=utf-8');
+        echo '<!doctype html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SIDIS — Enter Password</title>
+<style>*{box-sizing:border-box;margin:0;padding:0}body{font-family:system-ui,sans-serif;background:#0f0f1a;display:flex;align-items:center;justify-content:center;min-height:100vh;color:#fff}
+.box{background:#1a1a2e;border-radius:16px;padding:48px;width:100%;max-width:400px;text-align:center}
+.logo{font-size:28px;font-weight:800;letter-spacing:-.5px;margin-bottom:8px}
+.logo span{color:#772885}
+p{color:rgba(255,255,255,.5);font-size:14px;margin-bottom:32px}
+input{width:100%;padding:14px 16px;border-radius:10px;border:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.06);color:#fff;font-size:16px;outline:none;margin-bottom:12px}
+input::placeholder{color:rgba(255,255,255,.35)}
+button{width:100%;padding:14px;border-radius:10px;background:#772885;color:#fff;font-size:15px;font-weight:600;border:none;cursor:pointer}
+button:hover{background:#8e35a0}
+.err{color:#ff6b6b;font-size:13px;margin-bottom:12px}
+</style></head><body><div class="box">
+<div class="logo">SIDIS <span>GROUP</span></div>
+<p>Site is under construction. Enter password to continue.</p>
+<form method="POST">';
+        if ($_pass_err) echo '<div class="err">Incorrect password. Try again.</div>';
+        echo '<input type="password" name="sidis_pass" placeholder="Password" autofocus autocomplete="current-password">
+<button type="submit">Enter</button>
+</form></div></body></html>';
+        exit;
+    }
+}
+
 /* ─── One-time seed trigger: ?run_seed=sidis2026 ───────────────────────── */
 if (($_GET['run_seed'] ?? '') === 'sidis2026') {
     try { db()->exec("ALTER TABLE cases_t ADD COLUMN extras MEDIUMTEXT DEFAULT NULL"); } catch(Exception $e) {}

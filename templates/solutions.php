@@ -51,10 +51,11 @@ function sol_url(string $path): string {
             <div class="promo-category__image">
                 <?php $img = media_url($c['image_url'] ?: ($sp['image_path'] ?: '/assets/img/promo/image-1.webp')); ?>
                 <img alt="<?= e($sp['title'] ?? '') ?>" loading="lazy" src="<?= e($img) ?>">
+                <?php $clutch_url = get_setting('clutch_url') ?: '#'; ?>
                 <div class="promo-category__rating">
                     <div class="promo-category__rating-body">
-                        <div class="promo-category__rating-item"><img src="/assets/img/header/Rating%20Container.svg" width="92" height="44" alt="Rating" loading="lazy"></div>
-                        <div class="promo-category__rating-item"><img src="/assets/img/header/Top%20Rated%20Badge.png" width="170" height="44" alt="Top Rated" loading="lazy"></div>
+                        <a href="<?= e($clutch_url) ?>" class="promo-category__rating-item" target="_blank" rel="noopener"><img src="/assets/img/header/Rating%20Container.svg" width="92" height="44" alt="Clutch 5.0/5.0" loading="lazy"></a>
+                        <a href="<?= e($clutch_url) ?>" class="promo-category__rating-item" target="_blank" rel="noopener"><img src="/assets/img/header/Top%20Rated%20Badge.png" width="170" height="44" alt="Upwork Top Rated" loading="lazy"></a>
                     </div>
                 </div>
             </div>

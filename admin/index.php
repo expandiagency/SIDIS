@@ -1140,14 +1140,40 @@ tr:hover td{background:#fafafa}
             <div class="section-head"><h1>Settings</h1>
                 <button class="btn btn--primary" @click="saveSettings">Save</button>
             </div>
-            <div class="card"><div class="card__head"><h2>Global Settings</h2></div><div class="card__body">
+
+            <div class="card"><div class="card__head"><h2>Site & Security</h2></div><div class="card__body">
                 <div class="form-grid">
                     <div class="field"><label>Site Name</label><input v-model="settingsData.site_name"></div>
-                    <div class="field"><label>Contact Email</label><input v-model="settingsData.site_email"></div>
-                    <div class="field"><label>LinkedIn URL</label><input v-model="settingsData.social_linkedin"></div>
-                    <div class="field"><label>WhatsApp Number</label><input v-model="settingsData.social_whatsapp"></div>
+                    <div class="field"><label>Contact Email</label><input v-model="settingsData.site_email" type="email"></div>
+                    <div class="field field--full"><label>Site Password (leave empty = public access)</label><input v-model="settingsData.site_password" type="text" placeholder="Leave empty to disable password protection"></div>
                 </div>
             </div></div>
+
+            <div class="card"><div class="card__head"><h2>Logos</h2></div><div class="card__body">
+                <div class="form-grid">
+                    <div class="field"><label>Header Logo URL</label><input v-model="settingsData.header_logo_url" placeholder="Leave empty to use default SVG logo"></div>
+                    <div class="field"><label>Footer Logo URL</label><input v-model="settingsData.footer_logo_url" placeholder="/assets/img/logo.svg"></div>
+                </div>
+            </div></div>
+
+            <div class="card"><div class="card__head"><h2>Social Media</h2></div><div class="card__body">
+                <div class="form-grid">
+                    <div class="field"><label>LinkedIn URL</label><input v-model="settingsData.social_linkedin" placeholder="https://linkedin.com/company/..."></div>
+                    <div class="field"><label>WhatsApp Number</label><input v-model="settingsData.social_whatsapp" placeholder="+37255512345"></div>
+                    <div class="field"><label>Twitter / X URL</label><input v-model="settingsData.social_twitter" placeholder="https://twitter.com/..."></div>
+                    <div class="field"><label>Facebook URL</label><input v-model="settingsData.social_facebook" placeholder="https://facebook.com/..."></div>
+                    <div class="field"><label>Instagram URL</label><input v-model="settingsData.social_instagram" placeholder="https://instagram.com/..."></div>
+                </div>
+            </div></div>
+
+            <div class="card"><div class="card__head"><h2>Footer Links & Badges</h2></div><div class="card__body">
+                <div class="form-grid">
+                    <div class="field"><label>Footer "Design" Link</label><input v-model="settingsData.footer_design_url" placeholder="https://..."></div>
+                    <div class="field"><label>Footer "Development" Link</label><input v-model="settingsData.footer_dev_url" placeholder="https://..."></div>
+                    <div class="field field--full"><label>Clutch / Upwork Badge Link (hero section)</label><input v-model="settingsData.clutch_url" placeholder="https://clutch.co/..."></div>
+                </div>
+            </div></div>
+
             <div class="card"><div class="card__head"><h2>Language-specific ({{ currentLangCode }})</h2></div><div class="card__body">
                 <div class="form-grid cols-1">
                     <div class="field"><label>Site Description (meta)</label><textarea v-model="settingsData.site_description" rows="2"></textarea></div>
