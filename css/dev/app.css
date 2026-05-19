@@ -1647,7 +1647,7 @@ textarea.input {
   position: absolute;
   width: var(--radius);
   aspect-ratio: 1/1;
-  background: radial-gradient(circle var(--radius) at top left, transparent 98%, #fff) top left;
+  background: radial-gradient(circle var(--radius) at top left, transparent 98%, var(--clr-bg-light)) top left;
 }
 .promo-category__rating::before {
   bottom: 0;
@@ -2794,7 +2794,7 @@ textarea.input {
   position: absolute;
   width: var(--radius);
   aspect-ratio: 1/1;
-  background: radial-gradient(circle var(--radius) at top left, transparent 98%, #fff) top left;
+  background: radial-gradient(circle var(--radius) at top left, transparent 98%, var(--clr-bg-light)) top left;
 }
 .footer__descr::before {
   bottom: -1px;
@@ -2914,7 +2914,7 @@ textarea.input {
   position: absolute;
   width: var(--radius);
   aspect-ratio: 1/1;
-  background: radial-gradient(circle var(--radius) at top left, transparent 98%, #fff) top left;
+  background: radial-gradient(circle var(--radius) at top left, transparent 98%, var(--clr-bg-light)) top left;
 }
 .hero__rating::before {
   bottom: 0;
@@ -3522,7 +3522,7 @@ textarea.input {
   position: absolute;
   width: var(--radius);
   aspect-ratio: 1/1;
-  background: radial-gradient(circle var(--radius) at top left, transparent 98%, #fff) top left;
+  background: radial-gradient(circle var(--radius) at top left, transparent 98%, var(--clr-bg-light)) top left;
 }
 .presentation__descr::before {
   bottom: 0;
@@ -4380,7 +4380,7 @@ textarea.input {
   position: absolute;
   width: var(--radius);
   aspect-ratio: 1/1;
-  background: radial-gradient(circle var(--radius) at top left, transparent 98%, #fff) top left;
+  background: radial-gradient(circle var(--radius) at top left, transparent 98%, var(--clr-bg-light)) top left;
 }
 .promo-article__bottom::before {
   bottom: 0;
