@@ -11,7 +11,7 @@ $lang_id = (int)($_GET['lang_id'] ?? 1);
 $id      = (int)($_GET['id'] ?? 0);
 
 // ── Ensure icon_svg column exists on solution_pages ─────────────────────────
-try { $pdo->exec("ALTER TABLE solution_pages ADD COLUMN icon_svg MEDIUMTEXT DEFAULT NULL"); } catch(Exception $e) {}
+try { db()->exec("ALTER TABLE solution_pages ADD COLUMN icon_svg MEDIUMTEXT DEFAULT NULL"); } catch(Exception $e) {}
 
 // ── Ensure sol_page_blocks table exists ─────────────────────────────────────
 $pdo->exec("CREATE TABLE IF NOT EXISTS sol_page_blocks (

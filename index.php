@@ -71,6 +71,104 @@ if (($_GET['run_seed'] ?? '') === 'sidis2026') {
     exit;
 }
 
+/* ─── One-time seed trigger: ?seed_taxonomy=sidis2026 ──────────────────── */
+if (($_GET['seed_taxonomy'] ?? '') === 'sidis2026') {
+    $lid = 1;
+    function make_slug(string $s): string {
+        $s = strtolower(trim($s));
+        $s = preg_replace('/[^a-z0-9]+/', '-', $s);
+        return trim($s, '-');
+    }
+    $solutions = [
+        'Business process automation','AI implementation for business','Custom CRM development',
+        'Custom ERP development','Internal business systems development','SaaS platform development',
+        'Systems & API integrations','Sales automation','Marketing automation',
+        'Customer support automation','Operations automation','Unified business management systems',
+        'AI chatbots for business','Voice AI assistants','Data & reporting automation',
+        'Replacing manual work with automation','Scaling business through automation',
+        'Business process analysis & optimization',
+    ];
+    $departments = [
+        'Operations','Sales','Marketing','Customer Support','Finance','HR','Recruitment',
+        'Product','IT / Engineering','Analytics / BI','Executive / Management',
+        'Legal','Compliance','Partnerships',
+    ];
+    $industries = [
+        'Affiliate Marketing','HR & Recruiting','Fintech','Real Estate','Retail','Ecommerce',
+        'Investment Management','Logistics','Wellness & Mental Health','Lead Generation Agencies',
+        'Marketing & Advertising','Agencies','LegalTech','Arbitration Companies',
+        'SaaS Startups','SMEs (general growing businesses)',
+    ];
+    $groups = [
+        'solution'   => ['prefix'=>'/solutions/',   'items'=>$solutions],
+        'department' => ['prefix'=>'/departments/', 'items'=>$departments],
+        'industry'   => ['prefix'=>'/industries/',  'items'=>$industries],
+    ];
+    echo '<pre>';
+    foreach ($groups as $type => $g) {
+        echo "\n=== ".strtoupper($type)."S ===\n";
+        foreach ($g['items'] as $i => $name) {
+            $sl = make_slug($name);
+            $url = $g['prefix'] . $sl . '/';
+            // solution_page
+            $ex = row('SELECT id FROM solution_pages WHERE slug=? AND type=?', [$sl, $type]);
+            if (!$ex) {
+                $pid = insert('solution_pages', ['slug'=>$sl,'type'=>$type,'sort_order'=>$i,'is_active'=>1,'image_id'=>null]);
+                $te = row('SELECT id FROM solution_pages_t WHERE page_id=? AND lang_id=?', [$pid,$lid]);
+                if ($te) update('solution_pages_t',['title'=>$name,'description'=>'','btn1_text'=>'','btn2_text'=>'','meta_title'=>$name,'meta_description'=>''],['id'=>$te['id']]);
+                else insert('solution_pages_t',['page_id'=>$pid,'lang_id'=>$lid,'title'=>$name,'description'=>'','btn1_text'=>'','btn2_text'=>'','meta_title'=>$name,'meta_description'=>'']);
+                echo "  Created page: $sl\n";
+            } else { echo "  Page exists: $sl\n"; }
+            // term
+            $et = row('SELECT t.id FROM terms t JOIN terms_t tt ON t.id=tt.term_id AND tt.lang_id=? WHERE t.type=? AND tt.name=?', [$lid,$type,$name]);
+            if (!$et) {
+                $tid = insert('terms',['type'=>$type,'is_active'=>1,'sort_order'=>$i]);
+                insert('terms_t',['term_id'=>$tid,'lang_id'=>$lid,'name'=>$name]);
+                echo "  Created term: $name\n";
+            } else { echo "  Term exists: $name\n"; }
+        }
+    }
+    // Footer nav: rebuild columns
+    $footerCols = [
+        ['title'=>'Explore Solutions', 'type'=>'solution',   'prefix'=>'/solutions/'],
+        ['title'=>'Departments',       'type'=>'department', 'prefix'=>'/departments/'],
+        ['title'=>'Industries',        'type'=>'industry',   'prefix'=>'/industries/'],
+        ['title'=>'Company',           'type'=>null,         'prefix'=>null, 'links'=>[
+            ['title'=>'Solutions',          'url'=>'/solutions/'],
+            ['title'=>'Departments',        'url'=>'/departments/'],
+            ['title'=>'Industries',         'url'=>'/industries/'],
+            ['title'=>'Case studies',       'url'=>'/cases/'],
+            ['title'=>'Blog',               'url'=>'/blog/'],
+            ['title'=>'Terms & Conditions', 'url'=>'/terms/'],
+        ]],
+    ];
+    echo "\n=== FOOTER NAV ===\n";
+    // Delete old footer nav
+    $old = rows('SELECT id FROM nav_items WHERE lang_id=? AND location=? AND parent_id IS NULL', [$lid,'footer']);
+    foreach ($old as $o) {
+        q('DELETE FROM nav_items WHERE parent_id=?', [$o['id']]);
+        delete('nav_items', ['id'=>$o['id']]);
+    }
+    foreach ($footerCols as $ci => $col) {
+        $pid = insert('nav_items',['lang_id'=>$lid,'location'=>'footer','parent_id'=>null,'title'=>$col['title'],'url'=>'#','target'=>'_self','sort_order'=>$ci,'is_active'=>1,'has_mega'=>0]);
+        if ($col['type']) {
+            foreach ($groups[$col['type']]['items'] as $i => $name) {
+                $sl = make_slug($name);
+                $url = $col['prefix'] . $sl . '/';
+                insert('nav_items',['lang_id'=>$lid,'location'=>'footer','parent_id'=>$pid,'title'=>$name,'url'=>$url,'target'=>'_self','sort_order'=>$i,'is_active'=>1,'has_mega'=>0]);
+            }
+        } else {
+            foreach ($col['links'] as $i => $lnk) {
+                insert('nav_items',['lang_id'=>$lid,'location'=>'footer','parent_id'=>$pid,'title'=>$lnk['title'],'url'=>$lnk['url'],'target'=>'_self','sort_order'=>$i,'is_active'=>1,'has_mega'=>0]);
+            }
+        }
+        echo "  Column '{$col['title']}' created.\n";
+    }
+    echo "\nTaxonomy + footer nav seeded!\n</pre>";
+    echo '<p style="color:green;font-family:monospace">Done!</p>';
+    exit;
+}
+
 /* ─── Parse URL ─────────────────────────────────────────────────────────── */
 $request_uri = strtok($_SERVER['REQUEST_URI'] ?? '/', '?');
 $request_uri = '/' . trim($request_uri, '/');
