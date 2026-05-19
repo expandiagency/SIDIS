@@ -315,14 +315,44 @@ function get_post(int $lang_id, string $slug): ?array {
             try { db()->exec("ALTER TABLE posts_t ADD COLUMN extras MEDIUMTEXT DEFAULT NULL"); } catch (Exception $e2) {}
         }
         $post['extras'] = $extras_raw ? (json_decode($extras_raw, true) ?: []) : [];
+        // Inject id attributes into headings that lack them (needed for TOC anchors)
+        $post['content'] = inject_heading_ids($post['content'] ?? '');
         // Auto-generate TOC from content headings if no TOC entries
-        if (empty($post['toc']) && !empty($post['content'])) {
+        if (empty($post['toc'])) {
             $post['toc'] = extract_toc_from_content($post['content']);
         }
         // Process shortcodes in content
-        $post['content'] = render_article_content($post['content'] ?? '', $post['extras']);
+        $post['content'] = render_article_content($post['content'], $post['extras']);
     }
     return $post;
+}
+
+/**
+ * Auto-inject id attributes into h2-h5 tags that don't have one.
+ * Uses slugified heading text; deduplicates with a counter.
+ */
+function inject_heading_ids(string $html): string {
+    if (!$html) return $html;
+    $seen  = [];
+    $parts = preg_split('/(<h[2-5][^>]*>)/i', $html, -1, PREG_SPLIT_DELIM_CAPTURE);
+    $out   = '';
+    for ($i = 0; $i < count($parts); $i++) {
+        if ($i % 2 === 0) { $out .= $parts[$i]; continue; }
+        $tag = $parts[$i];
+        if (preg_match('/\bid=/i', $tag)) { $out .= $tag; continue; }
+        // Build slug from inner text of this heading
+        $after = $parts[$i + 1] ?? '';
+        $close = strpos($after, '</h');
+        $inner = $close !== false ? substr($after, 0, $close) : $after;
+        $slug  = trim(preg_replace('/[^a-z0-9]+/', '-', strtolower(strip_tags($inner))), '-');
+        if (!$slug) $slug = 'section';
+        if (isset($seen[$slug])) { $seen[$slug]++; $slug .= '-' . $seen[$slug]; }
+        else $seen[$slug] = 1;
+        // Insert id before the closing >
+        $tag = substr($tag, 0, -1) . ' id="' . htmlspecialchars($slug) . '">';
+        $out .= $tag;
+    }
+    return $out;
 }
 
 /**
