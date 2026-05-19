@@ -967,6 +967,24 @@ tr:hover td{background:#fafafa}
                     </div>
 
                     <div v-show="postTab==='Content'">
+                        <!-- Shortcode instructions -->
+                        <details style="margin-bottom:12px;border:1px solid #e0e7ff;border-radius:8px;overflow:hidden">
+                            <summary style="padding:10px 14px;background:#f0f4ff;cursor:pointer;font-size:13px;font-weight:600;color:#4338ca;list-style:none;display:flex;align-items:center;gap:6px">
+                                📋 Shortcode Instructions — click to expand
+                            </summary>
+                            <div style="padding:14px 16px;font-size:13px;line-height:1.7;background:#fff">
+                                <p style="margin-bottom:10px;color:#555">Use the <strong>Source Editing</strong> button (<code>&lt;&gt;</code>) in the toolbar to switch to HTML view and paste shortcodes. Or use the builders in the <strong>Extras</strong> tab and click <strong>"Insert into Content"</strong>.</p>
+                                <table style="width:100%;border-collapse:collapse;font-size:12px">
+                                    <thead><tr style="background:#f8f9fa"><th style="padding:6px 10px;text-align:left;border:1px solid #e2e4e8">Shortcode</th><th style="padding:6px 10px;text-align:left;border:1px solid #e2e4e8">What it inserts</th><th style="padding:6px 10px;text-align:left;border:1px solid #e2e4e8">How to use</th></tr></thead>
+                                    <tbody>
+                                        <tr><td style="padding:6px 10px;border:1px solid #e2e4e8"><code>[gallery img="url1,url2"]</code></td><td style="padding:6px 10px;border:1px solid #e2e4e8">Image carousel / slider</td><td style="padding:6px 10px;border:1px solid #e2e4e8">Use <strong>Gallery Builder</strong> in Extras tab → Insert into Content</td></tr>
+                                        <tr style="background:#fafafa"><td style="padding:6px 10px;border:1px solid #e2e4e8"><code>[media img="..." video="..."]</code></td><td style="padding:6px 10px;border:1px solid #e2e4e8">Image on left + video on right</td><td style="padding:6px 10px;border:1px solid #e2e4e8">Use <strong>Media Builder</strong> in Extras tab → Insert into Content</td></tr>
+                                        <tr><td style="padding:6px 10px;border:1px solid #e2e4e8"><code>[cta]</code></td><td style="padding:6px 10px;border:1px solid #e2e4e8">Call-to-action block with buttons</td><td style="padding:6px 10px;border:1px solid #e2e4e8">Fill in CTA fields in Extras tab, then type <code>[cta]</code> where you want it</td></tr>
+                                    </tbody>
+                                </table>
+                                <p style="margin-top:10px;color:#888;font-size:12px">💡 Tip: Headings H2, H3, H4 are automatically added to the Table of Contents sidebar. Use H2 for main sections, H3 for subsections.</p>
+                            </div>
+                        </details>
                         <div id="ckeditor-mount" style="min-height:500px"></div>
                     </div>
 
@@ -1019,23 +1037,65 @@ tr:hover td{background:#fafafa}
                             </div>
                         </div>
 
-                        <!-- Gallery Shortcode Helper -->
-                        <div style="margin-bottom:24px;padding:12px;background:#f8f9fa;border-radius:8px">
-                            <strong style="font-size:14px;display:block;margin-bottom:8px">Gallery Shortcode Helper</strong>
-                            <div class="field" style="margin-bottom:8px"><label>Image URLs (comma-separated)</label><input v-model="postForm.extras._gallery_urls" placeholder="/assets/img/img1.webp,/assets/img/img2.webp"></div>
-                            <button class="btn btn--outline btn--sm" @click="copyGalleryShortcode()">Copy Shortcode</button>
-                            <code v-if="postForm.extras._gallery_urls" style="display:block;margin-top:8px;font-size:12px;color:var(--muted)">[gallery img="{{ postForm.extras._gallery_urls }}"]</code>
+                        <!-- Gallery Shortcode Builder -->
+                        <div style="margin-bottom:24px;border:1px solid var(--border);border-radius:10px;overflow:hidden">
+                            <div style="background:#f8f9fa;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border)">
+                                <div>
+                                    <strong style="font-size:14px">🖼 Gallery Builder</strong>
+                                    <span style="font-size:12px;color:var(--muted);margin-left:8px">→ вставляет блок с каруселью изображений</span>
+                                </div>
+                                <div style="display:flex;gap:8px">
+                                    <button class="btn btn--outline btn--sm" @click="pickMedia(m=>galleryAddImage(m))">+ Add Image</button>
+                                    <button v-if="postForm.extras._gallery_imgs.length" class="btn btn--primary btn--sm" @click="insertShortcode(buildGalleryShortcode())">Insert into Content</button>
+                                </div>
+                            </div>
+                            <div style="padding:12px 16px">
+                                <div v-if="!postForm.extras._gallery_imgs.length" style="color:var(--muted);font-size:13px;padding:12px 0;text-align:center">No images selected. Click "+ Add Image" to pick from Media Library.</div>
+                                <div v-else style="display:flex;flex-wrap:wrap;gap:10px;margin-bottom:12px">
+                                    <div v-for="(img,i) in postForm.extras._gallery_imgs" :key="i" style="position:relative;width:100px">
+                                        <img :src="img.url" style="width:100px;height:70px;object-fit:cover;border-radius:6px;display:block;border:1px solid var(--border)">
+                                        <div style="display:flex;gap:2px;margin-top:4px;justify-content:center">
+                                            <button class="btn btn--icon btn--sm" style="font-size:14px;padding:2px 6px" @click="galleryMoveImg(i,-1)" :disabled="i===0" title="Move left">←</button>
+                                            <button class="btn btn--icon btn--sm" style="font-size:14px;padding:2px 6px" @click="galleryMoveImg(i,1)" :disabled="i===postForm.extras._gallery_imgs.length-1" title="Move right">→</button>
+                                            <button class="btn btn--sm" style="background:var(--red);color:#fff;padding:2px 6px;font-size:12px" @click="postForm.extras._gallery_imgs.splice(i,1)" title="Remove">×</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <code v-if="postForm.extras._gallery_imgs.length" style="font-size:11px;color:var(--muted);word-break:break-all">{{ buildGalleryShortcode() }}</code>
+                            </div>
                         </div>
 
-                        <!-- Media Shortcode Helper -->
-                        <div style="margin-bottom:24px;padding:12px;background:#f8f9fa;border-radius:8px">
-                            <strong style="font-size:14px;display:block;margin-bottom:8px">Media Shortcode Helper</strong>
-                            <div class="form-grid" style="margin-bottom:8px">
-                                <div class="field"><label>Image URL</label><input v-model="postForm.extras._media_img" placeholder="/assets/img/image.webp"></div>
-                                <div class="field"><label>Video URL</label><input v-model="postForm.extras._media_video" placeholder="/assets/video/video.mp4"></div>
+                        <!-- Media Shortcode Builder -->
+                        <div style="margin-bottom:24px;border:1px solid var(--border);border-radius:10px;overflow:hidden">
+                            <div style="background:#f8f9fa;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border)">
+                                <div>
+                                    <strong style="font-size:14px">🎬 Media Builder</strong>
+                                    <span style="font-size:12px;color:var(--muted);margin-left:8px">→ блок: изображение слева + видео справа</span>
+                                </div>
+                                <button v-if="postForm.extras._media_img_url||postForm.extras._media_video_url" class="btn btn--primary btn--sm" @click="insertShortcode(buildMediaShortcode())">Insert into Content</button>
                             </div>
-                            <button class="btn btn--outline btn--sm" @click="copyMediaShortcode()">Copy Shortcode</button>
-                            <code v-if="postForm.extras._media_img||postForm.extras._media_video" style="display:block;margin-top:8px;font-size:12px;color:var(--muted)">[media img="{{ postForm.extras._media_img }}" video="{{ postForm.extras._media_video }}"]</code>
+                            <div style="padding:12px 16px">
+                                <div class="form-grid" style="margin-bottom:12px">
+                                    <div class="field">
+                                        <label>Image (left side)</label>
+                                        <div style="display:flex;gap:8px;align-items:center">
+                                            <img v-if="postForm.extras._media_img_url" :src="postForm.extras._media_img_url" style="width:60px;height:42px;object-fit:cover;border-radius:4px;border:1px solid var(--border)">
+                                            <div style="display:flex;flex-direction:column;gap:4px;flex:1">
+                                                <button class="btn btn--outline btn--sm" @click="pickMedia(m=>{postForm.extras._media_img_url=m.url})">{{ postForm.extras._media_img_url ? 'Change Image' : 'Pick Image' }}</button>
+                                                <button v-if="postForm.extras._media_img_url" class="btn btn--sm" style="background:var(--red);color:#fff" @click="postForm.extras._media_img_url=''">Remove</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="field">
+                                        <label>Video URL (right side)</label>
+                                        <input v-model="postForm.extras._media_video_url" placeholder="/assets/video/video.mp4">
+                                        <div style="margin-top:4px;display:flex;gap:6px">
+                                            <button class="btn btn--outline btn--sm" @click="pickMedia(m=>{postForm.extras._media_video_url=m.url})">Pick from Library</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <code v-if="postForm.extras._media_img_url||postForm.extras._media_video_url" style="font-size:11px;color:var(--muted);word-break:break-all">{{ buildMediaShortcode() }}</code>
+                            </div>
                         </div>
 
                         <!-- FAQ -->
@@ -1767,7 +1827,7 @@ createApp({
         const editingPost = ref(null);
         const postTab = ref('Basic');
         const authorsList = ref([]);
-        const defaultExtras = () => ({cta_title:'',cta_btn1_text:'Try AI assistant',cta_btn1_url:'#',cta_btn2_text:'Free audit',cta_btn2_url:'#getintouch',faq_title:'Questions & answers',faq:[],articles_title:'Latest Automation\nInsights',related_post_ids:[],_gallery_urls:'',_media_img:'',_media_video:''});
+        const defaultExtras = () => ({cta_title:'',cta_btn1_text:'Try AI assistant',cta_btn1_url:'#',cta_btn2_text:'Free audit',cta_btn2_url:'#getintouch',faq_title:'Questions & answers',faq:[],articles_title:'Latest Automation\nInsights',related_post_ids:[],_gallery_imgs:[],_media_img_url:'',_media_video_url:''});
         const postForm = reactive({id:0,slug:'',title:'',subtitle:'',content:'',excerpt:'',meta_title:'',meta_description:'',is_active:1,featured_image_id:null,image_url:'',author_id:null,published_at:'',tags_text:'',tags:[],toc:[],extras:defaultExtras()});
 
         const loadPosts = async () => { postsList.value = await api(`/admin/api/posts.php?lang_id=${langId.value}`); };
@@ -1830,18 +1890,42 @@ createApp({
             if (r.ok) { postForm.id=r.id; showAlert('Post saved!'); }
             else showAlert(r.error||'Error','error');
         };
-        const copyGalleryShortcode = () => {
-            const urls = postForm.extras._gallery_urls;
-            if (!urls) return;
-            navigator.clipboard.writeText(`[gallery img="${urls}"]`);
-            showAlert('Gallery shortcode copied!');
+        // Gallery builder helpers
+        const galleryAddImage = m => {
+            if (!Array.isArray(postForm.extras._gallery_imgs)) postForm.extras._gallery_imgs = [];
+            postForm.extras._gallery_imgs.push({url: m.url});
         };
-        const copyMediaShortcode = () => {
-            const img = postForm.extras._media_img || '';
-            const video = postForm.extras._media_video || '';
-            navigator.clipboard.writeText(`[media img="${img}" video="${video}"]`);
-            showAlert('Media shortcode copied!');
+        const galleryMoveImg = (i, dir) => {
+            const arr = postForm.extras._gallery_imgs;
+            const j = i + dir;
+            if (j < 0 || j >= arr.length) return;
+            [arr[i], arr[j]] = [arr[j], arr[i]];
         };
+        const buildGalleryShortcode = () => {
+            const urls = (postForm.extras._gallery_imgs || []).map(x => x.url).join(',');
+            return urls ? `[gallery img="${urls}"]` : '';
+        };
+        const buildMediaShortcode = () => {
+            const img = postForm.extras._media_img_url || '';
+            const video = postForm.extras._media_video_url || '';
+            return `[media img="${img}" video="${video}"]`;
+        };
+        const insertShortcode = sc => {
+            if (!sc) return;
+            if (_ckEditor) {
+                _ckEditor.model.change(writer => {
+                    const pos = _ckEditor.model.document.selection.getFirstPosition();
+                    writer.insertText(sc, pos);
+                });
+                showAlert('Shortcode inserted into content!');
+            } else {
+                navigator.clipboard.writeText(sc);
+                showAlert('Shortcode copied to clipboard (switch to Content tab first to insert).');
+            }
+        };
+        // Legacy aliases (keep for any existing refs)
+        const copyGalleryShortcode = () => { const sc = buildGalleryShortcode(); if(sc){navigator.clipboard.writeText(sc);showAlert('Copied!');} };
+        const copyMediaShortcode  = () => { const sc = buildMediaShortcode();  navigator.clipboard.writeText(sc); showAlert('Copied!'); };
         const deletePost = async id => { if(!confirm('Delete this post?')) return; await api(`/admin/api/posts.php?action=delete&id=${id}`,{method:'POST'}); await loadPosts(); };
 
         /* ─── Terms ─────────────────────────────────────────────────────── */
@@ -2034,6 +2118,7 @@ createApp({
             casesList, editingCase, caseTab, allTerms, caseForm,
             openCaseEditor, saveCase, deleteCase,
             postsList, editingPost, postTab, authorsList, postForm, defaultExtras,
+            galleryAddImage, galleryMoveImg, buildGalleryShortcode, buildMediaShortcode, insertShortcode,
             openPostEditor, switchPostTab, savePost, deletePost, copyGalleryShortcode, copyMediaShortcode,
             termForm, openTermModal, saveTerm, deleteTerm,
             authorForm, openAuthorModal, saveAuthor, deleteAuthor,
