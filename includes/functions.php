@@ -386,10 +386,10 @@ function extract_toc_from_content(string $html): array {
 function _render_media_slot(string $url): string {
     if (!$url) return '';
     $safe = htmlspecialchars($url, ENT_QUOTES, 'UTF-8');
-    // YouTube
+    // YouTube — position:absolute fills the min-height:350px container
     if (preg_match('/(?:youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]+)/i', $url, $ym)) {
         $vid = htmlspecialchars($ym[1], ENT_QUOTES, 'UTF-8');
-        return '<div class="article-block__video"><div class="video-controlls"><iframe src="https://www.youtube.com/embed/' . $vid . '" frameborder="0" allow="accelerometer;autoplay;clipboard-write;encrypted-media;gyroscope;picture-in-picture" allowfullscreen style="width:100%;aspect-ratio:16/9;border-radius:inherit;display:block"></iframe></div></div>';
+        return '<div class="article-block__video" style="position:relative;height:100%"><iframe src="https://www.youtube.com/embed/' . $vid . '" frameborder="0" allow="accelerometer;autoplay;clipboard-write;encrypted-media;gyroscope;picture-in-picture" allowfullscreen style="position:absolute;top:0;left:0;width:100%;height:100%;border:none;border-radius:inherit;display:block"></iframe></div>';
     }
     // Local video file
     if (preg_match('/\.(mp4|webm|mov|ogv)(\?.*)?$/i', $url)) {
