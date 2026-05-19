@@ -44,13 +44,13 @@ foreach ($case['terms'] ?? [] as $term) {
                 </div>
                 <?php endif; ?>
             </div>
-            <div class="promo-case__img">
-                <picture>
+            <div class="promo-case__img" style="align-self:stretch">
+                <picture style="display:block;width:100%;height:100%">
                     <source srcset="/assets/img/promo/image-3-mob.webp" media="(max-width: 650px)">
                     <?php if (!empty($case['image_path'])): ?>
-                    <img alt="<?= e($case['title'] ?? '') ?>" loading="lazy" src="<?= e(media_url($case['image_path'])) ?>">
+                    <img alt="<?= e($case['title'] ?? '') ?>" loading="lazy" src="<?= e(media_url($case['image_path'])) ?>" style="width:100%;height:100%;object-fit:cover">
                     <?php else: ?>
-                    <img alt="<?= e($case['title'] ?? '') ?>" loading="lazy" src="/assets/img/promo/image-4.webp">
+                    <img alt="<?= e($case['title'] ?? '') ?>" loading="lazy" src="/assets/img/promo/image-4.webp" style="width:100%;height:100%;object-fit:cover">
                     <?php endif; ?>
                 </picture>
             </div>
