@@ -310,9 +310,9 @@ if (!empty($c['selected_ids']) && is_array($c['selected_ids'])) {
             </a>
             <?php endforeach; ?>
         </div>
-        <a href="/cases/" class="projects__link button button--icon">
-            <span class="button__text">View All Projects</span>
-            <span class="button__icon"><?= $arrow_svg ?></span>
+        <a href="/cases/" class="projects__link link">
+            <span class="link__text">View All Projects</span>
+            <span class="link__icon"><svg width="14" height="14" viewbox="0 0 14 14" fill="none"><path d="M0.566406 12.7998L12.5664 0.799805M12.5664 0.799805L12.5664 12.7998M12.5664 0.799805L0.679613 0.799805" stroke="currentColor" stroke-width="1.6"/></svg></span>
         </a>
     </div>
 </section>
