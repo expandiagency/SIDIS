@@ -32,6 +32,8 @@ if ($_site_pass) {
     if (session_status() === PHP_SESSION_NONE) session_start();
     if (($_POST['sidis_pass'] ?? '') === $_site_pass) {
         $_SESSION['sidis_auth'] = $_site_pass;
+        header('Location: ' . strtok($_SERVER['REQUEST_URI'], '?'));
+        exit;
     }
     if (($_SESSION['sidis_auth'] ?? '') !== $_site_pass) {
         $_pass_err = !empty($_POST['sidis_pass']);
