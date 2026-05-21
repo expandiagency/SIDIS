@@ -11,6 +11,7 @@ $id      = (int)($_GET['id'] ?? 0);
 
 
 try { db()->exec("ALTER TABLE reviews ADD COLUMN clutch_url VARCHAR(500) DEFAULT NULL"); } catch(Exception $e) {}
+try { db()->exec("ALTER TABLE home_partner_logos ADD COLUMN url VARCHAR(500) DEFAULT ''"); } catch(Exception $e) {}
 try { db()->exec("ALTER TABLE home_content ADD COLUMN hero_poster_url VARCHAR(500) DEFAULT NULL"); } catch(Exception $e) {}
 try { db()->exec("ALTER TABLE home_content ADD COLUMN presentation_subtitle VARCHAR(255) DEFAULT NULL"); } catch(Exception $e) {}
 try { db()->exec("ALTER TABLE home_content ADD COLUMN presentation_title VARCHAR(255) DEFAULT NULL"); } catch(Exception $e) {}
@@ -27,7 +28,6 @@ if ($method === 'GET') {
         json_response(rows('SELECT * FROM home_why_slides WHERE lang_id=? ORDER BY sort_order', [$lang_id]));
     }
     if ($action === 'partner_logos') {
-        try { db()->exec("ALTER TABLE home_partner_logos ADD COLUMN url VARCHAR(500) DEFAULT ''"); } catch (Exception $e) {}
         $logos = rows('SELECT l.*, m.path as image_path FROM home_partner_logos l LEFT JOIN media m ON l.image_id=m.id ORDER BY l.sort_order');
         foreach ($logos as &$l) $l['image_url'] = $l['image_path'] ? admin_url($l['image_path']) : '';
         json_response($logos);

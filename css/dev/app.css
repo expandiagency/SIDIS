@@ -1810,6 +1810,7 @@ textarea.input {
   height: 100%;
   width: 29%;
   background: linear-gradient(270deg, rgba(251, 251, 251, 0) 0%, #fbfbfb 100%);
+  pointer-events: none;
 }
 .planning__marquee::after {
   left: auto;
@@ -3207,6 +3208,7 @@ textarea.input {
   height: 100%;
   width: 29%;
   background: linear-gradient(270deg, rgba(251, 251, 251, 0) 0%, #fbfbfb 100%);
+  pointer-events: none;
 }
 .automation__marquee::after {
   left: auto;
