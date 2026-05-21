@@ -16,19 +16,25 @@ function active_lang_url(string $path, array $lang, array $default_lang): string
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="preload" href="/assets/fonts/Inter-SemiBold.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+    <!-- Critical fonts — only the two weights used above the fold -->
+    <link rel="preload" href="/assets/fonts/BasementGrotesque-Black.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+    <link rel="preload" href="/assets/fonts/BasementGrotesqueExpanded-Black.woff2" as="font" type="font/woff2" crossorigin="anonymous">
     <link rel="preload" href="/assets/fonts/Inter-Regular.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+    <link rel="preload" href="/assets/fonts/Inter-SemiBold.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+    <!-- Non-critical fonts — preloaded but lower priority -->
     <link rel="preload" href="/assets/fonts/Inter-Medium.woff2" as="font" type="font/woff2" crossorigin="anonymous">
     <link rel="preload" href="/assets/fonts/Inter-Bold.woff2" as="font" type="font/woff2" crossorigin="anonymous">
-    <link rel="preload" href="/assets/fonts/BasementGrotesqueExpanded-Black.woff2" as="font" type="font/woff2" crossorigin="anonymous">
     <link rel="preload" href="/assets/fonts/BasementGrotesque-Medium.woff2" as="font" type="font/woff2" crossorigin="anonymous">
     <link rel="preload" href="/assets/fonts/BasementGrotesque-Bold.woff2" as="font" type="font/woff2" crossorigin="anonymous">
-    <link rel="preload" href="/assets/fonts/BasementGrotesque-Black.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+    <!-- CSS: preload hint so browser discovers it before parsing <link> -->
+    <link rel="preload" as="style" href="/css/app.min.css">
+    <link rel="stylesheet" href="/css/app.min.css" fetchpriority="high">
+    <!-- JS: modulepreload fetches + parses the module before execution -->
+    <link rel="modulepreload" crossorigin href="/js/app.min.js">
+    <script type="module" crossorigin src="/js/app.min.js"></script>
     <link rel="shortcut icon" href="/assets/img/favicon.ico">
     <title><?= e($meta_title) ?></title>
     <?php if ($meta_description): ?><meta name="description" content="<?= e($meta_description) ?>"><?php endif; ?>
-    <script type="module" crossorigin="" src="/js/app.min.js"></script>
-    <link rel="stylesheet" crossorigin="" href="/css/app.min.css">
     <!-- Language alternates -->
     <?php foreach ($languages as $l): ?>
     <link rel="alternate" hreflang="<?= e($l['code']) ?>" href="<?= e(SITE_URL . ((int)$l['is_default'] ? '/' : '/' . $l['code'] . '/')) ?>">

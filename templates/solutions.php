@@ -249,7 +249,7 @@ function sol_url(string $path): string {
         </div>
     </div>
     <div class="roadmap__bg" data-video-autoplay="">
-        <video muted loop playsinline>
+        <video muted loop playsinline preload="none">
             <source src="<?= e(sol_url($c['video_path'] ?? './assets/video/1-hero.mp4')) ?>" type="video/mp4">
         </video>
     </div>

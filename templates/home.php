@@ -47,7 +47,7 @@ require __DIR__ . '/layout.php';
         </div>
     </div>
     <div class="hero__bg">
-        <video autoplay muted loop playsinline>
+        <video autoplay muted loop playsinline poster="/assets/img/poster.webp">
             <source src="<?= e($h['hero_video_path'] ?? './assets/video/1-hero.mp4') ?>" type="video/mp4">
         </video>
     </div>
@@ -389,7 +389,7 @@ require __DIR__ . '/layout.php';
         </div>
     </div>
     <div class="roadmap__bg" data-video-autoplay="">
-        <video muted loop playsinline>
+        <video muted loop playsinline preload="none">
             <source src="./assets/video/1-hero.mp4" type="video/mp4">
         </video>
     </div>
