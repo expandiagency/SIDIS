@@ -435,12 +435,15 @@ require __DIR__ . '/layout.php';
 <?php if ($bk === 'presentation'): ?>
 <section class="presentation">
     <div class="presentation__container">
+        <?php
+            $pres_poster = media_url($h['presentation_poster_url'] ?? '') ?: './assets/img/poster.webp';
+        ?>
         <div class="presentation__body video-paused" data-video-controlls-parent="">
             <div class="presentation__head">
-                <div class="presentation__subtitle"><?= e($h['presentation_subtitle'] ?? 'Bring Ideas To Life') ?></div>
-                <h2 class="presentation__title title"><?= nl2br(e($h['presentation_title'] ?? "See RPA\nin Action")) ?></h2>
+                <div class="presentation__subtitle"><?= e($h['presentation_subtitle'] ?: 'Bring Ideas To Life') ?></div>
+                <h2 class="presentation__title title"><?= nl2br(e($h['presentation_title'] ?: "See RPA\nin Action")) ?></h2>
                 <button type="button" class="presentation__play button button--icon" data-video-controlls-play="">
-                    <span class="button__text">Play</span>
+                    <span class="button__text"><?= e($h['presentation_play_text'] ?: 'Play') ?></span>
                     <span class="button__icon"><svg width="39" height="39" viewbox="0 0 39 39" fill="none"><rect width="38.8889" height="38.8889" rx="8.88889" fill="none"></rect><path d="M29.9993 18.4826C30.7401 18.9103 30.7401 19.9795 29.9993 20.4071L14.9994 29.0674C14.2586 29.4951 13.3327 28.9605 13.3327 28.1051L13.3327 10.7846C13.3327 9.92929 14.2586 9.39471 14.9994 9.82237L29.9993 18.4826Z" fill="currentColor"></path></svg></span>
                 </button>
             </div>
@@ -448,7 +451,7 @@ require __DIR__ . '/layout.php';
             <div class="presentation__video">
                 <div class="video-controlls" data-video-controlls="">
                     <video loop playsinline muted preload="metadata">
-                        <source src="<?= e($h['presentation_video'] ?? './assets/video/1-hero.mp4') ?>" type="video/mp4">
+                        <source src="<?= e(media_url($h['presentation_video'] ?? '') ?: './assets/video/1-hero.mp4') ?>" type="video/mp4">
                     </video>
                     <div class="video-controlls__navigation">
                         <button class="video-controlls__mute" data-video-controlls-mute=""><svg width="36" height="36" viewbox="0 0 36 36" fill="none"><path d="M17.5534 14.3003L14.3169 11.0493L15.9188 9.44737C16.2144 9.14542 16.5606 9.07513 16.9578 9.23632C17.3549 9.39751 17.5534 9.68839 17.5534 10.1089V14.3003Z" fill="currentColor"></path></svg></button>
@@ -457,7 +460,7 @@ require __DIR__ . '/layout.php';
                     </div>
                 </div>
             </div>
-            <div class="presentation__bg"><img alt="" loading="lazy" src="./assets/img/poster.webp"></div>
+            <div class="presentation__bg"><img alt="" loading="lazy" src="<?= e($pres_poster) ?>"></div>
         </div>
     </div>
 </section>

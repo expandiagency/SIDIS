@@ -400,11 +400,26 @@ tr:hover td{background:#fafafa}
                 </div>
                 <hr style="margin:20px 0;border:none;border-top:1px solid var(--border)">
                 <p style="font-size:13px;font-weight:600;margin-bottom:12px">Video Presentation Section</p>
-                <div class="form-grid cols-1">
-                    <div class="field"><label>Subtitle (small text above)</label><input v-model="homeData.presentation_subtitle"></div>
-                    <div class="field"><label>Title</label><input v-model="homeData.presentation_title"></div>
-                    <div class="field"><label>Description text</label><textarea v-model="homeData.presentation_text" rows="3"></textarea></div>
-                    <div class="field"><label>Video path (e.g. ./assets/video/1-hero.mp4)</label><input v-model="homeData.presentation_video"></div>
+                <div class="form-grid">
+                    <div class="field"><label>Subtitle (small text above title)</label><input v-model="homeData.presentation_subtitle" placeholder="Bring Ideas To Life"></div>
+                    <div class="field"><label>Play Button Text</label><input v-model="homeData.presentation_play_text" placeholder="Play"></div>
+                    <div class="field field--full"><label>Title</label><input v-model="homeData.presentation_title" placeholder="See RPA\nin Action"></div>
+                    <div class="field field--full"><label>Description text (bottom-right corner)</label><textarea v-model="homeData.presentation_text" rows="3"></textarea></div>
+                    <div class="field field--full">
+                        <label>Video</label>
+                        <div style="display:flex;gap:8px;align-items:center">
+                            <input v-model="homeData.presentation_video" placeholder="./assets/video/1-hero.mp4" style="flex:1">
+                            <button class="btn btn--outline btn--sm" @click="pickMedia(m=>{homeData.presentation_video=m.url})">Pick from library</button>
+                        </div>
+                    </div>
+                    <div class="field field--full">
+                        <label>Cover / Poster Image <span style="font-weight:normal;color:var(--muted)">(фон до нажатия Play)</span></label>
+                        <div class="img-picker">
+                            <img v-if="homeData.presentation_poster_url" :src="homeData.presentation_poster_url" class="img-thumb" style="max-height:80px;object-fit:cover">
+                            <button class="btn btn--outline btn--sm" @click="pickMedia(m=>{homeData.presentation_poster_url=m.url})">Choose from library</button>
+                            <button v-if="homeData.presentation_poster_url" class="btn btn--danger btn--sm" @click="homeData.presentation_poster_url=''">Remove</button>
+                        </div>
+                    </div>
                 </div>
             </div></div>
 

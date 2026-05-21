@@ -12,6 +12,12 @@ $id      = (int)($_GET['id'] ?? 0);
 
 try { db()->exec("ALTER TABLE reviews ADD COLUMN clutch_url VARCHAR(500) DEFAULT NULL"); } catch(Exception $e) {}
 try { db()->exec("ALTER TABLE home_content ADD COLUMN hero_poster_url VARCHAR(500) DEFAULT NULL"); } catch(Exception $e) {}
+try { db()->exec("ALTER TABLE home_content ADD COLUMN presentation_subtitle VARCHAR(255) DEFAULT NULL"); } catch(Exception $e) {}
+try { db()->exec("ALTER TABLE home_content ADD COLUMN presentation_title VARCHAR(255) DEFAULT NULL"); } catch(Exception $e) {}
+try { db()->exec("ALTER TABLE home_content ADD COLUMN presentation_text TEXT DEFAULT NULL"); } catch(Exception $e) {}
+try { db()->exec("ALTER TABLE home_content ADD COLUMN presentation_video VARCHAR(500) DEFAULT NULL"); } catch(Exception $e) {}
+try { db()->exec("ALTER TABLE home_content ADD COLUMN presentation_poster_url VARCHAR(500) DEFAULT NULL"); } catch(Exception $e) {}
+try { db()->exec("ALTER TABLE home_content ADD COLUMN presentation_play_text VARCHAR(50) DEFAULT NULL"); } catch(Exception $e) {}
 try { db()->exec("ALTER TABLE home_content ADD COLUMN solutions_ids TEXT DEFAULT NULL"); } catch(Exception $e) {}
 try { db()->exec("ALTER TABLE home_content ADD COLUMN departments_ids TEXT DEFAULT NULL"); } catch(Exception $e) {}
 try { db()->exec("ALTER TABLE home_content ADD COLUMN industries_ids TEXT DEFAULT NULL"); } catch(Exception $e) {}
@@ -64,7 +70,9 @@ if ($method === 'POST') {
                    'hero_video_path','hero_poster_url','why_title','automation_title','automation_text',
                    'automation_loc1_title','automation_loc1_city','automation_loc2_title','automation_loc2_city',
                    'solutions_title','projects_title','projects_btn_text','projects_btn_url',
-                   'reviews_title','cta_title','cta_subtitle','cta_btn_text','cta_btn_url'];
+                   'reviews_title','cta_title','cta_subtitle','cta_btn_text','cta_btn_url',
+                   'presentation_subtitle','presentation_title','presentation_text',
+                   'presentation_video','presentation_poster_url','presentation_play_text'];
         $save = ['lang_id' => $lang_id];
         foreach ($fields as $f) $save[$f] = $data[$f] ?? '';
         $save['solutions_ids']  = json_encode(array_map('intval', $data['solutions_ids']  ?? []));
