@@ -325,8 +325,8 @@ tr:hover td{background:#fafafa}
                              :style="{position:'relative',textAlign:'center',cursor:'grab',opacity:dragLogoIdx===i?0.4:1,transition:'opacity 0.15s',display:'flex',flexDirection:'column',alignItems:'center',gap:'6px'}">
                             <div style="position:absolute;top:-4px;left:50%;transform:translateX(-50%);font-size:10px;color:var(--muted)">⠿</div>
                             <img :src="logo.image_url||''" style="height:50px;max-width:120px;object-fit:contain;border:1px solid var(--border);border-radius:6px;padding:4px;pointer-events:none">
-                            <input v-model="logo.url" @blur="saveLogoUrl(logo)" @click.stop @mousedown.stop @keydown.stop
-                                placeholder="https://..." style="width:120px;font-size:11px;padding:3px 6px;border:1px solid var(--border);border-radius:4px;background:var(--bg);color:var(--text);outline:none;cursor:text">
+                            <input v-model="logo.url" @blur="saveLogoUrl(logo)" @click.stop @dragstart.stop
+                                placeholder="https://..." style="width:120px;font-size:11px;padding:3px 6px;border:1px solid var(--border);border-radius:4px;background:var(--bg);color:var(--text);outline:none;cursor:text" draggable="false">
                             <button class="btn btn--danger btn--sm" style="position:absolute;top:-6px;right:-6px;padding:1px 6px;font-size:11px" @click.stop="deletePartnerLogo(logo.id)">×</button>
                         </div>
                         <div v-if="!partnerLogos.length" style="color:var(--muted);font-size:13px">No logos yet. Click "+ Add Logo"</div>

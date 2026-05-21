@@ -1824,6 +1824,9 @@ textarea.input {
   align-items: center;
   justify-content: center;
 }
+a.planning__marquee-item {
+  cursor: pointer;
+}
 .planning__marquee-item img {
   max-width: 100%;
   max-height: 100%;
@@ -3221,6 +3224,9 @@ textarea.input {
   display: flex;
   align-items: center;
   justify-content: center;
+}
+a.automation__marquee-item {
+  cursor: pointer;
 }
 .automation__marquee-item img {
   max-width: 100%;
