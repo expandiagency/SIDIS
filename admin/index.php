@@ -301,10 +301,11 @@ tr:hover td{background:#fafafa}
 
             <!-- Partner Logos -->
             <div v-if="homeTab==='Partner Logos'">
-                <div class="section-head" style="margin-bottom:12px">
+                <div class="section-head" style="margin-bottom:4px">
                     <strong style="font-size:15px;font-weight:600">Partner / Client Logos (Marquee)</strong>
                     <button class="btn btn--primary btn--sm" @click="pickMedia(img=>addPartnerLogo(img))">+ Add Logo</button>
                 </div>
+                <p style="font-size:12px;color:var(--muted);margin-bottom:12px">Эти логотипы отображаются во всех каруселях на сайте — на главной и на страницах Solutions/Departments/Industries.</p>
                 <div class="card"><div class="card__body">
                     <div style="display:flex;gap:12px;flex-wrap:wrap;align-items:center">
                         <div v-for="(logo,i) in partnerLogos" :key="logo.id" style="position:relative;text-align:center">

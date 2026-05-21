@@ -270,6 +270,7 @@ $template_data = [
     'lang_id'      => $lang_id,
     'nav_header'   => get_nav($lang_id, 'header'),
     'nav_footer'   => get_nav($lang_id, 'footer'),
+    'partners'     => get_partner_logos(),
 ];
 
 switch ($page) {
@@ -277,7 +278,6 @@ switch ($page) {
     case 'home':
         $template_data['home']    = get_home($lang_id);
         $template_data['why_slides'] = get_why_slides($lang_id);
-        $template_data['partners']   = get_partner_logos();
         $template_data['auto_imgs']  = get_automation_images();
         $template_data['reviews']    = get_reviews($lang_id);
         $h = $template_data['home'];
