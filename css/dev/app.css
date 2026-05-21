@@ -7209,6 +7209,9 @@ textarea.input {
   .button:not(.is-active, .--tab-active, .active, [disabled], .disabled):hover .button__icon > * {
     transform: rotate(45deg);
   }
+  .presentation__play:not([disabled]):hover .button__icon > * {
+    transform: scale(1.2);
+  }
   .button--dark-hover:not(.is-active, .--tab-active, .active, [disabled], .disabled):hover {
     background-color: var(--clr-black);
   }
