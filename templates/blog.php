@@ -1,4 +1,11 @@
-<?php require __DIR__ . '/layout.php'; ?>
+<?php
+$_blog_title = get_setting('blog_hero_title', $lang_id) ?: 'Trends Blog';
+$_blog_text  = get_setting('blog_hero_text', $lang_id) ?: 'Explore how Sidis Group is shaping the future with innovative automation solutions.';
+$_blog_img   = media_url(get_setting('blog_hero_image_url') ?: '') ?: null;
+$meta_title       = get_setting('blog_meta_title', $lang_id) ?: $_blog_title;
+$meta_description = get_setting('blog_meta_description', $lang_id) ?: $_blog_text;
+$og_image         = get_setting('blog_og_image_url') ?: '';
+require __DIR__ . '/layout.php'; ?>
 
 <main class="page">
 
@@ -6,14 +13,20 @@
     <div class="promo__container">
         <div class="promo__body">
             <div class="promo__content">
-                <h1 class="promo__title">Trends Blog</h1>
-                <div class="promo__text">Explore how Sidis Group is shaping the future with innovative automation solutions.</div>
+                <h1 class="promo__title"><?= e($_blog_title) ?></h1>
+                <div class="promo__text"><?= e($_blog_text) ?></div>
             </div>
             <div class="promo__bg">
+                <?php if ($_blog_img): ?>
+                <picture>
+                    <img alt="promo-img" loading="lazy" src="<?= e($_blog_img) ?>">
+                </picture>
+                <?php else: ?>
                 <picture>
                     <source srcset="./assets/img/promo/image-1-mob.webp" media="(max-width: 650px)">
                     <img alt="promo-img" loading="lazy" src="./assets/img/promo/image-1.webp">
                 </picture>
+                <?php endif; ?>
             </div>
         </div>
     </div>

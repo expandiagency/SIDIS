@@ -1,4 +1,11 @@
-<?php require __DIR__ . '/layout.php'; ?>
+<?php
+$_cases_title = get_setting('cases_hero_title', $lang_id) ?: 'Case Studies';
+$_cases_text  = get_setting('cases_hero_text', $lang_id) ?: 'See how Sidis Group has helped its clients achieve their vision of digital innovation.';
+$_cases_img   = media_url(get_setting('cases_hero_image_url') ?: '') ?: null;
+$meta_title       = get_setting('cases_meta_title', $lang_id) ?: $_cases_title;
+$meta_description = get_setting('cases_meta_description', $lang_id) ?: $_cases_text;
+$og_image         = get_setting('cases_og_image_url') ?: '';
+require __DIR__ . '/layout.php'; ?>
 
 <main class="page">
 
@@ -6,14 +13,20 @@
     <div class="promo__container">
         <div class="promo__body">
             <div class="promo__content">
-                <h1 class="promo__title">Case Studies</h1>
-                <div class="promo__text">See how Sidis Group has helped its clients achieve their vision of digital innovation.</div>
+                <h1 class="promo__title"><?= e($_cases_title) ?></h1>
+                <div class="promo__text"><?= e($_cases_text) ?></div>
             </div>
             <div class="promo__bg">
+                <?php if ($_cases_img): ?>
+                <picture>
+                    <img alt="promo-img" loading="lazy" src="<?= e($_cases_img) ?>">
+                </picture>
+                <?php else: ?>
                 <picture>
                     <source srcset="./assets/img/promo/image-2-mob.webp" media="(max-width: 650px)">
                     <img alt="promo-img" loading="lazy" src="./assets/img/promo/image-2.webp">
                 </picture>
+                <?php endif; ?>
             </div>
         </div>
     </div>

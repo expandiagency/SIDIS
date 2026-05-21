@@ -1237,6 +1237,56 @@ tr:hover td{background:#fafafa}
                     <div class="field"><label>Contact Phone</label><input v-model="settingsData.contact_phone"></div>
                 </div>
             </div></div>
+
+            <div class="card"><div class="card__head"><h2>Case Studies Page</h2></div><div class="card__body">
+                <div class="form-grid">
+                    <div class="field"><label>Hero Title ({{ currentLangCode }})</label><input v-model="settingsData.cases_hero_title" placeholder="Case Studies"></div>
+                    <div class="field"><label>Hero Subtitle ({{ currentLangCode }})</label><input v-model="settingsData.cases_hero_text" placeholder="See how Sidis Group has helped..."></div>
+                    <div class="field"><label>Meta Title ({{ currentLangCode }})</label><input v-model="settingsData.cases_meta_title" placeholder="Falls back to Hero Title"></div>
+                    <div class="field field--full"><label>Meta Description ({{ currentLangCode }})</label><textarea v-model="settingsData.cases_meta_description" rows="2" placeholder="Falls back to Hero Subtitle"></textarea></div>
+                    <div class="field field--full"><label>Hero Background Image</label>
+                        <div class="img-picker">
+                            <img v-if="settingsData.cases_hero_image_url" :src="settingsData.cases_hero_image_url" class="img-thumb">
+                            <button class="btn btn--outline btn--sm" @click="pickMedia(m=>{settingsData.cases_hero_image_url=m.url})">Choose from library</button>
+                            <button v-if="settingsData.cases_hero_image_url" class="btn btn--sm" @click="settingsData.cases_hero_image_url=''">Remove</button>
+                        </div>
+                        <div class="field-note" style="margin-top:6px;color:var(--muted);font-size:12px">Leave empty to use the default image</div>
+                    </div>
+                    <div class="field field--full"><label>OG / Social Share Image</label>
+                        <div class="img-picker">
+                            <img v-if="settingsData.cases_og_image_url" :src="settingsData.cases_og_image_url" class="img-thumb">
+                            <button class="btn btn--outline btn--sm" @click="pickMedia(m=>{settingsData.cases_og_image_url=m.url})">Choose from library</button>
+                            <button v-if="settingsData.cases_og_image_url" class="btn btn--sm" @click="settingsData.cases_og_image_url=''">Remove</button>
+                        </div>
+                        <div class="field-note" style="margin-top:6px;color:var(--muted);font-size:12px">Shown when sharing the link in social media / messengers (1200×630 recommended)</div>
+                    </div>
+                </div>
+            </div></div>
+
+            <div class="card"><div class="card__head"><h2>Blog Page</h2></div><div class="card__body">
+                <div class="form-grid">
+                    <div class="field"><label>Hero Title ({{ currentLangCode }})</label><input v-model="settingsData.blog_hero_title" placeholder="Trends Blog"></div>
+                    <div class="field"><label>Hero Subtitle ({{ currentLangCode }})</label><input v-model="settingsData.blog_hero_text" placeholder="Explore how Sidis Group is shaping the future..."></div>
+                    <div class="field"><label>Meta Title ({{ currentLangCode }})</label><input v-model="settingsData.blog_meta_title" placeholder="Falls back to Hero Title"></div>
+                    <div class="field field--full"><label>Meta Description ({{ currentLangCode }})</label><textarea v-model="settingsData.blog_meta_description" rows="2" placeholder="Falls back to Hero Subtitle"></textarea></div>
+                    <div class="field field--full"><label>Hero Background Image</label>
+                        <div class="img-picker">
+                            <img v-if="settingsData.blog_hero_image_url" :src="settingsData.blog_hero_image_url" class="img-thumb">
+                            <button class="btn btn--outline btn--sm" @click="pickMedia(m=>{settingsData.blog_hero_image_url=m.url})">Choose from library</button>
+                            <button v-if="settingsData.blog_hero_image_url" class="btn btn--sm" @click="settingsData.blog_hero_image_url=''">Remove</button>
+                        </div>
+                        <div class="field-note" style="margin-top:6px;color:var(--muted);font-size:12px">Leave empty to use the default image</div>
+                    </div>
+                    <div class="field field--full"><label>OG / Social Share Image</label>
+                        <div class="img-picker">
+                            <img v-if="settingsData.blog_og_image_url" :src="settingsData.blog_og_image_url" class="img-thumb">
+                            <button class="btn btn--outline btn--sm" @click="pickMedia(m=>{settingsData.blog_og_image_url=m.url})">Choose from library</button>
+                            <button v-if="settingsData.blog_og_image_url" class="btn btn--sm" @click="settingsData.blog_og_image_url=''">Remove</button>
+                        </div>
+                        <div class="field-note" style="margin-top:6px;color:var(--muted);font-size:12px">Shown when sharing the link in social media / messengers (1200×630 recommended)</div>
+                    </div>
+                </div>
+            </div></div>
         </template>
 
         <!-- ══ USERS ══ -->

@@ -35,6 +35,10 @@ function active_lang_url(string $path, array $lang, array $default_lang): string
     <link rel="shortcut icon" href="/assets/img/favicon.ico">
     <title><?= e($meta_title) ?></title>
     <?php if ($meta_description): ?><meta name="description" content="<?= e($meta_description) ?>"><?php endif; ?>
+    <meta property="og:title" content="<?= e($meta_title) ?>">
+    <?php if ($meta_description): ?><meta property="og:description" content="<?= e($meta_description) ?>"><?php endif; ?>
+    <?php if (!empty($og_image)): ?><meta property="og:image" content="<?= e(media_url($og_image)) ?>"><?php endif; ?>
+    <meta property="og:type" content="website">
     <!-- Language alternates -->
     <?php foreach ($languages as $l): ?>
     <link rel="alternate" hreflang="<?= e($l['code']) ?>" href="<?= e(SITE_URL . ((int)$l['is_default'] ? '/' : '/' . $l['code'] . '/')) ?>">

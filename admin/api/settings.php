@@ -12,8 +12,14 @@ $global_keys = [
     'social_linkedin', 'social_whatsapp', 'social_twitter', 'social_facebook', 'social_instagram',
     'clutch_url', 'footer_design_url', 'footer_dev_url',
     'header_logo_url', 'footer_logo_url',
+    'cases_hero_image_url', 'cases_og_image_url',
+    'blog_hero_image_url', 'blog_og_image_url',
 ];
-$lang_keys   = ['site_description', 'footer_copyright', 'contact_address', 'contact_phone'];
+$lang_keys   = [
+    'site_description', 'footer_copyright', 'contact_address', 'contact_phone',
+    'cases_hero_title', 'cases_hero_text', 'cases_meta_title', 'cases_meta_description',
+    'blog_hero_title', 'blog_hero_text', 'blog_meta_title', 'blog_meta_description',
+];
 
 if ($method === 'GET') {
     $result = [];
