@@ -27,6 +27,7 @@ if ($method === 'GET') {
         json_response(rows('SELECT * FROM home_why_slides WHERE lang_id=? ORDER BY sort_order', [$lang_id]));
     }
     if ($action === 'partner_logos') {
+        try { db()->exec("ALTER TABLE home_partner_logos ADD COLUMN url VARCHAR(500) DEFAULT ''"); } catch (Exception $e) {}
         $logos = rows('SELECT l.*, m.path as image_path FROM home_partner_logos l LEFT JOIN media m ON l.image_id=m.id ORDER BY l.sort_order');
         foreach ($logos as &$l) $l['image_url'] = $l['image_path'] ? admin_url($l['image_path']) : '';
         json_response($logos);
@@ -98,7 +99,7 @@ if ($method === 'POST') {
 
     // Partner logos
     if ($action === 'save_partner_logo') {
-        $d = ['sort_order'=>(int)($data['sort_order']??0), 'image_id'=>(int)($data['image_id']??0)??null, 'alt_text'=>$data['alt_text']??''];
+        $d = ['sort_order'=>(int)($data['sort_order']??0), 'image_id'=>(int)($data['image_id']??0)??null, 'alt_text'=>$data['alt_text']??'', 'url'=>$data['url']??''];
         if ($id) { update('home_partner_logos', $d, ['id'=>$id]); json_response(['ok'=>true]); }
         json_response(['ok'=>true, 'id'=>insert('home_partner_logos', $d)]);
     }

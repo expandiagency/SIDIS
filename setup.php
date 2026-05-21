@@ -159,7 +159,8 @@ try {
   id INT AUTO_INCREMENT PRIMARY KEY,
   sort_order INT DEFAULT 0,
   image_id INT DEFAULT NULL,
-  alt_text VARCHAR(200) DEFAULT ''
+  alt_text VARCHAR(200) DEFAULT '',
+  url VARCHAR(500) DEFAULT ''
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4",
 
 'home_automation_images' => "CREATE TABLE IF NOT EXISTS home_automation_images (
