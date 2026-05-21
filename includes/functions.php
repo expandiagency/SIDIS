@@ -270,8 +270,14 @@ function get_case(int $lang_id, string $slug): ?array {
 
 /* ─── Blog ──────────────────────────────────────────────────────────────── */
 
+function reading_time(string $content): int {
+    $text = strip_tags($content);
+    $words = preg_match_all('/\S+/u', $text, $m);
+    return max(1, (int)ceil($words / 200));
+}
+
 function get_posts(int $lang_id, array $filters = [], int $limit = 50, int $offset = 0): array {
-    $sql = 'SELECT p.*, pt.title, pt.subtitle, pt.excerpt,
+    $sql = 'SELECT p.*, pt.title, pt.subtitle, pt.excerpt, pt.content,
                    img.path as image_path, a.id as author_id,
                    at_.name as author_name, at_.title as author_title,
                    am.path as author_image_path
@@ -288,6 +294,7 @@ function get_posts(int $lang_id, array $filters = [], int $limit = 50, int $offs
     $posts = rows($sql, $params);
     foreach ($posts as &$post) {
         $post['tags'] = rows('SELECT tag_text FROM post_tags WHERE post_id=? AND lang_id=? ORDER BY sort_order', [$post['id'], $lang_id]);
+        $post['read_time'] = reading_time($post['content'] ?? '');
     }
     return $posts;
 }

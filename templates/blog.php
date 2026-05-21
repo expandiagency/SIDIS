@@ -86,6 +86,7 @@ require __DIR__ . '/layout.php'; ?>
                         <img alt="<?= e($post['title'] ?? '') ?>" loading="lazy" src="<?= !empty($post['image_path']) ? e(media_url($post['image_path'])) : $blog_fallbacks[$pi % 4] ?>">
                     </div>
                     <div class="catalog-card__info">
+                        <div class="catalog-card__time"><?= (int)$post['read_time'] ?> min to read</div>
                         <?php if (!empty($post['published_at'])): ?>
                         <div class="catalog-card__date"><?= date('d/m/y', strtotime($post['published_at'])) ?></div>
                         <?php endif; ?>

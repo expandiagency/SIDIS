@@ -543,6 +543,7 @@ require __DIR__ . '/layout.php';
                         <?php if (!empty($post['published_at'])): ?>
                         <div class="article-card__badge"><?= date('j, F, Y', strtotime($post['published_at'])) ?></div>
                         <?php endif; ?>
+                        <div class="article-card__badge"><?= (int)$post['read_time'] ?> min to read</div>
                     </div>
                     <?php if (!empty($post['author_name'])): ?>
                     <div class="article-card__author">
