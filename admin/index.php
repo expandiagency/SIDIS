@@ -249,6 +249,14 @@ tr:hover td{background:#fafafa}
                     <div class="field"><label>Button 2 Text</label><input v-model="homeData.hero_btn2_text"></div>
                     <div class="field"><label>Button 2 URL</label><input v-model="homeData.hero_btn2_url"></div>
                     <div class="field field--full"><label>Hero Video Path (e.g. ./assets/video/1-hero.mp4)</label><input v-model="homeData.hero_video_path"></div>
+                    <div class="field field--full">
+                        <label>Hero Poster Image <span style="font-weight:normal;color:var(--muted)">(показывается пока грузится видео)</span></label>
+                        <div class="img-picker">
+                            <img v-if="homeData.hero_poster_url" :src="homeData.hero_poster_url" class="img-thumb" style="max-height:80px;object-fit:cover">
+                            <button class="btn btn--outline btn--sm" @click="pickMedia(m=>{homeData.hero_poster_url=m.url})">Choose from library</button>
+                            <button v-if="homeData.hero_poster_url" class="btn btn--danger btn--sm" @click="homeData.hero_poster_url=''">Remove</button>
+                        </div>
+                    </div>
                     <div class="field field--full"><label>CTA Section Title</label><input v-model="homeData.cta_title"></div>
                     <div class="field"><label>CTA Button Text</label><input v-model="homeData.cta_btn_text"></div>
                     <div class="field"><label>CTA Button URL</label><input v-model="homeData.cta_btn_url"></div>

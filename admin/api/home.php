@@ -11,6 +11,7 @@ $id      = (int)($_GET['id'] ?? 0);
 
 
 try { db()->exec("ALTER TABLE reviews ADD COLUMN clutch_url VARCHAR(500) DEFAULT NULL"); } catch(Exception $e) {}
+try { db()->exec("ALTER TABLE home_content ADD COLUMN hero_poster_url VARCHAR(500) DEFAULT NULL"); } catch(Exception $e) {}
 try { db()->exec("ALTER TABLE home_content ADD COLUMN solutions_ids TEXT DEFAULT NULL"); } catch(Exception $e) {}
 try { db()->exec("ALTER TABLE home_content ADD COLUMN departments_ids TEXT DEFAULT NULL"); } catch(Exception $e) {}
 try { db()->exec("ALTER TABLE home_content ADD COLUMN industries_ids TEXT DEFAULT NULL"); } catch(Exception $e) {}
@@ -60,7 +61,7 @@ if ($method === 'POST') {
     // Save main content
     if ($action === 'save_content') {
         $fields = ['hero_title','hero_subtitle','hero_btn1_text','hero_btn1_url','hero_btn2_text','hero_btn2_url',
-                   'hero_video_path','why_title','automation_title','automation_text',
+                   'hero_video_path','hero_poster_url','why_title','automation_title','automation_text',
                    'automation_loc1_title','automation_loc1_city','automation_loc2_title','automation_loc2_city',
                    'solutions_title','projects_title','projects_btn_text','projects_btn_url',
                    'reviews_title','cta_title','cta_subtitle','cta_btn_text','cta_btn_url'];
