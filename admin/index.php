@@ -315,10 +315,17 @@ tr:hover td{background:#fafafa}
                 </div>
                 <p style="font-size:12px;color:var(--muted);margin-bottom:12px">Эти логотипы отображаются во всех каруселях на сайте — на главной и на страницах Solutions/Departments/Industries.</p>
                 <div class="card"><div class="card__body">
-                    <div style="display:flex;gap:12px;flex-wrap:wrap;align-items:center">
-                        <div v-for="(logo,i) in partnerLogos" :key="logo.id" style="position:relative;text-align:center">
-                            <img :src="logo.image_url||''" style="height:50px;max-width:120px;object-fit:contain;border:1px solid var(--border);border-radius:6px;padding:4px">
-                            <button class="btn btn--danger btn--sm" style="position:absolute;top:-6px;right:-6px;padding:1px 6px;font-size:11px" @click="deletePartnerLogo(logo.id)">×</button>
+                    <p style="font-size:11px;color:var(--muted);margin-bottom:10px">Перетащите логотипы чтобы изменить порядок</p>
+                    <div style="display:flex;gap:12px;flex-wrap:wrap;align-items:center" @dragover.prevent @drop.prevent>
+                        <div v-for="(logo,i) in partnerLogos" :key="logo.id"
+                             draggable="true"
+                             @dragstart="onLogoDragStart(i)"
+                             @dragover.prevent="onLogoDragOver($event,i)"
+                             @drop.prevent="onLogoDrop()"
+                             :style="{position:'relative',textAlign:'center',cursor:'grab',opacity:dragLogoIdx===i?0.4:1,transition:'opacity 0.15s'}">
+                            <div style="position:absolute;top:-4px;left:50%;transform:translateX(-50%);font-size:10px;color:var(--muted)">⠿</div>
+                            <img :src="logo.image_url||''" style="height:50px;max-width:120px;object-fit:contain;border:1px solid var(--border);border-radius:6px;padding:4px;pointer-events:none">
+                            <button class="btn btn--danger btn--sm" style="position:absolute;top:-6px;right:-6px;padding:1px 6px;font-size:11px" @click.stop="deletePartnerLogo(logo.id)">×</button>
                         </div>
                         <div v-if="!partnerLogos.length" style="color:var(--muted);font-size:13px">No logos yet. Click "+ Add Logo"</div>
                     </div>
@@ -1754,6 +1761,21 @@ createApp({
         const deleteReview = async id => { if (!confirm('Delete?')) return; await api(`/admin/api/home.php?action=delete_review&id=${id}`,{method:'POST'}); reviews.value = await api(`/admin/api/home.php?action=reviews&lang_id=${langId.value}`); };
         const addPartnerLogo = async img => { await api(`/admin/api/home.php?action=save_partner_logo&lang_id=${langId.value}`,{method:'POST',body:JSON.stringify({image_id:img.id,alt_text:img.alt_text||'',sort_order:partnerLogos.value.length})}); partnerLogos.value = await api(`/admin/api/home.php?action=partner_logos&lang_id=${langId.value}`); };
         const deletePartnerLogo = async id => { await api(`/admin/api/home.php?action=delete_partner_logo&id=${id}`,{method:'POST'}); partnerLogos.value = await api(`/admin/api/home.php?action=partner_logos&lang_id=${langId.value}`); };
+        const dragLogoIdx = ref(null);
+        const onLogoDragStart = i => { dragLogoIdx.value = i; };
+        const onLogoDragOver = (e, i) => {
+            e.preventDefault();
+            if (dragLogoIdx.value === null || dragLogoIdx.value === i) return;
+            const arr = [...partnerLogos.value];
+            const [moved] = arr.splice(dragLogoIdx.value, 1);
+            arr.splice(i, 0, moved);
+            partnerLogos.value = arr;
+            dragLogoIdx.value = i;
+        };
+        const onLogoDrop = async () => {
+            dragLogoIdx.value = null;
+            await api(`/admin/api/home.php?action=reorder_partner_logos`, {method:'POST', body: JSON.stringify({ids: partnerLogos.value.map(l => l.id)})});
+        };
         const addAutoImage = async img => { await api(`/admin/api/home.php?action=save_auto_image&lang_id=${langId.value}`,{method:'POST',body:JSON.stringify({image_id:img.id,sort_order:autoImages.value.length})}); autoImages.value = await api(`/admin/api/home.php?action=auto_images&lang_id=${langId.value}`); };
         const deleteAutoImage = async id => { await api(`/admin/api/home.php?action=delete_auto_image&id=${id}`,{method:'POST'}); autoImages.value = await api(`/admin/api/home.php?action=auto_images&lang_id=${langId.value}`); };
 
@@ -2259,7 +2281,8 @@ createApp({
             whySlideForm, reviewForm,
             saveHome, allSolPages, openWhySlideModal, saveWhySlide, deleteWhySlide,
             openReviewModal, saveReview, deleteReview,
-            addPartnerLogo, deletePartnerLogo, addAutoImage, deleteAutoImage,
+            addPartnerLogo, deletePartnerLogo, dragLogoIdx, onLogoDragStart, onLogoDragOver, onLogoDrop,
+            addAutoImage, deleteAutoImage,
             navLocation, navItems_data, navForm, megaNavItem, megaCategories,
             loadNav, openNavModal, saveNavItem, deleteNavItem,
             openMegaEditor, saveMegaCategory, deleteMegaCategory, saveMegaSubitem, deleteMegaSubitem,

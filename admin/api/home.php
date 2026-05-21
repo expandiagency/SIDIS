@@ -103,6 +103,12 @@ if ($method === 'POST') {
         json_response(['ok'=>true, 'id'=>insert('home_partner_logos', $d)]);
     }
     if ($action === 'delete_partner_logo') { delete('home_partner_logos', ['id'=>$id]); json_response(['ok'=>true]); }
+    if ($action === 'reorder_partner_logos') {
+        foreach (($data['ids'] ?? []) as $i => $logoId) {
+            update('home_partner_logos', ['sort_order' => $i], ['id' => (int)$logoId]);
+        }
+        json_response(['ok' => true]);
+    }
 
     // Automation images
     if ($action === 'save_auto_image') {
