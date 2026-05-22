@@ -1465,16 +1465,23 @@ tr:hover td{background:#fafafa}
                             </div>
                             <div class="repeat-item__body">
                                 <div class="form-grid">
-                                    <div class="field"><label>Title</label><input v-model="sub.title"></div>
-                                    <div class="field"><label>URL</label><input v-model="sub.url"></div>
-                                    <div class="field field--full"><label>Description</label><input v-model="sub.description"></div>
-                                    <div class="field field--full"><label>Icon SVG</label>
-                                        <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
-                                            <div class="svg-preview" v-html="sub.icon_svg||'<span style=color:#ccc;font-size:10px>No icon</span>'"></div>
-                                            <label class="btn btn--outline btn--sm" style="cursor:pointer">Upload SVG<input type="file" accept=".svg,image/svg+xml" style="display:none" @change="loadSvgInto($event,sub,'icon_svg')"></label>
-                                        </div>
-                                        <textarea v-model="sub.icon_svg" rows="2" placeholder="<svg...></svg>"></textarea>
+                                    <div class="field field--full">
+                                        <label>Link to page (icon is taken automatically)</label>
+                                        <select :value="sub.url" @change="e => { const p=allNavSolPages.find(x=>x.url===e.target.value); sub.url=e.target.value; if(p&&!sub._title_edited) sub.title=p.title; }" style="padding:8px 10px;border:1px solid var(--border);border-radius:6px;background:var(--bg);color:var(--text);width:100%;font-size:14px">
+                                            <option value="#">— select page —</option>
+                                            <optgroup label="Solutions">
+                                                <option v-for="p in allNavSolPages.filter(x=>x.type==='solution')" :key="p.id" :value="p.url">{{ p.title }}</option>
+                                            </optgroup>
+                                            <optgroup label="Departments">
+                                                <option v-for="p in allNavSolPages.filter(x=>x.type==='department')" :key="p.id" :value="p.url">{{ p.title }}</option>
+                                            </optgroup>
+                                            <optgroup label="Industries">
+                                                <option v-for="p in allNavSolPages.filter(x=>x.type==='industry')" :key="p.id" :value="p.url">{{ p.title }}</option>
+                                            </optgroup>
+                                        </select>
                                     </div>
+                                    <div class="field"><label>Title <span style="font-size:11px;color:var(--muted)">(shown in menu)</span></label><input v-model="sub.title" @input="sub._title_edited=true"></div>
+                                    <div class="field field--full"><label>Description <span style="font-size:11px;color:var(--muted)">(shown in menu)</span></label><input v-model="sub.description"></div>
                                 </div>
                             </div>
                         </div>
@@ -1838,9 +1845,17 @@ createApp({
             modals.nav=false; await loadNav(); showAlert('Saved!');
         };
         const deleteNavItem = async id => { if (!confirm('Delete?')) return; await api(`/admin/api/nav.php?action=delete_item&id=${id}`,{method:'POST'}); await loadNav(); };
+        const allNavSolPages = ref([]);
         const openMegaEditor = async item => {
             megaNavItem.value = item;
             megaCategories.value = await api(`/admin/api/nav.php?action=mega_categories&id=${item.id}&lang_id=${langId.value}`);
+            if (!allNavSolPages.value.length) {
+                const pages = await api(`/admin/api/solutions.php?action=pages&lang_id=${langId.value}`);
+                allNavSolPages.value = (pages||[]).map(p=>({
+                    id: p.id, type: p.type, title: p.title||p.slug, icon_svg: p.icon_svg||'',
+                    url: '/'+p.type+'s/'+p.slug+'/'
+                }));
+            }
             modals.mega=true;
         };
         const saveMegaCategory = async cat => {
@@ -2305,7 +2320,7 @@ createApp({
             addAutoImage, deleteAutoImage,
             navLocation, navItems_data, navForm, megaNavItem, megaCategories,
             loadNav, openNavModal, saveNavItem, deleteNavItem,
-            openMegaEditor, saveMegaCategory, deleteMegaCategory, saveMegaSubitem, deleteMegaSubitem,
+            allNavSolPages, openMegaEditor, saveMegaCategory, deleteMegaCategory, saveMegaSubitem, deleteMegaSubitem,
             solutionsTab, solutionItems, solutionItemForm,
             solPagesTab, solPagesList, editingSolPage, editingSolBlocks, editingSolPageObj,
             solPageBlocks, solPageForm, loadSolPages, openSolPageEditor, saveSolPage,
