@@ -4674,6 +4674,35 @@ a.automation__marquee-item {
 .article-block__img {
   display: flex;
 }
+.article-block__quote {
+  background: linear-gradient(135deg, #7c2891 0%, #3d1260 100%);
+  border-radius: 20px;
+  padding: 60px 80px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 80px;
+  color: #fff;
+}
+.article-block__quote-left {
+  font-size: 16px;
+  line-height: 165%;
+  opacity: 0.9;
+}
+.article-block__quote-right {
+  font-size: 26px;
+  line-height: 140%;
+  font-weight: 700;
+}
+@media (width < 48em) {
+  .article-block__quote {
+    grid-template-columns: 1fr;
+    padding: 40px 30px;
+    gap: 30px;
+  }
+  .article-block__quote-right {
+    font-size: 20px;
+  }
+}
 .article-block__video {
   border-radius: 30px;
   overflow: hidden;

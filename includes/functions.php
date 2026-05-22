@@ -485,6 +485,13 @@ function render_article_content(string $content, array $extras = []): string {
         return '<div class="article-block__media">' . _render_media_slot($left) . _render_media_slot($right) . '</div>';
     }, $content);
 
+    // [quote left="..." right="..."] — two-column purple pull-quote block
+    $content = preg_replace_callback('/\[quote\s+left=["\']([^"\']*)["\'](?:\s+right=["\']([^"\']*)["\'])?\s*\]/i', function($m) {
+        $left  = nl2br(htmlspecialchars($m[1], ENT_QUOTES, 'UTF-8'));
+        $right = nl2br(htmlspecialchars($m[2] ?? '', ENT_QUOTES, 'UTF-8'));
+        return '<div class="article-block__quote"><div class="article-block__quote-left">' . $left . '</div><div class="article-block__quote-right">' . $right . '</div></div>';
+    }, $content);
+
     // [cta] or [cta title="..." btn1_text="..." btn1_url="..." btn2_text="..." btn2_url="..."]
     $content = preg_replace_callback('/\[cta([^\]]*)\]/i', function($m) use ($extras) {
         $attrs = [];

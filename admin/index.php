@@ -1022,23 +1022,27 @@ tr:hover td{background:#fafafa}
                             <button class="btn btn--outline btn--sm" @click="openCtaModal()" style="display:flex;align-items:center;gap:5px">
                                 📣 Insert CTA Block
                             </button>
+                            <button class="btn btn--outline btn--sm" @click="openQuoteModal()" style="display:flex;align-items:center;gap:5px">
+                                💬 Insert Quote Block
+                            </button>
                         </div>
                         <!-- Shortcode instructions -->
                         <details style="margin-bottom:12px;border:1px solid #e0e7ff;border-radius:8px;overflow:hidden">
                             <summary style="padding:10px 14px;background:#f0f4ff;cursor:pointer;font-size:13px;font-weight:600;color:#4338ca;list-style:none;display:flex;align-items:center;gap:6px">
-                                📋 Как вставлять блоки — нажмите чтобы развернуть
+                                📋 How to insert blocks — click to expand
                             </summary>
                             <div style="padding:14px 16px;font-size:13px;line-height:1.7;background:#fff">
-                                <p style="margin-bottom:12px;color:#555">Используйте кнопки панели инструментов выше — они открывают визуальные конструкторы и вставляют блоки прямо в текст в позиции курсора.</p>
+                                <p style="margin-bottom:12px;color:#555">Use the toolbar buttons above — they open visual builders and insert blocks directly into the content at the cursor position.</p>
                                 <table style="width:100%;border-collapse:collapse;font-size:12px">
-                                    <thead><tr style="background:#f0f4ff"><th style="padding:7px 10px;text-align:left;border:1px solid #e2e4e8">Кнопка</th><th style="padding:7px 10px;text-align:left;border:1px solid #e2e4e8">Что вставляет</th><th style="padding:7px 10px;text-align:left;border:1px solid #e2e4e8">Как работает</th></tr></thead>
+                                    <thead><tr style="background:#f0f4ff"><th style="padding:7px 10px;text-align:left;border:1px solid #e2e4e8">Button</th><th style="padding:7px 10px;text-align:left;border:1px solid #e2e4e8">What it inserts</th><th style="padding:7px 10px;text-align:left;border:1px solid #e2e4e8">How it works</th></tr></thead>
                                     <tbody>
-                                        <tr><td style="padding:6px 10px;border:1px solid #e2e4e8">🖼 Insert Gallery</td><td style="padding:6px 10px;border:1px solid #e2e4e8">Карусель изображений</td><td style="padding:6px 10px;border:1px solid #e2e4e8">Откроется библиотека медиа — кликайте фото в нужном порядке (номера появятся на картинках), затем нажмите "Insert N Images"</td></tr>
-                                        <tr style="background:#fafafa"><td style="padding:6px 10px;border:1px solid #e2e4e8">🎬 Insert Media</td><td style="padding:6px 10px;border:1px solid #e2e4e8">Блок: фото + видео/фото</td><td style="padding:6px 10px;border:1px solid #e2e4e8">Два слота (левый и правый). Кликните слот → выберите из библиотеки. Переключатель Library / YouTube для каждого слота.</td></tr>
-                                        <tr><td style="padding:6px 10px;border:1px solid #e2e4e8">📣 Insert CTA</td><td style="padding:6px 10px;border:1px solid #e2e4e8">Блок призыва к действию</td><td style="padding:6px 10px;border:1px solid #e2e4e8">Откроется форма — заполните заголовок и кнопки, нажмите "Insert"</td></tr>
+                                        <tr><td style="padding:6px 10px;border:1px solid #e2e4e8">🖼 Insert Gallery</td><td style="padding:6px 10px;border:1px solid #e2e4e8">Image carousel / slider</td><td style="padding:6px 10px;border:1px solid #e2e4e8">The media library opens — click photos in the order you want them (numbers appear on images), then click "Insert N Images"</td></tr>
+                                        <tr style="background:#fafafa"><td style="padding:6px 10px;border:1px solid #e2e4e8">🎬 Insert Media</td><td style="padding:6px 10px;border:1px solid #e2e4e8">Two-slot media block (photo + video/photo)</td><td style="padding:6px 10px;border:1px solid #e2e4e8">Two slots (left and right). Click a slot → pick from the library. Toggle Library / YouTube for each slot independently.</td></tr>
+                                        <tr><td style="padding:6px 10px;border:1px solid #e2e4e8">📣 Insert CTA</td><td style="padding:6px 10px;border:1px solid #e2e4e8">Call-to-action block with buttons</td><td style="padding:6px 10px;border:1px solid #e2e4e8">A form opens — fill in the title and button labels/URLs, then click "Insert into Content"</td></tr>
+                                        <tr style="background:#fafafa"><td style="padding:6px 10px;border:1px solid #e2e4e8">💬 Insert Quote</td><td style="padding:6px 10px;border:1px solid #e2e4e8">Two-column purple pull-quote block</td><td style="padding:6px 10px;border:1px solid #e2e4e8">Fill in the left text (short supporting paragraph) and the right text (the main bold quote), then click "Insert"</td></tr>
                                     </tbody>
                                 </table>
-                                <p style="margin-top:10px;color:#888;font-size:12px">💡 Заголовки H2, H3, H4 автоматически попадают в боковое меню (Table of Contents) статьи. Используйте H2 для основных разделов, H3 для подразделов.</p>
+                                <p style="margin-top:10px;color:#888;font-size:12px">💡 H2, H3, H4 headings automatically appear in the article's sidebar Table of Contents. Use H2 for main sections, H3 for subsections.</p>
                             </div>
                         </details>
                         <div id="ckeditor-mount" style="min-height:500px"></div>
@@ -1695,6 +1699,34 @@ tr:hover td{background:#fafafa}
     </div>
 </div>
 
+<div v-if="modals.quoteModal" class="modal-overlay" @click.self="modals.quoteModal=false">
+    <div class="modal" style="max-width:640px">
+        <div class="modal__head"><h3>💬 Insert Quote Block</h3><button class="btn btn--icon" @click="modals.quoteModal=false">×</button></div>
+        <div class="modal__body">
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px">
+                <div>
+                    <div style="font-size:12px;font-weight:600;margin-bottom:6px;color:var(--muted)">LEFT — supporting text (smaller)</div>
+                    <textarea v-model="quoteForm.left" rows="5" style="width:100%;padding:8px 10px;border:1px solid var(--border);border-radius:6px;font-size:13px;resize:vertical" placeholder="I remember when I started my entrepreneurial career. There were so many tasks and never enough time..."></textarea>
+                </div>
+                <div>
+                    <div style="font-size:12px;font-weight:600;margin-bottom:6px;color:var(--muted)">RIGHT — main quote (larger, bold)</div>
+                    <textarea v-model="quoteForm.right" rows="5" style="width:100%;padding:8px 10px;border:1px solid var(--border);border-radius:6px;font-size:13px;resize:vertical" placeholder="At first, automation might seem complex and a bit intimidating, but once you see the results, it can be a real game-changer."></textarea>
+                </div>
+            </div>
+            <!-- Preview -->
+            <div style="background:linear-gradient(135deg,#7c2891 0%,#3d1260 100%);border-radius:14px;padding:28px 32px;display:grid;grid-template-columns:1fr 1fr;gap:30px;color:#fff;font-size:13px;min-height:80px">
+                <div style="opacity:.9;line-height:1.6;white-space:pre-wrap">{{ quoteForm.left || 'Left text will appear here...' }}</div>
+                <div style="font-weight:700;font-size:17px;line-height:1.4;white-space:pre-wrap">{{ quoteForm.right || 'Right quote text will appear here...' }}</div>
+            </div>
+            <code style="display:block;margin-top:12px;font-size:11px;background:#f8f9fa;padding:8px;border-radius:6px;word-break:break-all">{{ buildQuoteShortcode() }}</code>
+        </div>
+        <div class="modal__foot">
+            <button class="btn btn--outline" @click="modals.quoteModal=false">Cancel</button>
+            <button class="btn btn--primary" @click="confirmQuote()">Insert into Content</button>
+        </div>
+    </div>
+</div>
+
 </div><!-- #app -->
 
 <script>
@@ -1755,7 +1787,7 @@ createApp({
         /* ─── Languages ─────────────────────────────────────────────────── */
         const langForm = reactive({id:0, code:'', name:'', is_active:1});
         const modals = reactive({lang:false, whySlide:false, review:false, nav:false, mega:false,
-                                  solutionItem:false, term:false, author:false, mediaPicker:false, mediaShortcode:false, ctaModal:false});
+                                  solutionItem:false, term:false, author:false, mediaPicker:false, mediaShortcode:false, ctaModal:false, quoteModal:false});
 
         const loadLanguages = async () => {
             languages.value = await api('/admin/api/languages.php');
@@ -2193,6 +2225,13 @@ createApp({
         // CTA modal
         const ctaForm = reactive({title:'', btn1_text:'Try AI assistant', btn1_url:'#', btn2_text:'Free audit', btn2_url:'#getintouch'});
         const openCtaModal = () => { modals.ctaModal = true; };
+        const quoteForm = reactive({left:'', right:''});
+        const openQuoteModal = () => { modals.quoteModal = true; };
+        const buildQuoteShortcode = () => {
+            const esc = s => s.replace(/'/g, '&#39;');
+            return `[quote left="${esc(quoteForm.left)}" right="${esc(quoteForm.right)}"]`;
+        };
+        const confirmQuote = () => { insertShortcode(buildQuoteShortcode()); quoteForm.left=''; quoteForm.right=''; modals.quoteModal=false; };
         const buildCtaShortcode = () => {
             const e = (s) => s.replace(/"/g, '&quot;');
             return `[cta title="${e(ctaForm.title)}" btn1_text="${e(ctaForm.btn1_text)}" btn1_url="${e(ctaForm.btn1_url)}" btn2_text="${e(ctaForm.btn2_text)}" btn2_url="${e(ctaForm.btn2_url)}"]`;
@@ -2353,6 +2392,7 @@ createApp({
             mediaScSlots, mediaScActiveSlot, mediaScPickSlot, buildMediaShortcodeFromSlots,
             mediaScImg, mediaScVideo, openMediaShortcodeModal, confirmMediaShortcode,
             ctaForm, openCtaModal, buildCtaShortcode, confirmCta,
+            quoteForm, openQuoteModal, buildQuoteShortcode, confirmQuote,
             openPostEditor, switchPostTab, savePost, deletePost, backFromPost, copyGalleryShortcode, copyMediaShortcode,
             termForm, openTermModal, saveTerm, deleteTerm,
             authorForm, openAuthorModal, saveAuthor, deleteAuthor,
