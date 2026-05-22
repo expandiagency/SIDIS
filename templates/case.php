@@ -277,7 +277,7 @@ if (!empty($ex['tech_items'])) {
                     <div class="getintouch__item">We choose a model and approach that are suitable for your case and budget.</div>
                 </div>
             </div>
-            <form class="getintouch__form" data-fls-form="dev" method="POST" action="/sendmail">
+            <form class="getintouch__form" data-fls-form="ajax" method="POST" action="/sendmail">
                 <div class="getintouch__form-title">Request a free Consultation</div>
                 <div class="input-field"><input required class="input-field__input input" type="text" name="form[name]" data-fls-form-errtext="Error" placeholder="Full name"></div>
                 <div class="input-field"><input required class="input-field__input input" type="email" name="form[email]" data-fls-form-errtext="Error" placeholder="Email"></div>

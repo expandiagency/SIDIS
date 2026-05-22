@@ -1,4 +1,4 @@
-<?
+<?php
 
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\SMTP;
@@ -10,14 +10,14 @@ require 'phpmailer/src/SMTP.php';
 
 $mail = new PHPMailer(true);
 $mail->CharSet = 'UTF-8';
-$mail->setLanguage('uk', 'phpmailer/language/');
-$mail->IsHTML(true);
+$mail->setLanguage('en', 'phpmailer/language/');
+$mail->isHTML(true);
 
-// $mail->isSMTP(); // Send using SMTP
-// $mail->Host = 'smtp.gmail.com'; // Set the SMTP server to send through
-// $mail->SMTPAuth = true; // Enable SMTP authentication
-// $mail->Username = ''; // SMTP username (email)
-// $mail->Password = ''; // SMTP password (Google Account -> Security -> App passwords -> Add)
-
+// ── SMTP (uncomment and fill in if PHP mail() doesn't work) ──────────────────
+// $mail->isSMTP();
+// $mail->Host       = 'mail.yourdomain.com'; // or smtp.gmail.com / smtp.mailgun.org
+// $mail->SMTPAuth   = true;
+// $mail->Username   = 'noreply@yourdomain.com';
+// $mail->Password   = 'your_password';
 // $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
-// $mail->Port = 465;
+// $mail->Port       = 465;
