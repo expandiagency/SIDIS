@@ -485,11 +485,27 @@ function render_article_content(string $content, array $extras = []): string {
         return '<div class="article-block__media">' . _render_media_slot($left) . _render_media_slot($right) . '</div>';
     }, $content);
 
-    // [quote left="..." right="..."] — purple pull-quote block (right=big quote, left=small context below)
-    $content = preg_replace_callback('/\[quote\s+left=["\']([^"\']*)["\'](?:\s+right=["\']([^"\']*)["\'])?\s*\]/i', function($m) {
-        $left  = nl2br(htmlspecialchars(html_entity_decode($m[1], ENT_QUOTES, 'UTF-8'), ENT_QUOTES, 'UTF-8'));
-        $right = nl2br(htmlspecialchars(html_entity_decode($m[2] ?? '', ENT_QUOTES, 'UTF-8'), ENT_QUOTES, 'UTF-8'));
-        return '<div class="article-block__quote"><div class="article-block__quote-right">' . $right . '</div><div class="article-block__quote-left">' . $left . '</div></div>';
+    // [quote left="..." right="..." cols="2" left_size="16" right_size="26"]
+    $content = preg_replace_callback('/\[quote([^\]]*)\]/i', function($m) {
+        $attrs = [];
+        preg_match_all('/(\w+)=["\']([^"\']*)["\']/', $m[1], $am, PREG_SET_ORDER);
+        foreach ($am as $a) $attrs[$a[1]] = $a[2];
+        $left       = nl2br(htmlspecialchars(html_entity_decode($attrs['left']  ?? '', ENT_QUOTES, 'UTF-8'), ENT_QUOTES, 'UTF-8'));
+        $right      = nl2br(htmlspecialchars(html_entity_decode($attrs['right'] ?? '', ENT_QUOTES, 'UTF-8'), ENT_QUOTES, 'UTF-8'));
+        $cols       = (int)($attrs['cols'] ?? 2) === 1 ? 1 : 2;
+        $left_size  = (int)($attrs['left_size']  ?? 16);
+        $right_size = (int)($attrs['right_size'] ?? 26);
+        $left_size  = max(10, min(60, $left_size));
+        $right_size = max(10, min(60, $right_size));
+        $style = '--q-right-size:' . $right_size . 'px;';
+        if ($cols === 1) {
+            $style .= '--q-cols:1fr;';
+        } else {
+            $style .= '--q-left-size:' . $left_size . 'px;';
+        }
+        $inner = '<div class="article-block__quote-right">' . $right . '</div>';
+        if ($cols === 2) $inner .= '<div class="article-block__quote-left">' . $left . '</div>';
+        return '<div class="article-block__quote" style="' . $style . '">' . $inner . '</div>';
     }, $content);
 
     // [cta] or [cta title="..." btn1_text="..." btn1_url="..." btn2_text="..." btn2_url="..."]

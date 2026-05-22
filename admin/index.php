@@ -546,7 +546,8 @@ tr:hover td{background:#fafafa}
                     <div style="display:flex;align-items:center;gap:12px;margin-bottom:20px">
                         <button class="btn btn--outline" @click="editingSolPage=false">← Back</button>
                         <h2 style="font-size:18px;font-weight:600">{{ solPageForm.id ? 'Edit' : 'New' }} Page Settings</h2>
-                        <button class="btn btn--primary" style="margin-left:auto" @click="saveSolPage">Save</button>
+                        <a v-if="solPageForm.slug" :href="'/'+solPageForm.type+'s/'+solPageForm.slug+'/'" target="_blank" class="btn btn--outline btn--sm" style="margin-left:auto">↗ View Page</a>
+                        <button class="btn btn--primary" @click="saveSolPage">Save</button>
                     </div>
                     <div class="card"><div class="card__body">
                         <div class="form-grid">
@@ -984,7 +985,8 @@ tr:hover td{background:#fafafa}
                 <div style="display:flex;align-items:center;gap:12px;margin-bottom:20px">
                     <button class="btn btn--outline" @click="backFromPost()">← Back</button>
                     <h2 style="font-size:18px;font-weight:600">{{ postForm.id ? 'Edit' : 'New' }} Blog Post</h2>
-                    <button class="btn btn--primary" style="margin-left:auto" @click="savePost">Save</button>
+                    <a v-if="postForm.slug" :href="'/blog/'+postForm.slug+'/'" target="_blank" class="btn btn--outline btn--sm" style="margin-left:auto">↗ View Page</a>
+                    <button class="btn btn--primary" @click="savePost">Save</button>
                 </div>
                 <div class="tabs">
                     <button v-for="t in ['Basic','Content','Tags & TOC','SEO','Extras']" :key="t"
@@ -1703,22 +1705,41 @@ tr:hover td{background:#fafafa}
     <div class="modal" style="max-width:640px">
         <div class="modal__head"><h3>💬 Insert Quote Block</h3><button class="btn btn--icon" @click="modals.quoteModal=false">×</button></div>
         <div class="modal__body">
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px">
-                <div>
-                    <div style="font-size:12px;font-weight:600;margin-bottom:6px;color:var(--muted)">LEFT — supporting text (smaller)</div>
-                    <textarea v-model="quoteForm.left" rows="5" style="width:100%;padding:8px 10px;border:1px solid var(--border);border-radius:6px;font-size:13px;resize:vertical" placeholder="I remember when I started my entrepreneurial career. There were so many tasks and never enough time..."></textarea>
+            <!-- Controls row -->
+            <div style="display:flex;gap:16px;align-items:flex-end;margin-bottom:16px;flex-wrap:wrap">
+                <div class="field" style="flex:0 0 auto">
+                    <label>Columns</label>
+                    <div style="display:flex;gap:8px;margin-top:4px">
+                        <label style="display:flex;align-items:center;gap:5px;cursor:pointer;font-size:14px"><input type="radio" v-model.number="quoteForm.cols" :value="2"> 2 columns</label>
+                        <label style="display:flex;align-items:center;gap:5px;cursor:pointer;font-size:14px"><input type="radio" v-model.number="quoteForm.cols" :value="1"> 1 column (full width)</label>
+                    </div>
                 </div>
+                <div class="field" style="flex:0 0 130px">
+                    <label>Right font size (px)</label>
+                    <input type="number" v-model.number="quoteForm.right_size" min="10" max="60" style="padding:6px 10px;border:1px solid var(--border);border-radius:6px;width:100%">
+                </div>
+                <div v-if="quoteForm.cols==2" class="field" style="flex:0 0 130px">
+                    <label>Left font size (px)</label>
+                    <input type="number" v-model.number="quoteForm.left_size" min="10" max="60" style="padding:6px 10px;border:1px solid var(--border);border-radius:6px;width:100%">
+                </div>
+            </div>
+            <!-- Text fields -->
+            <div :style="{display:'grid',gridTemplateColumns:quoteForm.cols==2?'1fr 1fr':'1fr',gap:'16px',marginBottom:'16px'}">
                 <div>
-                    <div style="font-size:12px;font-weight:600;margin-bottom:6px;color:var(--muted)">RIGHT — main quote (larger, bold)</div>
-                    <textarea v-model="quoteForm.right" rows="5" style="width:100%;padding:8px 10px;border:1px solid var(--border);border-radius:6px;font-size:13px;resize:vertical" placeholder="At first, automation might seem complex and a bit intimidating, but once you see the results, it can be a real game-changer."></textarea>
+                    <div style="font-size:12px;font-weight:600;margin-bottom:6px;color:var(--muted)">RIGHT — main text (large, bold)</div>
+                    <textarea v-model="quoteForm.right" rows="5" style="width:100%;padding:8px 10px;border:1px solid var(--border);border-radius:6px;font-size:13px;resize:vertical" placeholder="At first, automation might seem complex and a bit intimidating..."></textarea>
+                </div>
+                <div v-if="quoteForm.cols==2">
+                    <div style="font-size:12px;font-weight:600;margin-bottom:6px;color:var(--muted)">LEFT — supporting text (smaller)</div>
+                    <textarea v-model="quoteForm.left" rows="5" style="width:100%;padding:8px 10px;border:1px solid var(--border);border-radius:6px;font-size:13px;resize:vertical" placeholder="I remember when I started my entrepreneurial career..."></textarea>
                 </div>
             </div>
             <!-- Preview -->
-            <div style="background:linear-gradient(135deg,#7c2891 0%,#3d1260 100%);border-radius:16px;padding:28px 32px;color:#fff;position:relative">
-                <div style="font-weight:700;font-size:18px;line-height:1.4;margin-bottom:16px;white-space:pre-wrap">{{ quoteForm.right || 'Main quote text will appear here (large, bold)...' }}</div>
-                <div style="opacity:.75;font-size:13px;line-height:1.6;border-top:1px solid rgba(255,255,255,.2);padding-top:14px;white-space:pre-wrap">{{ quoteForm.left || 'Supporting text will appear here (smaller)...' }}</div>
+            <div :style="{background:'linear-gradient(135deg,#7c2891 0%,#3d1260 100%)',borderRadius:'14px',padding:'24px 32px',color:'#fff',display:'grid',gridTemplateColumns:quoteForm.cols==2?'1fr 1fr':'1fr',gap:'40px'}">
+                <div :style="{fontWeight:700,fontSize:quoteForm.right_size+'px',lineHeight:'1.4',whiteSpace:'pre-wrap'}">{{ quoteForm.right || 'Main text...' }}</div>
+                <div v-if="quoteForm.cols==2" :style="{fontSize:quoteForm.left_size+'px',lineHeight:'1.6',opacity:0.9,whiteSpace:'pre-wrap'}">{{ quoteForm.left || 'Supporting text...' }}</div>
             </div>
-            <code style="display:block;margin-top:12px;font-size:11px;background:#f8f9fa;padding:8px;border-radius:6px;word-break:break-all">{{ buildQuoteShortcode() }}</code>
+            <code style="display:block;margin-top:10px;font-size:11px;background:#f8f9fa;padding:8px;border-radius:6px;word-break:break-all">{{ buildQuoteShortcode() }}</code>
         </div>
         <div class="modal__foot">
             <button class="btn btn--outline" @click="modals.quoteModal=false">Cancel</button>
@@ -2225,13 +2246,15 @@ createApp({
         // CTA modal
         const ctaForm = reactive({title:'', btn1_text:'Try AI assistant', btn1_url:'#', btn2_text:'Free audit', btn2_url:'#getintouch'});
         const openCtaModal = () => { modals.ctaModal = true; };
-        const quoteForm = reactive({left:'', right:''});
+        const quoteForm = reactive({left:'', right:'', cols:2, left_size:16, right_size:26});
         const openQuoteModal = () => { modals.quoteModal = true; };
         const buildQuoteShortcode = () => {
             const esc = s => s.replace(/"/g, '&quot;');
-            return `[quote left="${esc(quoteForm.left)}" right="${esc(quoteForm.right)}"]`;
+            let sc = `[quote cols="${quoteForm.cols}" right_size="${quoteForm.right_size}" right="${esc(quoteForm.right)}"`;
+            if (quoteForm.cols==2) sc += ` left_size="${quoteForm.left_size}" left="${esc(quoteForm.left)}"`;
+            return sc + ']';
         };
-        const confirmQuote = () => { insertShortcode(buildQuoteShortcode()); quoteForm.left=''; quoteForm.right=''; modals.quoteModal=false; };
+        const confirmQuote = () => { insertShortcode(buildQuoteShortcode()); quoteForm.left=''; quoteForm.right=''; quoteForm.cols=2; quoteForm.left_size=16; quoteForm.right_size=26; modals.quoteModal=false; };
         const buildCtaShortcode = () => {
             const e = (s) => s.replace(/"/g, '&quot;');
             return `[cta title="${e(ctaForm.title)}" btn1_text="${e(ctaForm.btn1_text)}" btn1_url="${e(ctaForm.btn1_url)}" btn2_text="${e(ctaForm.btn2_text)}" btn2_url="${e(ctaForm.btn2_url)}"]`;
