@@ -2255,7 +2255,7 @@ createApp({
             else if (v==='blog') { editingPost.value=null; loadPosts(); loadAuthors(); }
             else if (v==='nav') loadNav();
             else if (v==='reviews') loadReviews();
-            else if (v==='solutions') { solutionsMainTab.value='pages'; loadSolPages(); }
+            else if (v==='solutions') { loadSolPages(); }
             else if (v==='terms') loadTerms();
             else if (v==='authors') loadAuthors();
             else if (v==='media') loadMedia();
