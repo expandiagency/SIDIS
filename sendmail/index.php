@@ -1,57 +1,38 @@
 <?php
-// Налаштування відправки
 require 'config.php';
+require dirname(__DIR__) . '/includes/functions.php';
 
-$name = isset($_POST['name']) ? trim($_POST['name']) : '';
+header('Content-Type: application/json');
 
-$email = isset($_POST['email']) ? trim($_POST['email']) : '';
+$form  = $_POST['form'] ?? [];
+$name  = trim($form['name']  ?? '');
+$email = trim($form['email'] ?? '');
 
-//Від кого лист
-$mail->setFrom('some@gmail.com', 'Лист з сайту'); // Вказати потрібний E-mail
-//Кому відправити
-$mail->addAddress('some@gmail.com'); // Вказати потрібний E-mail
-//Тема листа
-$mail->Subject = 'Лист з сайту';
-
-//Тіло листа
-$body = '<h1>Зустрічайте супер листа!</h1>';
-
-if ($name !== '') {
-    $body .= '<p><strong>Name:</strong> '.htmlspecialchars($name, ENT_QUOTES).'</p>';
+if (!$name || !$email || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
+    echo json_encode(['message' => 'Error']);
+    exit;
 }
 
-if ($email !== '') {
-    $body .= '<p><strong>Email:</strong> '.htmlspecialchars($email, ENT_QUOTES).'</p>';
+$raw        = get_setting('lead_emails') ?: 'services@sidis.group,hello@expandi.agency';
+$recipients = array_filter(array_map('trim', explode(',', $raw)));
+
+if (empty($recipients)) {
+    echo json_encode(['message' => 'Error']);
+    exit;
 }
 
-//if(trim(!empty($_POST['email']))){
-//$body.=$_POST['email'];
-//}	
+$mail->setFrom('noreply@sidis.expandi.agency', 'SIDIS Website');
+$mail->Subject = 'New Lead from SIDIS website';
+$mail->Body    = '<h2>New Contact Form Submission</h2>'
+               . '<p><strong>Name:</strong> '  . htmlspecialchars($name,  ENT_QUOTES) . '</p>'
+               . '<p><strong>Email:</strong> ' . htmlspecialchars($email, ENT_QUOTES) . '</p>';
 
-/*
-	//Прикріпити файл
-	if (!empty($_FILES['image']['tmp_name'])) {
-		//шлях завантаження файлу
-		$filePath = __DIR__ . "/files/sendmail/attachments/" . $_FILES['image']['name']; 
-		//грузимо файл
-		if (copy($_FILES['image']['tmp_name'], $filePath)){
-			$fileAttach = $filePath;
-			$body.='<p><strong>Фото у додатку</strong>';
-			$mail->addAttachment($fileAttach);
-		}
-	}
-	*/
+foreach ($recipients as $recipient) {
+    $mail->addAddress($recipient);
+}
 
-$mail->Body = $body;
-
-//Відправляємо
 if (!$mail->send()) {
-	$message = 'Помилка';
+    echo json_encode(['message' => 'Error: ' . $mail->ErrorInfo]);
 } else {
-	$message = 'Дані надіслані!';
+    echo json_encode(['message' => 'Дані надіслані!']);
 }
-
-$response = ['message' => $message];
-
-header('Content-type: application/json');
-echo json_encode($response);

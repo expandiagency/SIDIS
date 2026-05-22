@@ -1242,6 +1242,16 @@ tr:hover td{background:#fafafa}
                 </div>
             </div></div>
 
+            <div class="card"><div class="card__head"><h2>Lead Notification Emails</h2></div><div class="card__body">
+                <div class="form-grid cols-1">
+                    <div class="field field--full">
+                        <label>Recipient Emails (comma-separated)</label>
+                        <input v-model="settingsData.lead_emails" placeholder="services@sidis.group, hello@expandi.agency">
+                        <div style="margin-top:4px;font-size:11px;color:var(--muted)">All contact form submissions will be sent to these addresses. Separate multiple emails with a comma.</div>
+                    </div>
+                </div>
+            </div></div>
+
             <div class="card"><div class="card__head"><h2>Language-specific ({{ currentLangCode }})</h2></div><div class="card__body">
                 <div class="form-grid cols-1">
                     <div class="field"><label>Site Description (meta)</label><textarea v-model="settingsData.site_description" rows="2"></textarea></div>
