@@ -43,6 +43,7 @@ function active_lang_url(string $path, array $lang, array $default_lang): string
     <?php foreach ($languages as $l): ?>
     <link rel="alternate" hreflang="<?= e($l['code']) ?>" href="<?= e(SITE_URL . ((int)$l['is_default'] ? '/' : '/' . $l['code'] . '/')) ?>">
     <?php endforeach; ?>
+    <?php $_gtm = get_setting('tag_manager_code'); if ($_gtm): ?><?= $_gtm ?><?php endif; ?>
 </head>
 <body>
 <div class="wrapper" data-top-position="">

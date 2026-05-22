@@ -322,11 +322,9 @@ tr:hover td{background:#fafafa}
                              @dragstart="onLogoDragStart(i)"
                              @dragover.prevent="onLogoDragOver($event,i)"
                              @drop.prevent="onLogoDrop()"
-                             :style="{position:'relative',textAlign:'center',cursor:'grab',opacity:dragLogoIdx===i?0.4:1,transition:'opacity 0.15s',display:'flex',flexDirection:'column',alignItems:'center',gap:'6px'}">
+                             :style="{position:'relative',textAlign:'center',cursor:'grab',opacity:dragLogoIdx===i?0.4:1,transition:'opacity 0.15s'}">
                             <div style="position:absolute;top:-4px;left:50%;transform:translateX(-50%);font-size:10px;color:var(--muted)">⠿</div>
                             <img :src="logo.image_url||''" style="height:50px;max-width:120px;object-fit:contain;border:1px solid var(--border);border-radius:6px;padding:4px;pointer-events:none">
-                            <input v-model="logo.url" @blur="saveLogoUrl(logo)" @click.stop @dragstart.stop
-                                placeholder="https://..." style="width:120px;font-size:11px;padding:3px 6px;border:1px solid var(--border);border-radius:4px;background:var(--bg);color:var(--text);outline:none;cursor:text" draggable="false">
                             <button class="btn btn--danger btn--sm" style="position:absolute;top:-6px;right:-6px;padding:1px 6px;font-size:11px" @click.stop="deletePartnerLogo(logo.id)">×</button>
                         </div>
                         <div v-if="!partnerLogos.length" style="color:var(--muted);font-size:13px">No logos yet. Click "+ Add Logo"</div>
@@ -491,39 +489,10 @@ tr:hover td{background:#fafafa}
         <template v-if="currentView==='solutions'">
             <div class="section-head">
                 <h1>Solutions / Departments / Industries</h1>
-                <button v-if="solutionsMainTab==='blocks'" class="btn btn--primary" @click="saveSolBlocksOrder">Save Block Order</button>
-            </div>
-            <div class="tabs" style="margin-bottom:0;border-bottom:none">
-                <button class="tab-btn" :class="{active:solutionsMainTab==='pages'}" @click="solutionsMainTab='pages';loadSolPages()">Solution Pages</button>
-                <button class="tab-btn" :class="{active:solutionsMainTab==='blocks'}" @click="solutionsMainTab='blocks';loadSolBlocks()">Page Sections</button>
-            </div>
-
-            <div v-if="solutionsMainTab==='blocks'" style="margin-top:12px">
-                <p style="font-size:13px;color:var(--muted);margin-bottom:12px">Control which sections appear on each page type and their order. These affect /solutions/, /departments/, /industries/ pages.</p>
-                <div v-for="pt in ['solutions','departments','industries']" :key="pt" class="card" style="margin-bottom:16px">
-                    <div class="card__head"><h2>{{ pt.charAt(0).toUpperCase()+pt.slice(1) }} page blocks</h2></div>
-                    <div class="card__body">
-                        <div class="repeat-list">
-                            <div v-for="(blk,i) in (solBlocks[pt]||[])" :key="blk.id" style="display:flex;align-items:center;gap:12px;padding:10px 14px;background:#f8f9fa;border:1px solid var(--border);border-radius:8px">
-                                <span class="drag-handle">⠿</span>
-                                <div style="flex:1;font-weight:500;font-size:14px">{{ blk.label }}</div>
-                                <div style="font-size:11px;color:var(--muted);font-family:monospace">{{ blk.block_key }}</div>
-                                <label class="toggle">
-                                    <input type="checkbox" :checked="blk.is_active==1" @change="blk.is_active=blk.is_active?0:1">
-                                    <span class="toggle__slider"></span>
-                                </label>
-                                <div style="display:flex;gap:4px">
-                                    <button class="btn btn--outline btn--sm" :disabled="i===0" @click="solBlocks[pt].splice(i-1,0,...solBlocks[pt].splice(i,1))">↑</button>
-                                    <button class="btn btn--outline btn--sm" :disabled="i===(solBlocks[pt].length-1)" @click="solBlocks[pt].splice(i+1,0,...solBlocks[pt].splice(i,1))">↓</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
             </div>
 
             <!-- ── SOLUTION PAGES EDITOR ──────────────────────────────────── -->
-            <div v-if="solutionsMainTab==='pages'" style="margin-top:12px">
+            <div style="margin-top:12px">
 
                 <!-- Page list -->
                 <div v-if="!editingSolPage">
@@ -1231,6 +1200,16 @@ tr:hover td{background:#fafafa}
                 </div>
             </div></div>
 
+            <div class="card"><div class="card__head"><h2>Integrations</h2></div><div class="card__body">
+                <div class="form-grid cols-1">
+                    <div class="field field--full">
+                        <label>Google Tag Manager Code</label>
+                        <textarea v-model="settingsData.tag_manager_code" rows="5" placeholder="Paste the GTM &lt;script&gt; snippet here — it will be added to &lt;head&gt; on all pages" style="font-family:monospace;font-size:12px"></textarea>
+                        <div style="margin-top:4px;font-size:11px;color:var(--muted)">Paste the GTM snippet from Google Tag Manager → Install → Copy the &lt;script&gt; code. It will be inserted before &lt;/head&gt; on every page.</div>
+                    </div>
+                </div>
+            </div></div>
+
             <div class="card"><div class="card__head"><h2>Language-specific ({{ currentLangCode }})</h2></div><div class="card__body">
                 <div class="form-grid cols-1">
                     <div class="field"><label>Site Description (meta)</label><textarea v-model="settingsData.site_description" rows="2"></textarea></div>
@@ -1811,9 +1790,8 @@ createApp({
             modals.review=false; reviews.value = await api(`/admin/api/home.php?action=reviews&lang_id=${langId.value}`); showAlert('Saved!');
         };
         const deleteReview = async id => { if (!confirm('Delete?')) return; await api(`/admin/api/home.php?action=delete_review&id=${id}`,{method:'POST'}); reviews.value = await api(`/admin/api/home.php?action=reviews&lang_id=${langId.value}`); };
-        const addPartnerLogo = async img => { await api(`/admin/api/home.php?action=save_partner_logo&lang_id=${langId.value}`,{method:'POST',body:JSON.stringify({image_id:img.id,alt_text:img.alt_text||'',sort_order:partnerLogos.value.length,url:''})}); partnerLogos.value = await api(`/admin/api/home.php?action=partner_logos&lang_id=${langId.value}`); };
+        const addPartnerLogo = async img => { await api(`/admin/api/home.php?action=save_partner_logo&lang_id=${langId.value}`,{method:'POST',body:JSON.stringify({image_id:img.id,alt_text:img.alt_text||'',sort_order:partnerLogos.value.length})}); partnerLogos.value = await api(`/admin/api/home.php?action=partner_logos&lang_id=${langId.value}`); };
         const deletePartnerLogo = async id => { await api(`/admin/api/home.php?action=delete_partner_logo&id=${id}`,{method:'POST'}); partnerLogos.value = await api(`/admin/api/home.php?action=partner_logos&lang_id=${langId.value}`); };
-        const saveLogoUrl = async logo => { await api(`/admin/api/home.php?action=save_partner_logo&id=${logo.id}&lang_id=${langId.value}`,{method:'POST',body:JSON.stringify({image_id:logo.image_id,alt_text:logo.alt_text||'',sort_order:logo.sort_order,url:logo.url||''})}); };
         const dragLogoIdx = ref(null);
         const onLogoDragStart = i => { dragLogoIdx.value = i; };
         const onLogoDragOver = (e, i) => {
@@ -1864,31 +1842,8 @@ createApp({
 
         /* ─── Solutions ─────────────────────────────────────────────────── */
         const solutionsTab = ref('solution');
-        const solutionsMainTab = ref('pages');
         const solutionItems = ref([]);
         const solutionItemForm = reactive({id:0,type:'solution',title:'',description:'',btn_text:'Learn more',btn_url:'#',icon_svg:'',sort_order:0,is_active:1});
-
-        // Default blocks for each page type (lazy-created in DB on first save)
-        const defaultSolBlocks = {
-            solutions:   [{block_key:'header',label:'Page Header',sort_order:0,is_active:1},{block_key:'features',label:'Features',sort_order:1,is_active:1},{block_key:'solutions_list',label:'Solutions List',sort_order:2,is_active:1},{block_key:'cases',label:'Related Cases',sort_order:3,is_active:1},{block_key:'cta',label:'Contact Form',sort_order:4,is_active:1}],
-            departments: [{block_key:'header',label:'Page Header',sort_order:0,is_active:1},{block_key:'features',label:'Features',sort_order:1,is_active:1},{block_key:'solutions_list',label:'Solutions List',sort_order:2,is_active:1},{block_key:'cases',label:'Related Cases',sort_order:3,is_active:1},{block_key:'cta',label:'Contact Form',sort_order:4,is_active:1}],
-            industries:  [{block_key:'header',label:'Page Header',sort_order:0,is_active:1},{block_key:'features',label:'Features',sort_order:1,is_active:1},{block_key:'solutions_list',label:'Solutions List',sort_order:2,is_active:1},{block_key:'cases',label:'Related Cases',sort_order:3,is_active:1},{block_key:'cta',label:'Contact Form',sort_order:4,is_active:1}],
-        };
-        const solBlocks = reactive({solutions:[],departments:[],industries:[]});
-        const loadSolBlocks = async () => {
-            const data = await api('/admin/api/blocks.php?type=solution_pages');
-            ['solutions','departments','industries'].forEach(pt => {
-                solBlocks[pt] = (data[pt] && data[pt].length) ? data[pt] : defaultSolBlocks[pt].map((b,i)=>({...b,id:0,page_type:pt}));
-            });
-        };
-        const saveSolBlocksOrder = async () => {
-            const payload = {};
-            ['solutions','departments','industries'].forEach(pt => {
-                payload[pt] = solBlocks[pt].map((b,i)=>({...b,sort_order:i}));
-            });
-            await api('/admin/api/blocks.php?action=save_sol_blocks',{method:'POST',body:JSON.stringify(payload)});
-            showAlert('Page sections saved!');
-        };
 
         /* ─── Solution Pages ─────────────────────────────────────────────── */
         const solPagesTab   = ref('solution');
@@ -2339,8 +2294,7 @@ createApp({
             navLocation, navItems_data, navForm, megaNavItem, megaCategories,
             loadNav, openNavModal, saveNavItem, deleteNavItem,
             openMegaEditor, saveMegaCategory, deleteMegaCategory, saveMegaSubitem, deleteMegaSubitem,
-            solutionsTab, solutionsMainTab, solutionItems, solutionItemForm,
-            solBlocks, loadSolBlocks, saveSolBlocksOrder,
+            solutionsTab, solutionItems, solutionItemForm,
             solPagesTab, solPagesList, editingSolPage, editingSolBlocks, editingSolPageObj,
             solPageBlocks, solPageForm, loadSolPages, openSolPageEditor, saveSolPage,
             deleteSolPage, openSolBlockEditor, saveSolBlock, reorderSolBlocks,

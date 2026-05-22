@@ -14,6 +14,7 @@ $global_keys = [
     'header_logo_url', 'footer_logo_url',
     'cases_hero_image_url', 'cases_og_image_url',
     'blog_hero_image_url', 'blog_og_image_url',
+    'tag_manager_code',
 ];
 $lang_keys   = [
     'site_description', 'footer_copyright', 'contact_address', 'contact_phone',

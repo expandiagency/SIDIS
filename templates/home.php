@@ -169,11 +169,7 @@ require __DIR__ . '/layout.php';
         <div data-fls-marquee="" data-fls-marquee-space="60" data-fls-marquee-speed="765" class="automation__marquee">
             <?php if (!empty($partners)): ?>
             <?php foreach ($partners as $logo): ?>
-            <?php if (!empty($logo['url'])): ?>
-            <a href="<?= e($logo['url']) ?>" target="_blank" rel="noopener noreferrer" class="automation__marquee-item"><img alt="<?= e($logo['alt_text']) ?>" loading="lazy" src="<?= e(media_url($logo['image_path'])) ?>"></a>
-            <?php else: ?>
             <div class="automation__marquee-item"><img alt="<?= e($logo['alt_text']) ?>" loading="lazy" src="<?= e(media_url($logo['image_path'])) ?>"></div>
-            <?php endif; ?>
             <?php endforeach; ?>
             <?php else: ?>
             <div class="automation__marquee-item"><img alt="" loading="lazy" src="./assets/img/automation/partner-1.webp"></div>
