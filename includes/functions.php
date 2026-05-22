@@ -46,7 +46,29 @@ function get_nav(int $lang_id, string $location): array {
             [$lang_id, $item['id']]
         );
         if ($item['has_mega']) {
-            $item['mega_categories'] = get_mega_categories($lang_id, $item['id']);
+            $mega_type = $item['mega_type'] ?? 'solutions';
+            if (in_array($mega_type, ['departments', 'industries'])) {
+                $sp_type = $mega_type === 'departments' ? 'department' : 'industry';
+                $pages = rows(
+                    'SELECT sp.slug, sp.type, sp.icon_svg, spt.title, spt.description
+                     FROM solution_pages sp
+                     LEFT JOIN solution_pages_t spt ON sp.id=spt.page_id AND spt.lang_id=?
+                     WHERE sp.type=? AND sp.is_active=1 ORDER BY sp.sort_order',
+                    [$lang_id, $sp_type]
+                );
+                $subitems = [];
+                foreach ($pages as $p) {
+                    $subitems[] = [
+                        'title'       => $p['title'] ?: $p['slug'],
+                        'description' => $p['description'] ?: '',
+                        'url'         => '/' . $p['type'] . 's/' . $p['slug'] . '/',
+                        'icon_svg'    => $p['icon_svg'] ?: '',
+                    ];
+                }
+                $item['mega_categories'] = [['id'=>0,'title'=>'','description'=>'','subitems'=>$subitems]];
+            } else {
+                $item['mega_categories'] = get_mega_categories($lang_id, $item['id']);
+            }
         }
     }
     return $items;
@@ -57,16 +79,23 @@ function get_mega_categories(int $lang_id, int $nav_item_id): array {
         'SELECT * FROM nav_mega_categories WHERE nav_item_id=? AND lang_id=? ORDER BY sort_order',
         [$nav_item_id, $lang_id]
     );
+    // Build a slug→icon map from solution_pages for icon augmentation
+    $sp_icons = [];
+    $all_sp = rows('SELECT slug, type, icon_svg FROM solution_pages WHERE icon_svg != "" AND is_active=1');
+    foreach ($all_sp as $sp) {
+        $url = '/' . $sp['type'] . 's/' . $sp['slug'] . '/';
+        $sp_icons[$url] = $sp['icon_svg'];
+    }
     foreach ($cats as &$cat) {
         $cat['subitems'] = rows(
-            'SELECT nms.*,
-                    COALESCE(NULLIF(nms.icon_svg, ""), sp.icon_svg, "") AS icon_svg
-             FROM nav_mega_subitems nms
-             LEFT JOIN solution_pages sp
-               ON CONCAT("/", sp.type, "s/", sp.slug, "/") = nms.url
-             WHERE nms.category_id=? AND nms.lang_id=? ORDER BY nms.sort_order',
+            'SELECT * FROM nav_mega_subitems WHERE category_id=? AND lang_id=? ORDER BY sort_order',
             [$cat['id'], $lang_id]
         );
+        foreach ($cat['subitems'] as &$sub) {
+            if (empty($sub['icon_svg']) && !empty($sp_icons[$sub['url']])) {
+                $sub['icon_svg'] = $sp_icons[$sub['url']];
+            }
+        }
     }
     return $cats;
 }
