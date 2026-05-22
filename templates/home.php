@@ -40,15 +40,19 @@ require __DIR__ . '/layout.php';
             </div>
         </div>
     </div>
-    <?php $_clutch_url = get_setting('clutch_url') ?: ''; ?>
+    <?php $_clutch_url = get_setting('clutch_url') ?: '';
+    $_upwork_url = get_setting('upwork_url') ?: ''; ?>
     <div class="hero__rating">
         <div class="hero__rating-body">
             <?php if ($_clutch_url): ?>
-            <a href="<?= e($_clutch_url) ?>" target="_blank" rel="noopener noreferrer" class="hero__rating-item"><img src="./assets/img/header/Rating%20Container.svg" width="111" height="54" alt="Rating" loading="lazy"></a>
-            <a href="<?= e($_clutch_url) ?>" target="_blank" rel="noopener noreferrer" class="hero__rating-item"><img src="./assets/img/header/Top%20Rated%20Badge.png" width="205" height="53" alt="Top Rated" loading="lazy"></a>
+            <a href="<?= e($_clutch_url) ?>" target="_blank" rel="noopener noreferrer" class="hero__rating-item"><img src="./assets/img/header/Rating%20Container.svg" width="111" height="54" alt="Clutch Rating" loading="lazy"></a>
             <?php else: ?>
-            <div class="hero__rating-item"><img src="./assets/img/header/Rating%20Container.svg" width="111" height="54" alt="Rating" loading="lazy"></div>
-            <div class="hero__rating-item"><img src="./assets/img/header/Top%20Rated%20Badge.png" width="205" height="53" alt="Top Rated" loading="lazy"></div>
+            <div class="hero__rating-item"><img src="./assets/img/header/Rating%20Container.svg" width="111" height="54" alt="Clutch Rating" loading="lazy"></div>
+            <?php endif; ?>
+            <?php if ($_upwork_url): ?>
+            <a href="<?= e($_upwork_url) ?>" target="_blank" rel="noopener noreferrer" class="hero__rating-item"><img src="./assets/img/header/Top%20Rated%20Badge.png" width="205" height="53" alt="Upwork Top Rated" loading="lazy"></a>
+            <?php else: ?>
+            <div class="hero__rating-item"><img src="./assets/img/header/Top%20Rated%20Badge.png" width="205" height="53" alt="Upwork Top Rated" loading="lazy"></div>
             <?php endif; ?>
         </div>
     </div>

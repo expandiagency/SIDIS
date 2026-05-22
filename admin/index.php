@@ -1228,7 +1228,8 @@ tr:hover td{background:#fafafa}
                 <div class="form-grid">
                     <div class="field"><label>Footer "Design" Link</label><input v-model="settingsData.footer_design_url" placeholder="https://..."></div>
                     <div class="field"><label>Footer "Development" Link</label><input v-model="settingsData.footer_dev_url" placeholder="https://..."></div>
-                    <div class="field field--full"><label>Clutch / Upwork Badge Link (hero section)</label><input v-model="settingsData.clutch_url" placeholder="https://clutch.co/..."></div>
+                    <div class="field"><label>Clutch Badge Link (hero section)</label><input v-model="settingsData.clutch_url" placeholder="https://clutch.co/..."></div>
+                    <div class="field"><label>Upwork Badge Link (hero section)</label><input v-model="settingsData.upwork_url" placeholder="https://www.upwork.com/..."></div>
                 </div>
             </div></div>
 
