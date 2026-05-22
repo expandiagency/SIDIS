@@ -485,11 +485,11 @@ function render_article_content(string $content, array $extras = []): string {
         return '<div class="article-block__media">' . _render_media_slot($left) . _render_media_slot($right) . '</div>';
     }, $content);
 
-    // [quote left="..." right="..."] — two-column purple pull-quote block
+    // [quote left="..." right="..."] — purple pull-quote block (right=big quote, left=small context below)
     $content = preg_replace_callback('/\[quote\s+left=["\']([^"\']*)["\'](?:\s+right=["\']([^"\']*)["\'])?\s*\]/i', function($m) {
-        $left  = nl2br(htmlspecialchars($m[1], ENT_QUOTES, 'UTF-8'));
-        $right = nl2br(htmlspecialchars($m[2] ?? '', ENT_QUOTES, 'UTF-8'));
-        return '<div class="article-block__quote"><div class="article-block__quote-left">' . $left . '</div><div class="article-block__quote-right">' . $right . '</div></div>';
+        $left  = nl2br(htmlspecialchars(html_entity_decode($m[1], ENT_QUOTES, 'UTF-8'), ENT_QUOTES, 'UTF-8'));
+        $right = nl2br(htmlspecialchars(html_entity_decode($m[2] ?? '', ENT_QUOTES, 'UTF-8'), ENT_QUOTES, 'UTF-8'));
+        return '<div class="article-block__quote"><div class="article-block__quote-right">' . $right . '</div><div class="article-block__quote-left">' . $left . '</div></div>';
     }, $content);
 
     // [cta] or [cta title="..." btn1_text="..." btn1_url="..." btn2_text="..." btn2_url="..."]

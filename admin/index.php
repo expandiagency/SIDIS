@@ -1714,9 +1714,9 @@ tr:hover td{background:#fafafa}
                 </div>
             </div>
             <!-- Preview -->
-            <div style="background:linear-gradient(135deg,#7c2891 0%,#3d1260 100%);border-radius:14px;padding:28px 32px;display:grid;grid-template-columns:1fr 1fr;gap:30px;color:#fff;font-size:13px;min-height:80px">
-                <div style="opacity:.9;line-height:1.6;white-space:pre-wrap">{{ quoteForm.left || 'Left text will appear here...' }}</div>
-                <div style="font-weight:700;font-size:17px;line-height:1.4;white-space:pre-wrap">{{ quoteForm.right || 'Right quote text will appear here...' }}</div>
+            <div style="background:linear-gradient(135deg,#7c2891 0%,#3d1260 100%);border-radius:16px;padding:28px 32px;color:#fff;position:relative">
+                <div style="font-weight:700;font-size:18px;line-height:1.4;margin-bottom:16px;white-space:pre-wrap">{{ quoteForm.right || 'Main quote text will appear here (large, bold)...' }}</div>
+                <div style="opacity:.75;font-size:13px;line-height:1.6;border-top:1px solid rgba(255,255,255,.2);padding-top:14px;white-space:pre-wrap">{{ quoteForm.left || 'Supporting text will appear here (smaller)...' }}</div>
             </div>
             <code style="display:block;margin-top:12px;font-size:11px;background:#f8f9fa;padding:8px;border-radius:6px;word-break:break-all">{{ buildQuoteShortcode() }}</code>
         </div>
@@ -2228,7 +2228,7 @@ createApp({
         const quoteForm = reactive({left:'', right:''});
         const openQuoteModal = () => { modals.quoteModal = true; };
         const buildQuoteShortcode = () => {
-            const esc = s => s.replace(/'/g, '&#39;');
+            const esc = s => s.replace(/"/g, '&quot;');
             return `[quote left="${esc(quoteForm.left)}" right="${esc(quoteForm.right)}"]`;
         };
         const confirmQuote = () => { insertShortcode(buildQuoteShortcode()); quoteForm.left=''; quoteForm.right=''; modals.quoteModal=false; };
