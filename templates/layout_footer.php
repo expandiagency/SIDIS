@@ -119,5 +119,15 @@
 </footer>
 
 </div><!-- .wrapper -->
+<script>
+document.querySelectorAll('a[href="#getintouch"]').forEach(function(a){
+    a.addEventListener('click',function(e){
+        var el=document.getElementById('getintouch');
+        if(!el)return;
+        e.preventDefault();
+        el.scrollIntoView({behavior:'smooth',block:'center'});
+    });
+});
+</script>
 </body>
 </html>

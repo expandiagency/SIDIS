@@ -308,10 +308,12 @@ if (!empty($c['selected_ids']) && is_array($c['selected_ids'])) {
                     <?php if (!empty($case['image_path'])): ?>
                     <img alt="<?= e($case['title'] ?? '') ?>" loading="lazy" src="<?= e(sol_url($case['image_path'] ?? '')) ?>">
                     <?php endif; ?>
+                    <?php if ($cl['href']): ?>
                     <div class="projects-card__btn button button--icon button--border button--border-white">
                         <span class="button__text">More</span>
                         <span class="button__icon"><svg width="14" height="14" viewbox="0 0 14 14" fill="none"><path d="M0.566406 12.8L12.5664 0.800049M12.5664 0.800049L12.5664 12.8M12.5664 0.800049L0.679613 0.800049" stroke="currentColor" stroke-width="1.6"></path></svg></span>
                     </div>
+                    <?php endif; ?>
                 </div>
             <?php if ($cl['href']): ?></a><?php else: ?></div><?php endif; ?>
             <?php endforeach; ?>
