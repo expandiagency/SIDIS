@@ -59,7 +59,12 @@ function get_mega_categories(int $lang_id, int $nav_item_id): array {
     );
     foreach ($cats as &$cat) {
         $cat['subitems'] = rows(
-            'SELECT * FROM nav_mega_subitems WHERE category_id=? AND lang_id=? ORDER BY sort_order',
+            'SELECT nms.*,
+                    COALESCE(NULLIF(nms.icon_svg, ""), sp.icon_svg, "") AS icon_svg
+             FROM nav_mega_subitems nms
+             LEFT JOIN solution_pages sp
+               ON CONCAT("/", sp.type, "s/", sp.slug, "/") = nms.url
+             WHERE nms.category_id=? AND nms.lang_id=? ORDER BY nms.sort_order',
             [$cat['id'], $lang_id]
         );
     }

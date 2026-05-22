@@ -62,6 +62,17 @@ button:hover{background:#8e35a0}
     }
 }
 
+/* ─── One-time seed trigger: ?seed_icons=sidis2026 ─────────────────────── */
+if (($_GET['seed_icons'] ?? '') === 'sidis2026') {
+    $src = row("SELECT icon_svg FROM solution_pages WHERE slug='business-process-analysis-optimization' AND icon_svg!='' LIMIT 1");
+    if (!$src || empty($src['icon_svg'])) {
+        echo '<pre style="color:red">Icon not found on slug business-process-analysis-optimization. Upload an icon to it first.</pre>'; exit;
+    }
+    $icon = $src['icon_svg'];
+    $updated = db()->exec("UPDATE solution_pages SET icon_svg=" . db()->quote($icon) . " WHERE icon_svg='' OR icon_svg IS NULL");
+    echo '<pre style="color:green;font-family:monospace">Done! Updated rows: ' . $updated . '</pre>'; exit;
+}
+
 /* ─── One-time seed trigger: ?run_seed=sidis2026 ───────────────────────── */
 if (($_GET['run_seed'] ?? '') === 'sidis2026') {
     try { db()->exec("ALTER TABLE cases_t ADD COLUMN extras MEDIUMTEXT DEFAULT NULL"); } catch(Exception $e) {}
