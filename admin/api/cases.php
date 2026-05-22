@@ -4,8 +4,10 @@ require_once dirname(dirname(__DIR__)) . '/includes/functions.php';
 admin_session_start();
 admin_require_auth();
 
-// Auto-migrate: add company_name column if not exists
+// Auto-migrate
 try { db()->exec("ALTER TABLE cases ADD COLUMN company_name VARCHAR(200) DEFAULT NULL"); } catch(Exception $e) {}
+try { db()->exec("ALTER TABLE cases ADD COLUMN link_behavior VARCHAR(20) NOT NULL DEFAULT 'case_page'"); } catch(Exception $e) {}
+try { db()->exec("ALTER TABLE cases ADD COLUMN external_url VARCHAR(500) NOT NULL DEFAULT ''"); } catch(Exception $e) {}
 
 $method  = $_SERVER['REQUEST_METHOD'];
 $action  = $_GET['action'] ?? '';
@@ -47,6 +49,8 @@ if ($method === 'POST') {
               'is_active'=>(int)($data['is_active']??1), 'is_featured'=>(int)($data['is_featured']??0),
               'sort_order'=>(int)($data['sort_order']??0),
               'company_name'=>$data['company_name']??'',
+              'link_behavior'=>in_array($data['link_behavior']??'',['case_page','external_url','inactive']) ? $data['link_behavior'] : 'case_page',
+              'external_url'=>$data['external_url']??'',
               'company_logo_id'=>($data['company_logo_id']??null)?:null,
               'featured_image_id'=>($data['featured_image_id']??null)?:null];
         if (!$id) $id = insert('cases', $c);

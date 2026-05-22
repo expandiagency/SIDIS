@@ -249,7 +249,8 @@ require __DIR__ . '/layout.php';
         <div class="projects__items">
             <?php if (!empty($featured_cases)): ?>
             <?php foreach ($featured_cases as $case): ?>
-            <a href="/cases/<?= e($case['slug']) ?>/" class="projects-card" data-fls-watcher="" data-fls-watcher-threshold="0.5">
+            <?php $cl = case_link($case); ?>
+            <?php if ($cl['href']): ?><a href="<?= e($cl['href']) ?>"<?= $cl['external'] ? ' target="_blank" rel="noopener noreferrer"' : '' ?> class="projects-card" data-fls-watcher="" data-fls-watcher-threshold="0.5"><?php else: ?><div class="projects-card" data-fls-watcher="" data-fls-watcher-threshold="0.5"><?php endif; ?>
                 <div class="projects-card__body">
                     <div class="projects-card__head">
                         <?php if (!empty($case['company_name'])): ?>
@@ -279,7 +280,7 @@ require __DIR__ . '/layout.php';
                         <span class="button__icon"><svg width="14" height="14" viewbox="0 0 14 14" fill="none"><path d="M0.566406 12.8L12.5664 0.800049M12.5664 0.800049L12.5664 12.8M12.5664 0.800049L0.679613 0.800049" stroke="currentColor" stroke-width="1.6"></path></svg></span>
                     </div>
                 </div>
-            </a>
+            <?php if ($cl['href']): ?></a><?php else: ?></div><?php endif; ?>
             <?php endforeach; ?>
             <?php endif; ?>
         </div>

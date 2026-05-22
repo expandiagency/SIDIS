@@ -81,8 +81,9 @@ require __DIR__ . '/layout.php'; ?>
             <?php foreach ($cases as $case):
                 $tags = array_column($case['terms'] ?? [], 'name');
             ?>
+            <?php $cl = case_link($case); ?>
             <article class="catalog-card" data-fls-watcher="" data-fls-watcher-threshold="0.6">
-                <a href="/cases/<?= e($case['slug']) ?>/" class="catalog-card__link-wrap">
+                <?php if ($cl['href']): ?><a href="<?= e($cl['href']) ?>"<?= $cl['external'] ? ' target="_blank" rel="noopener noreferrer"' : '' ?> class="catalog-card__link-wrap"><?php else: ?><div class="catalog-card__link-wrap"><?php endif; ?>
                     <div class="catalog-card__img">
                         <?php if (!empty($case['image_path'])): ?>
                         <img alt="<?= e($case['title'] ?? '') ?>" loading="lazy" src="<?= e(media_url($case['image_path'])) ?>">
@@ -106,7 +107,7 @@ require __DIR__ . '/layout.php'; ?>
                             </div>
                         </div>
                     </div>
-                </a>
+                <?php if ($cl['href']): ?></a><?php else: ?></div><?php endif; ?>
             </article>
             <?php endforeach; ?>
             <?php else: ?>

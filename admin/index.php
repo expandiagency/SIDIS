@@ -856,6 +856,18 @@ tr:hover td{background:#fafafa}
                             &nbsp;&nbsp;
                             <label class="toggle"><input type="checkbox" v-model="caseForm.is_featured" :true-value="1" :false-value="0"><span class="toggle__slider"></span></label><span style="font-size:14px">Featured on Home</span>
                         </div>
+                        <div class="field field--full">
+                            <label>Click Behavior</label>
+                            <div style="display:flex;gap:16px;margin-top:6px;flex-wrap:wrap">
+                                <label style="display:flex;align-items:center;gap:6px;cursor:pointer;font-size:14px"><input type="radio" v-model="caseForm.link_behavior" value="case_page"> Open case page</label>
+                                <label style="display:flex;align-items:center;gap:6px;cursor:pointer;font-size:14px"><input type="radio" v-model="caseForm.link_behavior" value="external_url"> Open client website</label>
+                                <label style="display:flex;align-items:center;gap:6px;cursor:pointer;font-size:14px"><input type="radio" v-model="caseForm.link_behavior" value="inactive"> Non-clickable</label>
+                            </div>
+                        </div>
+                        <div v-if="caseForm.link_behavior==='external_url'" class="field field--full">
+                            <label>Client Website URL</label>
+                            <input v-model="caseForm.external_url" placeholder="https://...">
+                        </div>
                     </div>
 
                     <div v-if="caseTab==='Content'" class="form-grid cols-1">
@@ -1917,16 +1929,16 @@ createApp({
         const editingCase = ref(null);
         const caseTab = ref('Basic');
         const allTerms = ref([]);
-        const caseForm = reactive({id:0,slug:'',title:'',company_name:'',description:'',overview_text:'',location:'',cooperation_period:'',key_results_text:'',services_text:'',meta_title:'',meta_description:'',is_active:1,is_featured:0,sort_order:0,featured_image_id:null,company_logo_id:null,image_url:'',logo_url:'',challenges:[],tech_items:[],term_ids:[]});
+        const caseForm = reactive({id:0,slug:'',title:'',company_name:'',description:'',overview_text:'',location:'',cooperation_period:'',key_results_text:'',services_text:'',meta_title:'',meta_description:'',is_active:1,is_featured:0,sort_order:0,link_behavior:'case_page',external_url:'',featured_image_id:null,company_logo_id:null,image_url:'',logo_url:'',challenges:[],tech_items:[],term_ids:[]});
 
         const loadCases = async () => { casesList.value = await api(`/admin/api/cases.php?lang_id=${langId.value}`); };
         const openCaseEditor = async (c=null) => {
             caseTab.value='Basic';
             if (c) {
                 const full = await api(`/admin/api/cases.php?id=${c.id}&lang_id=${langId.value}`);
-                Object.assign(caseForm,{...full,key_results_text:(full.key_results||[]).map(r=>r.text).join('\n'),services_text:(full.services||[]).map(s=>s.service_name).join('\n'),challenges:full.challenges.map(ch=>({id:ch.id,title:ch.ch_title||'',text:ch.ch_text||''})),tech_items:full.tech_items||[],term_ids:full.term_ids||[]});
+                Object.assign(caseForm,{...full,link_behavior:full.link_behavior||'case_page',external_url:full.external_url||'',key_results_text:(full.key_results||[]).map(r=>r.text).join('\n'),services_text:(full.services||[]).map(s=>s.service_name).join('\n'),challenges:full.challenges.map(ch=>({id:ch.id,title:ch.ch_title||'',text:ch.ch_text||''})),tech_items:full.tech_items||[],term_ids:full.term_ids||[]});
             } else {
-                Object.assign(caseForm,{id:0,slug:'',title:'',company_name:'',description:'',overview_text:'',location:'',cooperation_period:'',key_results_text:'',services_text:'',meta_title:'',meta_description:'',is_active:1,is_featured:0,sort_order:0,featured_image_id:null,company_logo_id:null,image_url:'',logo_url:'',challenges:[],tech_items:[],term_ids:[]});
+                Object.assign(caseForm,{id:0,slug:'',title:'',company_name:'',description:'',overview_text:'',location:'',cooperation_period:'',key_results_text:'',services_text:'',meta_title:'',meta_description:'',is_active:1,is_featured:0,sort_order:0,link_behavior:'case_page',external_url:'',featured_image_id:null,company_logo_id:null,image_url:'',logo_url:'',challenges:[],tech_items:[],term_ids:[]});
             }
             editingCase.value = true;
         };

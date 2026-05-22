@@ -310,12 +310,13 @@ if (!empty($ex['tech_items'])) {
             <div class="cases__wrapper swiper-wrapper">
                 <?php $case_imgs = ['/assets/img/projects/image-1.webp','/assets/img/projects/image-2.webp','/assets/img/projects/image-3.webp','/assets/img/projects/image-4.webp']; ?>
                 <?php foreach ($related_cases as $ci => $rc): ?>
+                <?php $rcl = case_link($rc); ?>
                 <article class="catalog-card swiper-slide" data-fls-watcher="" data-fls-watcher-threshold="0.6">
-                    <a href="/cases/<?= e($rc['slug']) ?>/" class="catalog-card__img">
+                    <?php if ($rcl['href']): ?><a href="<?= e($rcl['href']) ?>"<?= $rcl['external'] ? ' target="_blank" rel="noopener noreferrer"' : '' ?> class="catalog-card__img"><?php else: ?><div class="catalog-card__img"><?php endif; ?>
                         <img alt="<?= e($rc['title'] ?? '') ?>" loading="lazy" src="<?= !empty($rc['image_path']) ? e(media_url($rc['image_path'])) : $case_imgs[$ci % 4] ?>">
-                    </a>
+                    <?php if ($rcl['href']): ?></a><?php else: ?></div><?php endif; ?>
                     <?php if (!empty($rc['company_name'])): ?><div class="catalog-card__category"><?= e($rc['company_name']) ?></div><?php endif; ?>
-                    <a href="/cases/<?= e($rc['slug']) ?>/" class="catalog-card__title"><?= e($rc['title'] ?? '') ?></a>
+                    <?php if ($rcl['href']): ?><a href="<?= e($rcl['href']) ?>"<?= $rcl['external'] ? ' target="_blank" rel="noopener noreferrer"' : '' ?> class="catalog-card__title"><?= e($rc['title'] ?? '') ?></a><?php else: ?><div class="catalog-card__title"><?= e($rc['title'] ?? '') ?></div><?php endif; ?>
                     <div class="catalog-card__bottom">
                         <div class="catalog-card__bottom-inner">
                             <div class="catalog-card__tags">

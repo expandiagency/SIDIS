@@ -103,6 +103,13 @@ function get_why_slides(int $lang_id): array {
     return rows('SELECT * FROM home_why_slides WHERE lang_id=? ORDER BY sort_order', [$lang_id]);
 }
 
+function case_link(array $case): array {
+    $b = $case['link_behavior'] ?? 'case_page';
+    if ($b === 'inactive') return ['href' => null, 'external' => false];
+    if ($b === 'external_url' && !empty($case['external_url'])) return ['href' => $case['external_url'], 'external' => true];
+    return ['href' => '/cases/' . ($case['slug'] ?? '') . '/', 'external' => false];
+}
+
 function get_partner_logos(): array {
     return rows('SELECT l.*, m.path as image_path FROM home_partner_logos l LEFT JOIN media m ON l.image_id=m.id ORDER BY l.sort_order');
 }
