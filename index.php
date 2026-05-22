@@ -302,9 +302,14 @@ switch ($page) {
             'departments' => get_solution_items($lang_id, 'department',  $dept_ids),
             'industries'  => get_solution_items($lang_id, 'industry',    $ind_ids),
         ];
-        $template_data['featured_cases'] = get_cases($lang_id, ['is_featured'=>1], 4);
-        if (empty($template_data['featured_cases'])) {
-            $template_data['featured_cases'] = get_cases($lang_id, [], 4);
+        $home_case_ids = json_decode($h['featured_cases_ids'] ?? '[]', true) ?: [];
+        if (!empty($home_case_ids)) {
+            $template_data['featured_cases'] = get_cases($lang_id, ['ids' => $home_case_ids], 50);
+        } else {
+            $template_data['featured_cases'] = get_cases($lang_id, ['is_featured'=>1], 4);
+            if (empty($template_data['featured_cases'])) {
+                $template_data['featured_cases'] = get_cases($lang_id, [], 4);
+            }
         }
         $template_data['home_blocks']  = rows('SELECT * FROM home_blocks WHERE is_active=1 ORDER BY sort_order');
         $template_data['recent_posts'] = get_posts($lang_id, [], 4);

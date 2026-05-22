@@ -432,6 +432,20 @@ tr:hover td{background:#fafafa}
 
             <!-- Page Blocks Order -->
             <div v-if="homeTab==='Page Blocks'">
+                <div class="card" style="margin-bottom:16px">
+                    <div class="card__head"><h2>Case Studies to show in Projects section</h2></div>
+                    <div class="card__body">
+                        <p style="font-size:13px;color:var(--muted);margin-bottom:12px">Select specific cases to display. Leave all unchecked to show featured cases automatically.</p>
+                        <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;max-height:260px;overflow-y:auto;border:1px solid var(--border);border-radius:8px;padding:10px">
+                            <label v-for="c in allCases" :key="c.id" style="display:flex;align-items:center;gap:8px;font-size:13px;cursor:pointer">
+                                <input type="checkbox" :value="c.id" v-model="homeData.featured_cases_ids">
+                                <span>{{ c.title }}</span>
+                            </label>
+                            <div v-if="!allCases.length" style="color:var(--muted);font-size:12px">No cases yet</div>
+                        </div>
+                        <button class="btn btn--primary btn--sm" style="margin-top:10px" @click="saveHome">Save</button>
+                    </div>
+                </div>
                 <div class="card">
                     <div class="card__head"><h2>Homepage Block Order</h2></div>
                     <div class="card__body">
@@ -495,7 +509,7 @@ tr:hover td{background:#fafafa}
             <div style="margin-top:12px">
 
                 <!-- Page list -->
-                <div v-if="!editingSolPage">
+                <div v-if="!editingSolPage && !editingSolBlocks">
                     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
                         <p style="font-size:13px;color:var(--muted)">Each row is a dedicated page at /solutions/slug, /departments/slug or /industries/slug. Click Edit to manage all content blocks.</p>
                         <button class="btn btn--primary" @click="openSolPageEditor()">+ New Page</button>
@@ -1782,7 +1796,11 @@ createApp({
             if (!Array.isArray(d.solutions_ids)) d.solutions_ids = [];
             if (!Array.isArray(d.departments_ids)) d.departments_ids = [];
             if (!Array.isArray(d.industries_ids)) d.industries_ids = [];
+            if (!Array.isArray(d.featured_cases_ids)) d.featured_cases_ids = [];
             Object.assign(homeData, d);
+            if (!allCases.value.length) {
+                allCases.value = await api(`/admin/api/cases.php?lang_id=${langId.value}`);
+            }
             whySlides.value = await api(`/admin/api/home.php?action=why_slides&lang_id=${langId.value}`);
             partnerLogos.value = await api(`/admin/api/home.php?action=partner_logos&lang_id=${langId.value}`);
             autoImages.value = await api(`/admin/api/home.php?action=auto_images&lang_id=${langId.value}`);

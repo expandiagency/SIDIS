@@ -268,6 +268,14 @@ function get_cases(int $lang_id, array $filters = [], int $limit = 50, int $offs
         $sql .= ' AND EXISTS (SELECT 1 FROM case_terms ctt WHERE ctt.case_id=c.id AND ctt.term_id=? AND ctt.type="industry")';
         $params[] = $filters['industry'];
     }
+    if (!empty($filters['ids']) && is_array($filters['ids'])) {
+        $ph = implode(',', array_fill(0, count($filters['ids']), '?'));
+        $sql .= " AND c.id IN ($ph)";
+        $params = array_merge($params, array_map('intval', $filters['ids']));
+    }
+    if (!empty($filters['is_featured'])) {
+        $sql .= ' AND c.is_featured=1';
+    }
     $sql .= ' ORDER BY c.sort_order, c.created_at DESC LIMIT ? OFFSET ?';
     $params[] = $limit;
     $params[] = $offset;

@@ -55,8 +55,9 @@ if ($method === 'GET') {
         json_response($reviews);
     }
     // Main home content
+    try { db()->exec("ALTER TABLE home_content ADD COLUMN featured_cases_ids TEXT DEFAULT NULL"); } catch(Exception $e) {}
     $content = row('SELECT * FROM home_content WHERE lang_id=?', [$lang_id]) ?? [];
-    foreach (['solutions_ids','departments_ids','industries_ids'] as $k) {
+    foreach (['solutions_ids','departments_ids','industries_ids','featured_cases_ids'] as $k) {
         $content[$k] = json_decode($content[$k] ?? '[]', true) ?: [];
     }
     json_response($content);
@@ -76,9 +77,10 @@ if ($method === 'POST') {
                    'presentation_video','presentation_poster_url','presentation_play_text'];
         $save = ['lang_id' => $lang_id];
         foreach ($fields as $f) $save[$f] = $data[$f] ?? '';
-        $save['solutions_ids']  = json_encode(array_map('intval', $data['solutions_ids']  ?? []));
-        $save['departments_ids'] = json_encode(array_map('intval', $data['departments_ids'] ?? []));
-        $save['industries_ids'] = json_encode(array_map('intval', $data['industries_ids']  ?? []));
+        $save['solutions_ids']     = json_encode(array_map('intval', $data['solutions_ids']     ?? []));
+        $save['departments_ids']   = json_encode(array_map('intval', $data['departments_ids']   ?? []));
+        $save['industries_ids']    = json_encode(array_map('intval', $data['industries_ids']    ?? []));
+        $save['featured_cases_ids']= json_encode(array_map('intval', $data['featured_cases_ids']?? []));
         $existing = row('SELECT id FROM home_content WHERE lang_id=?', [$lang_id]);
         if ($existing) {
             update('home_content', $save, ['lang_id' => $lang_id]);
