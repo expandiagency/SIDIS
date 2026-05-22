@@ -281,6 +281,7 @@ if (!empty($c['selected_ids']) && is_array($c['selected_ids'])) {
     <div class="projects__container">
         <h2 class="projects__title title title--h1"><?= nl2br(e($c['title'] ?? "Implemented\nWorkflows")) ?></h2>
         <div class="projects__items">
+            <?php $_ext_btn = get_setting('case_external_btn_text') ?: 'Visit Website'; ?>
             <?php foreach (array_slice(array_values($block_cases), 0, 4) as $case): ?>
             <?php $cl = case_link($case); ?>
             <?php if ($cl['href']): ?><a href="<?= e($cl['href']) ?>"<?= $cl['external'] ? ' target="_blank" rel="noopener noreferrer"' : '' ?> class="projects-card" data-fls-watcher="" data-fls-watcher-threshold="0.5"><?php else: ?><div class="projects-card" data-fls-watcher="" data-fls-watcher-threshold="0.5"><?php endif; ?>
@@ -310,7 +311,7 @@ if (!empty($c['selected_ids']) && is_array($c['selected_ids'])) {
                     <?php endif; ?>
                     <?php if ($cl['href']): ?>
                     <div class="projects-card__btn button button--icon button--border button--border-white">
-                        <span class="button__text">More</span>
+                        <span class="button__text"><?= e($cl['external'] ? $_ext_btn : 'More') ?></span>
                         <span class="button__icon"><svg width="14" height="14" viewbox="0 0 14 14" fill="none"><path d="M0.566406 12.8L12.5664 0.800049M12.5664 0.800049L12.5664 12.8M12.5664 0.800049L0.679613 0.800049" stroke="currentColor" stroke-width="1.6"></path></svg></span>
                     </div>
                     <?php endif; ?>

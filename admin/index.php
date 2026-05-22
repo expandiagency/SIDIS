@@ -1233,6 +1233,14 @@ tr:hover td{background:#fafafa}
                 </div>
             </div></div>
 
+            <div class="card"><div class="card__head"><h2>Case Studies</h2></div><div class="card__body">
+                <div class="form-grid">
+                    <div class="field"><label>External Link Button Text</label><input v-model="settingsData.case_external_btn_text" placeholder="Visit Website">
+                        <div style="margin-top:4px;font-size:11px;color:var(--muted)">Button text on case cards when "Open client website" behavior is selected. Default: Visit Website</div>
+                    </div>
+                </div>
+            </div></div>
+
             <div class="card"><div class="card__head"><h2>Integrations</h2></div><div class="card__body">
                 <div class="form-grid cols-1">
                     <div class="field field--full">

@@ -11,6 +11,7 @@ $global_keys = [
     'site_name', 'site_email', 'site_password',
     'social_linkedin', 'social_whatsapp', 'social_twitter', 'social_facebook', 'social_instagram',
     'clutch_url', 'upwork_url', 'footer_design_url', 'footer_dev_url',
+    'case_external_btn_text',
     'header_logo_url', 'footer_logo_url',
     'cases_hero_image_url', 'cases_og_image_url',
     'blog_hero_image_url', 'blog_og_image_url',
