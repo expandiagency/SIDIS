@@ -718,6 +718,7 @@ tr:hover td{background:#fafafa}
                                     <div class="field"><label>Button 2 Text</label><input v-model="blk.content_obj.btn2_text"></div>
                                     <div class="field"><label>Button 2 URL</label><input v-model="blk.content_obj.btn2_url"></div>
                                     <div class="field field--full"><label>Background Video Path</label><input v-model="blk.content_obj.video_path" placeholder="./assets/video/1-hero.mp4"></div>
+                                    <div class="field field--full"><label>Background Video Poster</label><input v-model="blk.content_obj.video_poster" placeholder="./assets/img/poster.webp"></div>
                                 </div>
                                 <div style="display:flex;justify-content:space-between;margin-bottom:8px"><strong style="font-size:13px">Process Steps</strong>
                                     <button class="btn btn--outline btn--sm" @click="blk.content_obj.steps=blk.content_obj.steps||[];blk.content_obj.steps.push({title:'',text:''})">+ Add Step</button>
