@@ -1292,14 +1292,8 @@ tr:hover td{background:#fafafa}
                             <button v-if="settingsData.cases_hero_image_url" class="btn btn--sm" @click="settingsData.cases_hero_image_url=''">Remove</button>
                         </div>
                     </div>
-                    <div class="field field--full"><label>Hero Background Video <span style="color:var(--muted);font-size:12px">(autoplay, replaces image when set)</span></label>
-                        <div class="img-picker" style="flex-wrap:wrap;gap:8px">
-                            <span v-if="settingsData.cases_hero_video_path" style="font-size:13px;color:var(--muted);word-break:break-all">{{ settingsData.cases_hero_video_path }}</span>
-                            <label class="btn btn--outline btn--sm" style="cursor:pointer">
-                                Upload MP4<input type="file" accept="video/mp4,video/webm" style="display:none" @change="uploadHeroVideo($event,'cases_hero_video_path')">
-                            </label>
-                            <button v-if="settingsData.cases_hero_video_path" class="btn btn--sm" @click="settingsData.cases_hero_video_path=''">Remove</button>
-                        </div>
+                    <div class="field field--full"><label>Hero Video Path <span style="color:var(--muted);font-size:12px">(autoplay, replaces image when set, e.g. ./assets/video/compressed-v2/Video-cover-case-studies.mp4)</span></label>
+                        <input v-model="settingsData.cases_hero_video_path" placeholder="./assets/video/compressed-v2/Video-cover-case-studies.mp4">
                     </div>
                     <div class="field field--full"><label>Hero Video Poster <span style="color:var(--muted);font-size:12px">(shown while video loads)</span></label>
                         <div class="img-picker">
@@ -1332,14 +1326,8 @@ tr:hover td{background:#fafafa}
                             <button v-if="settingsData.blog_hero_image_url" class="btn btn--sm" @click="settingsData.blog_hero_image_url=''">Remove</button>
                         </div>
                     </div>
-                    <div class="field field--full"><label>Hero Background Video <span style="color:var(--muted);font-size:12px">(autoplay, replaces image when set)</span></label>
-                        <div class="img-picker" style="flex-wrap:wrap;gap:8px">
-                            <span v-if="settingsData.blog_hero_video_path" style="font-size:13px;color:var(--muted);word-break:break-all">{{ settingsData.blog_hero_video_path }}</span>
-                            <label class="btn btn--outline btn--sm" style="cursor:pointer">
-                                Upload MP4<input type="file" accept="video/mp4,video/webm" style="display:none" @change="uploadHeroVideo($event,'blog_hero_video_path')">
-                            </label>
-                            <button v-if="settingsData.blog_hero_video_path" class="btn btn--sm" @click="settingsData.blog_hero_video_path=''">Remove</button>
-                        </div>
+                    <div class="field field--full"><label>Hero Video Path <span style="color:var(--muted);font-size:12px">(autoplay, replaces image when set, e.g. ./assets/video/compressed-v2/Video-cover-blog.mp4)</span></label>
+                        <input v-model="settingsData.blog_hero_video_path" placeholder="./assets/video/compressed-v2/Video-cover-blog.mp4">
                     </div>
                     <div class="field field--full"><label>Hero Video Poster <span style="color:var(--muted);font-size:12px">(shown while video loads)</span></label>
                         <div class="img-picker">
