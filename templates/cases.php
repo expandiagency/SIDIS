@@ -2,7 +2,7 @@
 $_cases_title  = get_setting('cases_hero_title', $lang_id) ?: 'Case Studies';
 $_cases_text   = get_setting('cases_hero_text', $lang_id) ?: 'See how Sidis Group has helped its clients achieve their vision of digital innovation.';
 $_cases_img    = media_url(get_setting('cases_hero_image_url') ?: '') ?: null;
-$_cases_video  = get_setting('cases_hero_video_path') ?: null;
+$_cases_video  = ltrim(get_setting('cases_hero_video_path') ?: '', '.') ?: null;
 $_cases_poster = media_url(get_setting('cases_hero_video_poster_url') ?: '') ?: '/assets/img/poster.webp';
 $meta_title       = get_setting('cases_meta_title', $lang_id) ?: $_cases_title;
 $meta_description = get_setting('cases_meta_description', $lang_id) ?: $_cases_text;
