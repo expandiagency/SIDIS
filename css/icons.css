@@ -1,3 +1,6 @@
+/* ── Article content: force Inter font regardless of inline styles */
+.article-block__content * { font-family: "Inter", sans-serif !important; }
+
 /* ── Hero background: remove pink tint, show video as-is ─────── */
 .hero__bg { background: #000; }
 .hero__bg video, .hero__bg img { mix-blend-mode: normal; }
@@ -86,7 +89,7 @@
     gap: 10px;
 }
 .article-block__content ul > li::before {
-    content: '/';
+    content: '|';
     color: var(--clr-accent);
     font-weight: 700;
     font-size: 16px;
