@@ -61,8 +61,15 @@ a{color:inherit;text-decoration:none}
 .btn--icon{padding:7px;background:none;border:1px solid var(--border);color:var(--muted)}.btn--icon:hover{border-color:#aaa;color:var(--text)}
 /* Table */
 .table-wrap{overflow-x:auto}
-.ck-editor__editable{min-height:460px!important;font-size:15px;font-family:system-ui,sans-serif}
+.ck-editor__editable{min-height:460px!important;font-size:15px;font-family:system-ui,sans-serif;overflow-wrap:break-word;word-break:break-word}
 .ck.ck-editor{border-radius:8px!important;border:1px solid var(--border)!important}
+/* Fix: global * reset removes list padding — restore it inside CKEditor */
+.ck-editor__editable ul,.ck-editor__editable ol{padding-left:24px;margin:8px 0}
+.ck-editor__editable li{display:list-item}
+.ck-editor__editable ul>li{list-style:disc}
+.ck-editor__editable ol>li{list-style:decimal}
+.ck-editor__editable ul ul>li,.ck-editor__editable ol ul>li{list-style:circle}
+.ck-editor__editable ul ol>li,.ck-editor__editable ol ol>li{list-style:lower-alpha}
 .ck.ck-toolbar{border-radius:8px 8px 0 0!important;background:#f8f9fa!important;border-bottom:1px solid var(--border)!important}
 .ck-source-editing-area textarea{min-height:460px!important;font-family:monospace;font-size:13px}
 table{width:100%;border-collapse:collapse}
@@ -2154,15 +2161,19 @@ createApp({
             if (_ckEditor) return;
             const el = document.getElementById('ckeditor-mount');
             if (!el) return;
-            const { ClassicEditor, Essentials, Bold, Italic, Underline, Link, List,
+            const { ClassicEditor, Essentials, Bold, Italic, Underline, Link, List, ListProperties,
+                    Indent, IndentBlock,
                     Heading, SourceEditing, Table, TableToolbar, Paragraph,
-                    GeneralHtmlSupport, HtmlComment } = CKEDITOR;
+                    GeneralHtmlSupport, HtmlComment, BlockQuote } = CKEDITOR;
             _ckEditor = await ClassicEditor.create(el, {
-                plugins: [ Essentials, Bold, Italic, Underline, Link, List,
+                plugins: [ Essentials, Bold, Italic, Underline, Link, List, ListProperties,
+                           Indent, IndentBlock,
                            Heading, SourceEditing, Table, TableToolbar, Paragraph,
-                           GeneralHtmlSupport, HtmlComment ],
+                           GeneralHtmlSupport, HtmlComment, BlockQuote ],
                 toolbar: ['undo','redo','|','heading','|','bold','italic','underline','|',
-                          'bulletedList','numberedList','|','link','insertTable','|','sourceEditing'],
+                          'bulletedList','numberedList','|','outdent','indent','|',
+                          'blockQuote','|','link','insertTable','|','sourceEditing'],
+                list: { properties: { styles: true, startIndex: true, reversed: true } },
                 heading: { options: [
                     {model:'paragraph',title:'Paragraph',class:'ck-heading_paragraph'},
                     {model:'heading2',view:'h2',title:'H2',class:'ck-heading_heading2'},
