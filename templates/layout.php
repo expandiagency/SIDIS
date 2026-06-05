@@ -31,9 +31,7 @@ function active_lang_url(string $path, array $lang, array $default_lang): string
     <link rel="stylesheet" href="/css/app.min.css" fetchpriority="high">
     <link rel="stylesheet" href="/css/icons.css?v=1">
     <style>
-    .submenu__info-icon.icon--white{display:none}
-    /* Fallback: if no white icon file in DOM, CSS filter turns dark icon white on hover */
-    .submenu__info-link:hover .submenu__info-icon{filter:brightness(0) invert(1)}
+    .submenu__info-icon.icon--white{display:none!important}
     .solutions__slide-icon.icon--white{display:none}
     .solutions__slide .solutions__slide-icon.icon--dark{filter:invert(1) brightness(.706)}
     .solutions__slide.swiper-slide-active .solutions__slide-icon.icon--dark{display:none}
@@ -42,18 +40,10 @@ function active_lang_url(string $path, array $lang, array $default_lang): string
     <script>
     document.addEventListener('DOMContentLoaded',function(){
         document.querySelectorAll('.submenu__info-link').forEach(function(link){
-            link.addEventListener('mouseenter',function(){
-                var whites=link.querySelectorAll('.icon--white');
-                if(whites.length){
-                    link.querySelectorAll('.icon--dark').forEach(function(e){e.style.display='none';});
-                    whites.forEach(function(e){e.style.display='flex';});
-                }
-                // No white icon: CSS filter above handles the color change
-            });
-            link.addEventListener('mouseleave',function(){
-                link.querySelectorAll('.icon--dark').forEach(function(e){e.style.display='';});
-                link.querySelectorAll('.icon--white').forEach(function(e){e.style.display='';});
-            });
+            var icon=link.querySelector('.submenu__info-icon');
+            if(!icon)return;
+            link.addEventListener('mouseenter',function(){icon.style.filter='brightness(0) invert(1)';});
+            link.addEventListener('mouseleave',function(){icon.style.filter='';});
         });
     });
     </script>
