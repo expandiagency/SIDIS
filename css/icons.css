@@ -1,3 +1,15 @@
+/* ── Departments mega menu photo gradient ────────────────────── */
+.submenu__img::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.15) 50%, transparent 100%);
+    z-index: 1;
+    border-radius: inherit;
+    pointer-events: none;
+}
+.submenu__img-text { z-index: 2; }
+
 /* ── Departments mega menu icons ─────────────────────────────── */
 /* White icon variants in the nav menu are not needed — hide them */
 .submenu__info-icon.icon--white { display: none !important; }
