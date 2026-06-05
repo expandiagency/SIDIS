@@ -27,3 +27,83 @@
 /* Active (dark bg) card: hide dark icon, show white icon */
 .solutions__slide.swiper-slide-active .solutions__slide-icon.icon--dark { display: none; }
 .solutions__slide.swiper-slide-active .solutions__slide-icon.icon--white { display: flex; }
+
+/* ── Blog article: ordered list — numbers in purple square ───── */
+.article-block__content ol {
+    padding-left: 0;
+    counter-reset: article-ol;
+    gap: 12px;
+}
+.article-block__content ol li {
+    list-style: none;
+    counter-increment: article-ol;
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+}
+.article-block__content ol li::before {
+    content: counter(article-ol);
+    min-width: 32px;
+    height: 32px;
+    background-color: var(--clr-accent);
+    color: #fff;
+    font-weight: 700;
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 6px;
+    flex-shrink: 0;
+    margin-top: 2px;
+}
+
+/* ── Blog article: unordered list — / as bullet ──────────────── */
+.article-block__content ul {
+    padding-left: 0;
+    gap: 10px;
+}
+.article-block__content ul li {
+    list-style: none;
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+}
+.article-block__content ul li::before {
+    content: '/';
+    color: var(--clr-accent);
+    font-weight: 700;
+    font-size: 16px;
+    flex-shrink: 0;
+    line-height: 1.5;
+}
+
+/* ── Blog article: blockquote ────────────────────────────────── */
+.article-block__content blockquote {
+    position: relative;
+    padding: 16px 32px 24px;
+    margin: 0;
+    border-left: none;
+}
+.article-block__content blockquote::before {
+    content: '\201C\201C';
+    font-size: 56px;
+    line-height: 1;
+    color: var(--clr-accent);
+    font-weight: 700;
+    display: block;
+    margin-bottom: 12px;
+    letter-spacing: -4px;
+}
+.article-block__content blockquote p {
+    font-size: 18px;
+    font-style: italic;
+    line-height: 150%;
+}
+.article-block__content blockquote cite,
+.article-block__content blockquote footer {
+    display: block;
+    margin-top: 12px;
+    font-size: 14px;
+    font-style: normal;
+    opacity: 0.6;
+}
