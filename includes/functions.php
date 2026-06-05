@@ -79,12 +79,14 @@ function get_mega_categories(int $lang_id, int $nav_item_id): array {
         'SELECT * FROM nav_mega_categories WHERE nav_item_id=? AND lang_id=? ORDER BY sort_order',
         [$nav_item_id, $lang_id]
     );
-    // Build a slug→icon map from solution_pages for icon augmentation
-    $sp_icons = [];
-    $all_sp = rows('SELECT slug, type, icon_svg FROM solution_pages WHERE icon_svg != "" AND is_active=1');
+    // Build maps from solution_pages: url→icon and title→url (for URL correction)
+    $sp_icons    = [];
+    $sp_title_url = [];
+    $all_sp = rows('SELECT sp.slug, sp.type, sp.icon_svg, spt.title FROM solution_pages sp LEFT JOIN solution_pages_t spt ON sp.id=spt.page_id AND spt.lang_id=? WHERE sp.is_active=1', [$lang_id]);
     foreach ($all_sp as $sp) {
         $url = '/' . $sp['type'] . 's/' . $sp['slug'] . '/';
-        $sp_icons[$url] = $sp['icon_svg'];
+        if ($sp['icon_svg']) $sp_icons[$url] = $sp['icon_svg'];
+        if ($sp['title'])    $sp_title_url[strtolower(trim($sp['title']))] = $url;
     }
     foreach ($cats as &$cat) {
         $cat['subitems'] = rows(
@@ -92,7 +94,15 @@ function get_mega_categories(int $lang_id, int $nav_item_id): array {
             [$cat['id'], $lang_id]
         );
         foreach ($cat['subitems'] as &$sub) {
-            if (empty($sub['icon_svg']) && !empty($sp_icons[$sub['url']])) {
+            // Auto-correct URL if it doesn't point to a real solution page but title matches one
+            if (empty($sp_icons[$sub['url']]) && !empty($sub['title'])) {
+                $key = strtolower(trim($sub['title']));
+                if (!empty($sp_title_url[$key])) {
+                    $sub['url'] = $sp_title_url[$key];
+                }
+            }
+            // Always prefer solution_pages icon over the stored one
+            if (!empty($sp_icons[$sub['url']])) {
                 $sub['icon_svg'] = $sp_icons[$sub['url']];
             }
         }
