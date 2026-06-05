@@ -1,6 +1,9 @@
 <?php
 require_once __DIR__ . '/db.php';
 
+// One-time migration: add icon_svg_white column if not yet present
+try { db()->exec("ALTER TABLE solution_pages ADD COLUMN icon_svg_white MEDIUMTEXT DEFAULT NULL"); } catch(Exception $e) {}
+
 /* ─── Language ─────────────────────────────────────────────────────────── */
 
 function get_languages(bool $active_only = true): array {
