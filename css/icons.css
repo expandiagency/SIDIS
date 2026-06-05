@@ -89,7 +89,7 @@
     gap: 10px;
 }
 .article-block__content ul > li::before {
-    content: '|';
+    content: '•';
     color: var(--clr-accent);
     font-weight: 700;
     font-size: 16px;
