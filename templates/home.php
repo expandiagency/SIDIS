@@ -30,13 +30,13 @@ require __DIR__ . '/layout.php';
             <h1 class="hero__title title"><?= e($h['hero_title'] ?? 'Business process automation') ?></h1>
             <div class="hero__text"><?= nl2br(e($h['hero_subtitle'] ?? 'Many growing businesses lose time and money due to inefficient workflows and outdated systems.')) ?></div>
             <div class="hero__btns">
-                <a href="<?= e($h['hero_btn1_url'] ?? '/assets/Sidis-Group.pdf') ?>" target="_blank" class="hero__btn button"><?= e($h['hero_btn1_text'] ?? 'View Our Presentation') ?></a>
-                <button type="button" class="hero__btn button button--icon">
+                <a href="<?= e($h['hero_btn1_url'] ?? '/assets/Sidis-Group.pdf') ?>"<?= !empty($h['hero_btn1_new_tab']) ? ' target="_blank" rel="noopener"' : '' ?> class="hero__btn button"><?= e($h['hero_btn1_text'] ?? 'View Our Presentation') ?></a>
+                <a href="<?= e($h['hero_btn2_url'] ?? '#getintouch') ?>"<?= !empty($h['hero_btn2_new_tab']) ? ' target="_blank" rel="noopener"' : '' ?> class="hero__btn button button--icon">
                     <span class="button__text"><?= e($h['hero_btn2_text'] ?? 'Free audit') ?></span>
                     <span class="button__icon">
                         <svg width="14" height="14" viewbox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0.56543 12.8L12.5654 0.799988M12.5654 0.799988L0.56543 0.799988M12.5654 0.799988V12.6868" stroke="currentColor" stroke-width="1.6"></path></svg>
                     </span>
-                </button>
+                </a>
             </div>
         </div>
     </div>
@@ -372,10 +372,8 @@ require __DIR__ . '/layout.php';
             <div class="roadmap__head">
                 <h2 class="roadmap__title title"><?= e($h['roadmap_title'] ?? 'Roadmap') ?></h2>
                 <div class="roadmap__btns">
-                    <?php $_rb1 = $h['roadmap_btn1_url'] ?? '#'; ?>
-                    <a href="<?= e($_rb1) ?>"<?= (strpos($_rb1, '#') !== 0) ? ' target="_blank" rel="noopener"' : '' ?> class="roadmap__btn button"><?= e($h['roadmap_btn1_text'] ?? 'Get PDF') ?></a>
-                    <?php $_rb2 = $h['roadmap_btn2_url'] ?? '#'; ?>
-                    <a href="<?= e($_rb2) ?>"<?= (strpos($_rb2, '#') !== 0) ? ' target="_blank" rel="noopener"' : '' ?> class="roadmap__btn button button--icon">
+                    <a href="<?= e($h['roadmap_btn1_url'] ?? '#') ?>"<?= !empty($h['roadmap_btn1_new_tab']) ? ' target="_blank" rel="noopener"' : '' ?> class="roadmap__btn button"><?= e($h['roadmap_btn1_text'] ?? 'Get PDF') ?></a>
+                    <a href="<?= e($h['roadmap_btn2_url'] ?? '#') ?>"<?= !empty($h['roadmap_btn2_new_tab']) ? ' target="_blank" rel="noopener"' : '' ?> class="roadmap__btn button button--icon">
                         <span class="button__text"><?= e($h['roadmap_btn2_text'] ?? 'Free audit') ?></span>
                         <span class="button__icon"><svg width="14" height="14" viewbox="0 0 14 14" fill="none"><path d="M0.707031 13L12.707 1M12.707 1L0.707031 1M12.707 1V12.8868" stroke="currentColor" stroke-width="2"></path></svg></span>
                     </a>

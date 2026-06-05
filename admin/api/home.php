@@ -25,6 +25,10 @@ try { db()->exec("ALTER TABLE home_content ADD COLUMN industries_ids TEXT DEFAUL
 try { db()->exec("ALTER TABLE home_content ADD COLUMN roadmap_video VARCHAR(500) DEFAULT NULL"); } catch(Exception $e) {}
 try { db()->exec("ALTER TABLE home_content ADD COLUMN roadmap_poster_url VARCHAR(500) DEFAULT NULL"); } catch(Exception $e) {}
 try { db()->exec("ALTER TABLE home_content ADD COLUMN presentation_enabled TINYINT(1) DEFAULT 0"); } catch(Exception $e) {}
+try { db()->exec("ALTER TABLE home_content ADD COLUMN hero_btn1_new_tab TINYINT(1) DEFAULT 1"); } catch(Exception $e) {}
+try { db()->exec("ALTER TABLE home_content ADD COLUMN hero_btn2_new_tab TINYINT(1) DEFAULT 0"); } catch(Exception $e) {}
+try { db()->exec("ALTER TABLE home_content ADD COLUMN roadmap_btn1_new_tab TINYINT(1) DEFAULT 0"); } catch(Exception $e) {}
+try { db()->exec("ALTER TABLE home_content ADD COLUMN roadmap_btn2_new_tab TINYINT(1) DEFAULT 0"); } catch(Exception $e) {}
 
 if ($method === 'GET') {
     if ($action === 'why_slides') {
@@ -83,7 +87,11 @@ if ($method === 'POST') {
                    'roadmap_video','roadmap_poster_url'];
         $save = ['lang_id' => $lang_id];
         foreach ($fields as $f) $save[$f] = $data[$f] ?? '';
-        $save['presentation_enabled'] = empty($data['presentation_enabled']) ? 0 : 1;
+        $save['presentation_enabled']  = empty($data['presentation_enabled'])  ? 0 : 1;
+        $save['hero_btn1_new_tab']     = empty($data['hero_btn1_new_tab'])     ? 0 : 1;
+        $save['hero_btn2_new_tab']     = empty($data['hero_btn2_new_tab'])     ? 0 : 1;
+        $save['roadmap_btn1_new_tab']  = empty($data['roadmap_btn1_new_tab'])  ? 0 : 1;
+        $save['roadmap_btn2_new_tab']  = empty($data['roadmap_btn2_new_tab'])  ? 0 : 1;
         $save['solutions_ids']     = json_encode(array_map('intval', $data['solutions_ids']     ?? []));
         $save['departments_ids']   = json_encode(array_map('intval', $data['departments_ids']   ?? []));
         $save['industries_ids']    = json_encode(array_map('intval', $data['industries_ids']    ?? []));

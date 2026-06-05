@@ -252,9 +252,23 @@ tr:hover td{background:#fafafa}
                     <div class="field field--full"><label>Hero Title</label><input v-model="homeData.hero_title"></div>
                     <div class="field field--full"><label>Hero Subtitle</label><textarea v-model="homeData.hero_subtitle" rows="3"></textarea></div>
                     <div class="field"><label>Button 1 Text</label><input v-model="homeData.hero_btn1_text"></div>
-                    <div class="field"><label>Button 1 URL</label><input v-model="homeData.hero_btn1_url"></div>
+                    <div class="field">
+                        <label>Button 1 URL</label>
+                        <input v-model="homeData.hero_btn1_url">
+                        <label style="display:flex;align-items:center;gap:6px;margin-top:6px;font-size:12px;cursor:pointer;color:var(--muted)">
+                            <input type="checkbox" v-model="homeData.hero_btn1_new_tab" :true-value="1" :false-value="0" style="accent-color:var(--accent)">
+                            Open in new tab
+                        </label>
+                    </div>
                     <div class="field"><label>Button 2 Text</label><input v-model="homeData.hero_btn2_text"></div>
-                    <div class="field"><label>Button 2 URL</label><input v-model="homeData.hero_btn2_url"></div>
+                    <div class="field">
+                        <label>Button 2 URL</label>
+                        <input v-model="homeData.hero_btn2_url">
+                        <label style="display:flex;align-items:center;gap:6px;margin-top:6px;font-size:12px;cursor:pointer;color:var(--muted)">
+                            <input type="checkbox" v-model="homeData.hero_btn2_new_tab" :true-value="1" :false-value="0" style="accent-color:var(--accent)">
+                            Open in new tab
+                        </label>
+                    </div>
                     <div class="field field--full"><label>Hero Video Path (e.g. ./assets/video/1-hero.mp4)</label><input v-model="homeData.hero_video_path"></div>
                     <div class="field field--full">
                         <label>Hero Poster Image <span style="font-weight:normal;color:var(--muted)">(показывается пока грузится видео)</span></label>
@@ -398,9 +412,23 @@ tr:hover td{background:#fafafa}
                 <div class="form-grid">
                     <div class="field"><label>Roadmap Title</label><input v-model="homeData.roadmap_title"></div>
                     <div class="field"><label>Roadmap Btn 1 Text</label><input v-model="homeData.roadmap_btn1_text"></div>
-                    <div class="field"><label>Roadmap Btn 1 URL</label><input v-model="homeData.roadmap_btn1_url"></div>
+                    <div class="field">
+                        <label>Roadmap Btn 1 URL</label>
+                        <input v-model="homeData.roadmap_btn1_url">
+                        <label style="display:flex;align-items:center;gap:6px;margin-top:6px;font-size:12px;cursor:pointer;color:var(--muted)">
+                            <input type="checkbox" v-model="homeData.roadmap_btn1_new_tab" :true-value="1" :false-value="0" style="accent-color:var(--accent)">
+                            Open in new tab
+                        </label>
+                    </div>
                     <div class="field"><label>Roadmap Btn 2 Text</label><input v-model="homeData.roadmap_btn2_text"></div>
-                    <div class="field"><label>Roadmap Btn 2 URL</label><input v-model="homeData.roadmap_btn2_url"></div>
+                    <div class="field">
+                        <label>Roadmap Btn 2 URL</label>
+                        <input v-model="homeData.roadmap_btn2_url">
+                        <label style="display:flex;align-items:center;gap:6px;margin-top:6px;font-size:12px;cursor:pointer;color:var(--muted)">
+                            <input type="checkbox" v-model="homeData.roadmap_btn2_new_tab" :true-value="1" :false-value="0" style="accent-color:var(--accent)">
+                            Open in new tab
+                        </label>
+                    </div>
                 </div>
                 <hr style="margin:20px 0;border:none;border-top:1px solid var(--border)">
                 <p style="font-size:13px;font-weight:600;margin-bottom:12px">Contact Form Section</p>
@@ -1963,6 +1991,10 @@ createApp({
             if (!Array.isArray(d.industries_ids)) d.industries_ids = [];
             if (!Array.isArray(d.featured_cases_ids)) d.featured_cases_ids = [];
             d.presentation_enabled = d.presentation_enabled ? 1 : 0;
+            d.hero_btn1_new_tab    = d.hero_btn1_new_tab    ? 1 : 0;
+            d.hero_btn2_new_tab    = d.hero_btn2_new_tab    ? 1 : 0;
+            d.roadmap_btn1_new_tab = d.roadmap_btn1_new_tab ? 1 : 0;
+            d.roadmap_btn2_new_tab = d.roadmap_btn2_new_tab ? 1 : 0;
             Object.assign(homeData, d);
             if (!allCases.value.length) {
                 allCases.value = await api(`/admin/api/cases.php?lang_id=${langId.value}`);
