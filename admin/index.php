@@ -1285,13 +1285,28 @@ tr:hover td{background:#fafafa}
                     <div class="field"><label>Hero Subtitle ({{ currentLangCode }})</label><input v-model="settingsData.cases_hero_text" placeholder="See how Sidis Group has helped..."></div>
                     <div class="field"><label>Meta Title ({{ currentLangCode }})</label><input v-model="settingsData.cases_meta_title" placeholder="Falls back to Hero Title"></div>
                     <div class="field field--full"><label>Meta Description ({{ currentLangCode }})</label><textarea v-model="settingsData.cases_meta_description" rows="2" placeholder="Falls back to Hero Subtitle"></textarea></div>
-                    <div class="field field--full"><label>Hero Background Image</label>
+                    <div class="field field--full"><label>Hero Background Image <span style="color:var(--muted);font-size:12px">(shown if no video set)</span></label>
                         <div class="img-picker">
                             <img v-if="settingsData.cases_hero_image_url" :src="settingsData.cases_hero_image_url" class="img-thumb">
                             <button class="btn btn--outline btn--sm" @click="pickMedia(m=>{settingsData.cases_hero_image_url=m.url})">Choose from library</button>
                             <button v-if="settingsData.cases_hero_image_url" class="btn btn--sm" @click="settingsData.cases_hero_image_url=''">Remove</button>
                         </div>
-                        <div class="field-note" style="margin-top:6px;color:var(--muted);font-size:12px">Leave empty to use the default image</div>
+                    </div>
+                    <div class="field field--full"><label>Hero Background Video <span style="color:var(--muted);font-size:12px">(autoplay, replaces image when set)</span></label>
+                        <div class="img-picker" style="flex-wrap:wrap;gap:8px">
+                            <span v-if="settingsData.cases_hero_video_path" style="font-size:13px;color:var(--muted);word-break:break-all">{{ settingsData.cases_hero_video_path }}</span>
+                            <label class="btn btn--outline btn--sm" style="cursor:pointer">
+                                Upload MP4<input type="file" accept="video/mp4,video/webm" style="display:none" @change="uploadHeroVideo($event,'cases_hero_video_path')">
+                            </label>
+                            <button v-if="settingsData.cases_hero_video_path" class="btn btn--sm" @click="settingsData.cases_hero_video_path=''">Remove</button>
+                        </div>
+                    </div>
+                    <div class="field field--full"><label>Hero Video Poster <span style="color:var(--muted);font-size:12px">(shown while video loads)</span></label>
+                        <div class="img-picker">
+                            <img v-if="settingsData.cases_hero_video_poster_url" :src="settingsData.cases_hero_video_poster_url" class="img-thumb">
+                            <button class="btn btn--outline btn--sm" @click="pickMedia(m=>{settingsData.cases_hero_video_poster_url=m.url})">Choose from library</button>
+                            <button v-if="settingsData.cases_hero_video_poster_url" class="btn btn--sm" @click="settingsData.cases_hero_video_poster_url=''">Remove</button>
+                        </div>
                     </div>
                     <div class="field field--full"><label>OG / Social Share Image</label>
                         <div class="img-picker">
@@ -1310,13 +1325,28 @@ tr:hover td{background:#fafafa}
                     <div class="field"><label>Hero Subtitle ({{ currentLangCode }})</label><input v-model="settingsData.blog_hero_text" placeholder="Explore how Sidis Group is shaping the future..."></div>
                     <div class="field"><label>Meta Title ({{ currentLangCode }})</label><input v-model="settingsData.blog_meta_title" placeholder="Falls back to Hero Title"></div>
                     <div class="field field--full"><label>Meta Description ({{ currentLangCode }})</label><textarea v-model="settingsData.blog_meta_description" rows="2" placeholder="Falls back to Hero Subtitle"></textarea></div>
-                    <div class="field field--full"><label>Hero Background Image</label>
+                    <div class="field field--full"><label>Hero Background Image <span style="color:var(--muted);font-size:12px">(shown if no video set)</span></label>
                         <div class="img-picker">
                             <img v-if="settingsData.blog_hero_image_url" :src="settingsData.blog_hero_image_url" class="img-thumb">
                             <button class="btn btn--outline btn--sm" @click="pickMedia(m=>{settingsData.blog_hero_image_url=m.url})">Choose from library</button>
                             <button v-if="settingsData.blog_hero_image_url" class="btn btn--sm" @click="settingsData.blog_hero_image_url=''">Remove</button>
                         </div>
-                        <div class="field-note" style="margin-top:6px;color:var(--muted);font-size:12px">Leave empty to use the default image</div>
+                    </div>
+                    <div class="field field--full"><label>Hero Background Video <span style="color:var(--muted);font-size:12px">(autoplay, replaces image when set)</span></label>
+                        <div class="img-picker" style="flex-wrap:wrap;gap:8px">
+                            <span v-if="settingsData.blog_hero_video_path" style="font-size:13px;color:var(--muted);word-break:break-all">{{ settingsData.blog_hero_video_path }}</span>
+                            <label class="btn btn--outline btn--sm" style="cursor:pointer">
+                                Upload MP4<input type="file" accept="video/mp4,video/webm" style="display:none" @change="uploadHeroVideo($event,'blog_hero_video_path')">
+                            </label>
+                            <button v-if="settingsData.blog_hero_video_path" class="btn btn--sm" @click="settingsData.blog_hero_video_path=''">Remove</button>
+                        </div>
+                    </div>
+                    <div class="field field--full"><label>Hero Video Poster <span style="color:var(--muted);font-size:12px">(shown while video loads)</span></label>
+                        <div class="img-picker">
+                            <img v-if="settingsData.blog_hero_video_poster_url" :src="settingsData.blog_hero_video_poster_url" class="img-thumb">
+                            <button class="btn btn--outline btn--sm" @click="pickMedia(m=>{settingsData.blog_hero_video_poster_url=m.url})">Choose from library</button>
+                            <button v-if="settingsData.blog_hero_video_poster_url" class="btn btn--sm" @click="settingsData.blog_hero_video_poster_url=''">Remove</button>
+                        </div>
                     </div>
                     <div class="field field--full"><label>OG / Social Share Image</label>
                         <div class="img-picker">
@@ -1831,6 +1861,20 @@ createApp({
             reader.onload = e => { obj[field] = e.target.result; };
             reader.readAsText(file);
             event.target.value = '';
+        };
+
+        const uploadHeroVideo = async (event, field) => {
+            const file = event.target.files[0];
+            if (!file) return;
+            event.target.value = '';
+            const fd = new FormData();
+            fd.append('file', file);
+            try {
+                const r = await fetch('/admin/api/upload_video.php', {method:'POST', body:fd});
+                const j = await r.json();
+                if (j.ok) settingsData[field] = j.path;
+                else showAlert(j.error || 'Upload failed');
+            } catch(e) { showAlert('Upload error: ' + e.message); }
         };
 
         /* ─── Languages ─────────────────────────────────────────────────── */

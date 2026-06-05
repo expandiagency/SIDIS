@@ -453,18 +453,34 @@ if (!empty($c['selected_ids']) && is_array($c['selected_ids'])) {
             <div class="articles__wrapper swiper-wrapper">
                 <?php $blog_fallbacks = ['/assets/img/blog/image-4.webp','/assets/img/blog/image-3.webp','/assets/img/blog/image-2.webp','/assets/img/blog/image-1.jpg']; ?>
                 <?php foreach (array_values($block_posts) as $pi => $post): ?>
-                <article class="article-card swiper-slide">
+                <article class="article-card swiper-slide" data-fls-watcher="" data-fls-watcher-threshold="0.6">
                     <div class="article-card__img">
                         <img alt="<?= e($post['title'] ?? '') ?>" loading="lazy" src="<?= !empty($post['image_path']) ? e(sol_url($post['image_path'])) : $blog_fallbacks[$pi % 4] ?>">
                         <a href="/blog/<?= e($post['slug'] ?? '') ?>/" class="article-card__arrow button button--icon">
                             <span class="button__text">Open article</span>
-                            <span class="button__icon"><svg width="14" height="14" viewbox="0 0 14 14" fill="none"><path d="M0.707031 13L12.707 1M12.707 1L0.707031 1M12.707 1V12.8868" stroke="currentColor" stroke-width="2"/></svg></span>
+                            <span class="button__icon"><svg width="14" height="14" viewbox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0.707031 13L12.707 1M12.707 1L0.707031 1M12.707 1V12.8868" stroke="currentColor" stroke-width="2"/></svg></span>
                         </a>
                     </div>
                     <a href="/blog/<?= e($post['slug'] ?? '') ?>/" class="article-card__title"><?= e($post['title'] ?? '') ?></a>
-                    <?php if (!empty($post['published_at'])): ?>
                     <div class="article-card__badges">
+                        <?php if (!empty($post['published_at'])): ?>
                         <div class="article-card__badge"><?= date('j, F, Y', strtotime($post['published_at'])) ?></div>
+                        <?php endif; ?>
+                        <div class="article-card__badge"><?= (int)($post['read_time'] ?? 1) ?> min to read</div>
+                    </div>
+                    <?php if (!empty($post['author_name'])): ?>
+                    <div class="article-card__author">
+                        <?php if (!empty($post['author_image_path'])): ?>
+                        <div class="article-card__author-img">
+                            <img alt="<?= e($post['author_name']) ?>" loading="lazy" src="<?= e(sol_url($post['author_image_path'])) ?>">
+                        </div>
+                        <?php endif; ?>
+                        <div class="article-card__author-body">
+                            <div class="article-card__author-name"><?= e($post['author_name']) ?></div>
+                            <?php if (!empty($post['author_title'])): ?>
+                            <div class="article-card__author-position"><?= e($post['author_title']) ?></div>
+                            <?php endif; ?>
+                        </div>
                     </div>
                     <?php endif; ?>
                 </article>

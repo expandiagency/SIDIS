@@ -14,7 +14,9 @@ $global_keys = [
     'case_external_btn_text',
     'header_logo_url', 'footer_logo_url',
     'cases_hero_image_url', 'cases_og_image_url',
+    'cases_hero_video_path', 'cases_hero_video_poster_url',
     'blog_hero_image_url', 'blog_og_image_url',
+    'blog_hero_video_path', 'blog_hero_video_poster_url',
     'tag_manager_code',
     'lead_emails',
 ];
