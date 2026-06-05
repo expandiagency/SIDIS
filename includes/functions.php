@@ -101,12 +101,25 @@ function get_nav(int $lang_id, string $location): array {
                 );
                 $subitems = [];
                 foreach ($pages as $p) {
+                    $white = $p['icon_svg_white'] ?: '';
+                    // Fallback: read white SVG directly from file if DB column is empty
+                    if (!$white && !empty($p['title'])) {
+                        $folder_map = ['department'=>'Departments','industry'=>'Industries','solution'=>'Solutions'];
+                        $dir = realpath(__DIR__ . '/../Icons/' . ($folder_map[$p['type']] ?? ''));
+                        if ($dir) {
+                            $fn = str_replace([' / ', '/'], [' - ', '-'], $p['title']);
+                            $path = $dir . '/' . $fn . '-white.svg';
+                            if (file_exists($path)) {
+                                $white = trim(preg_replace('/<\?xml[^?]*\?>\s*/i', '', file_get_contents($path)));
+                            }
+                        }
+                    }
                     $subitems[] = [
                         'title'          => $p['title'] ?: $p['slug'],
                         'description'    => $p['description'] ?: '',
                         'url'            => '/' . sp_type_prefix($p['type']) . '/' . $p['slug'] . '/',
                         'icon_svg'       => $p['icon_svg'] ?: '',
-                        'icon_svg_white' => $p['icon_svg_white'] ?: '',
+                        'icon_svg_white' => $white,
                     ];
                 }
                 $item['mega_categories'] = [['id'=>0,'title'=>'','description'=>'','subitems'=>$subitems]];
