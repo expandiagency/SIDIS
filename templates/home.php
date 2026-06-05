@@ -225,7 +225,7 @@ require __DIR__ . '/layout.php';
                                     <div class="solutions__slide-descr">
                                         <div class="solutions__slide-inner">
                                             <div class="solutions__slide-text"><?= e($card['description']) ?></div>
-                                            <a href="<?= e($card['btn_url'] ?? '#') ?>" class="solutions__slide-btn button button--third"><?= e($card['btn_text'] ?? 'Learn more') ?></a>
+                                            <a href="<?= e($card['btn_url'] ?: '#') ?>" class="solutions__slide-btn button button--third"><?= e($card['btn_text'] ?: 'Learn more') ?></a>
                                         </div>
                                     </div>
                                 </div>

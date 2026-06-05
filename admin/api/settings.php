@@ -19,7 +19,10 @@ $global_keys = [
     'blog_hero_video_path', 'blog_hero_video_poster_url',
     'tag_manager_code',
     'lead_emails',
+    'aside_demo_image_url', 'aside_demo_btn_url', 'aside_contact_btn_url',
 ];
+// These aside text fields are per-language
+$aside_lang_keys = ['aside_demo_btn_text', 'aside_contact_btn_text'];
 $lang_keys   = [
     'site_description', 'footer_copyright', 'contact_address', 'contact_phone',
     'cases_hero_title', 'cases_hero_text', 'cases_meta_title', 'cases_meta_description',
@@ -31,6 +34,7 @@ if ($method === 'GET') {
     foreach ($global_keys as $k) $result[$k] = get_setting($k);
     if ($lang_id) {
         foreach ($lang_keys as $k) $result[$k] = get_setting($k, $lang_id);
+        foreach ($aside_lang_keys as $k) $result[$k] = get_setting($k, $lang_id);
     }
     json_response($result);
 }
@@ -42,6 +46,9 @@ if ($method === 'POST') {
     }
     if ($lang_id) {
         foreach ($lang_keys as $k) {
+            if (array_key_exists($k, $data)) set_setting($k, $data[$k], $lang_id);
+        }
+        foreach ($aside_lang_keys as $k) {
             if (array_key_exists($k, $data)) set_setting($k, $data[$k], $lang_id);
         }
     }

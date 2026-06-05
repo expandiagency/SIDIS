@@ -1347,6 +1347,22 @@ tr:hover td{background:#fafafa}
                     </div>
                 </div>
             </div></div>
+
+            <div class="card"><div class="card__head"><h2>Solutions / Departments / Industries — Aside Panel</h2></div><div class="card__body">
+                <div class="form-grid">
+                    <div class="field field--full"><label>Demo Image</label>
+                        <div class="img-picker">
+                            <img v-if="settingsData.aside_demo_image_url" :src="settingsData.aside_demo_image_url" class="img-thumb">
+                            <button class="btn btn--outline btn--sm" @click="pickMedia(m=>{settingsData.aside_demo_image_url=m.url})">Choose from library</button>
+                            <button v-if="settingsData.aside_demo_image_url" class="btn btn--sm" @click="settingsData.aside_demo_image_url=''">Remove</button>
+                        </div>
+                    </div>
+                    <div class="field"><label>Demo Button Text ({{ currentLangCode }})</label><input v-model="settingsData.aside_demo_btn_text" placeholder="Demo"></div>
+                    <div class="field"><label>Demo Button URL</label><input v-model="settingsData.aside_demo_btn_url" placeholder="#getintouch"></div>
+                    <div class="field"><label>Contact Button Text ({{ currentLangCode }})</label><input v-model="settingsData.aside_contact_btn_text" placeholder="Contact us"></div>
+                    <div class="field"><label>Contact Button URL</label><input v-model="settingsData.aside_contact_btn_url" placeholder="#getintouch"></div>
+                </div>
+            </div></div>
         </template>
 
         <!-- ══ USERS ══ -->
