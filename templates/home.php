@@ -372,8 +372,10 @@ require __DIR__ . '/layout.php';
             <div class="roadmap__head">
                 <h2 class="roadmap__title title"><?= e($h['roadmap_title'] ?? 'Roadmap') ?></h2>
                 <div class="roadmap__btns">
-                    <a href="<?= e($h['roadmap_btn1_url'] ?? '#') ?>" class="roadmap__btn button"><?= e($h['roadmap_btn1_text'] ?? 'Get PDF') ?></a>
-                    <a href="<?= e($h['roadmap_btn2_url'] ?? '#') ?>" class="roadmap__btn button button--icon">
+                    <?php $_rb1 = $h['roadmap_btn1_url'] ?? '#'; ?>
+                    <a href="<?= e($_rb1) ?>"<?= (strpos($_rb1, '#') !== 0) ? ' target="_blank" rel="noopener"' : '' ?> class="roadmap__btn button"><?= e($h['roadmap_btn1_text'] ?? 'Get PDF') ?></a>
+                    <?php $_rb2 = $h['roadmap_btn2_url'] ?? '#'; ?>
+                    <a href="<?= e($_rb2) ?>"<?= (strpos($_rb2, '#') !== 0) ? ' target="_blank" rel="noopener"' : '' ?> class="roadmap__btn button button--icon">
                         <span class="button__text"><?= e($h['roadmap_btn2_text'] ?? 'Free audit') ?></span>
                         <span class="button__icon"><svg width="14" height="14" viewbox="0 0 14 14" fill="none"><path d="M0.707031 13L12.707 1M12.707 1L0.707031 1M12.707 1V12.8868" stroke="currentColor" stroke-width="2"></path></svg></span>
                     </a>
