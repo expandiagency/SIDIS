@@ -32,16 +32,21 @@
 .article-block__content ol {
     padding-left: 0;
     counter-reset: article-ol;
+    display: flex;
+    flex-direction: column;
     gap: 6px;
 }
-.article-block__content ol li {
+/* Only direct li children get the counter — nested ul/ol li are unaffected */
+.article-block__content ol > li {
     list-style: none;
     counter-increment: article-ol;
     display: flex;
-    align-items: center;
-    gap: 12px;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    column-gap: 12px;
+    row-gap: 6px;
 }
-.article-block__content ol li::before {
+.article-block__content ol > li::before {
     content: counter(article-ol);
     min-width: 28px;
     height: 28px;
@@ -54,20 +59,29 @@
     justify-content: center;
     border-radius: 6px;
     flex-shrink: 0;
+    margin-top: 1px;
+}
+/* Nested list inside ol li — push it to its own row, indented under the text */
+.article-block__content ol > li > ul,
+.article-block__content ol > li > ol {
+    flex: 0 0 100%;
+    margin-left: 40px; /* 28px box + 12px gap */
 }
 
 /* ── Blog article: unordered list — / as bullet ──────────────── */
 .article-block__content ul {
     padding-left: 0;
-    gap: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
 }
-.article-block__content ul li {
+.article-block__content ul > li {
     list-style: none;
     display: flex;
     align-items: flex-start;
     gap: 10px;
 }
-.article-block__content ul li::before {
+.article-block__content ul > li::before {
     content: '/';
     color: var(--clr-accent);
     font-weight: 700;
