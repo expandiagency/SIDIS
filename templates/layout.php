@@ -38,13 +38,19 @@ function active_lang_url(string $path, array $lang, array $default_lang): string
     .solutions__slide.swiper-slide-active .solutions__slide-icon.icon--white{display:flex}
     </style>
     <script>
-    document.addEventListener('DOMContentLoaded',function(){
-        document.querySelectorAll('.submenu__info-link').forEach(function(link){
-            var icon=link.querySelector('.submenu__info-icon');
-            if(!icon)return;
-            link.addEventListener('mouseenter',function(){icon.style.filter='brightness(0) invert(1)';});
-            link.addEventListener('mouseleave',function(){icon.style.filter='';});
-        });
+    document.addEventListener('mouseover',function(e){
+        var link=e.target.closest('.submenu__info-link');
+        if(!link)return;
+        var icon=link.querySelector('.submenu__info-icon');
+        if(icon)icon.style.filter='brightness(0) invert(1)';
+        var photo=link.getAttribute('data-dept-photo');
+        if(photo){var img=document.getElementById('dept-submenu-photo');if(img)img.src=photo;}
+    });
+    document.addEventListener('mouseout',function(e){
+        var link=e.target.closest('.submenu__info-link');
+        if(!link)return;
+        var icon=link.querySelector('.submenu__info-icon');
+        if(icon)icon.style.filter='';
     });
     </script>
     <!-- JS: modulepreload fetches + parses the module before execution -->
@@ -109,8 +115,9 @@ function active_lang_url(string $path, array $lang, array $default_lang): string
                                             <?php foreach ($columns as $col): ?>
                                             <ul class="submenu__info-list">
                                                 <?php foreach ($col as $sub): ?>
+                                                <?php $dept_slug = basename(rtrim($sub['url'], '/')); ?>
                                                 <li class="submenu__info-item">
-                                                    <a href="<?= e($sub['url']) ?>" class="submenu__info-link">
+                                                    <a href="<?= e($sub['url']) ?>" class="submenu__info-link" data-dept-photo="/assets/img/departments/<?= e($dept_slug) ?>.webp">
                                                         <?php if ($sub['icon_svg']): ?>
                                                         <span class="submenu__info-icon icon--dark"><?= $sub['icon_svg'] ?></span>
                                                         <?php endif; ?>
@@ -124,8 +131,8 @@ function active_lang_url(string $path, array $lang, array $default_lang): string
                                             </ul>
                                             <?php endforeach; ?>
                                         </div>
-                                        <div class="submenu__img">
-                                            <img alt="Image" loading="lazy" src="./assets/img/header/image.webp">
+                                        <div class="submenu__img" id="dept-submenu-img">
+                                            <img alt="Image" loading="lazy" src="/assets/img/header/image.webp" id="dept-submenu-photo">
                                             <div class="submenu__img-text"><?= e($img_text) ?></div>
                                         </div>
                                     </div>
