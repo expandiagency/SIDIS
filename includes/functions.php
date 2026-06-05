@@ -590,7 +590,7 @@ function render_article_content(string $content, array $extras = []): string {
         $btn2_text = htmlspecialchars($attrs['btn2_text'] ?? $extras['cta_btn2_text'] ?? 'Free audit', ENT_QUOTES, 'UTF-8');
         $btn2_url  = htmlspecialchars($attrs['btn2_url']  ?? $extras['cta_btn2_url']  ?? '#getintouch', ENT_QUOTES, 'UTF-8');
         $arrow_svg = '<svg width="14" height="14" viewbox="0 0 14 14" fill="none"><path d="M0.566406 12.8L12.5664 0.800049M12.5664 0.800049L12.5664 12.8M12.5664 0.800049L0.679613 0.800049" stroke="currentColor" stroke-width="1.6"></path></svg>';
-        return '<div class="planning__info"><div class="planning__info-img"><img alt="Image" loading="lazy" src="/assets/img/projects/image-6.webp"></div><div class="planning__info-body"><div class="planning__info-title">' . $title . '</div><div class="planning__info-btns"><a href="' . $btn1_url . '" class="planning__info-btn button">' . $btn1_text . '</a><a href="' . $btn2_url . '" class="planning__info-btn button button--icon"><span class="button__text">' . $btn2_text . '</span><span class="button__icon">' . $arrow_svg . '</span></a></div></div></div>';
+        return '<div class="planning__info"><div class="planning__info-img"><img alt="Image" loading="lazy" src="/assets/img/projects/image-6.webp"></div><div class="planning__info-body"><div class="planning__info-title">' . $title . '</div><div class="planning__info-btns"><a href="' . $btn1_url . '" target="_blank" class="planning__info-btn button">' . $btn1_text . '</a><a href="' . $btn2_url . '" class="planning__info-btn button button--icon"><span class="button__text">' . $btn2_text . '</span><span class="button__icon">' . $arrow_svg . '</span></a></div></div></div>';
     }, $content);
 
     return $content;

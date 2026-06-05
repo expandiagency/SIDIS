@@ -39,7 +39,7 @@ function sol_url(string $path): string {
                 <div class="promo-category__btns">
                     <?php $btn1 = ($c['btn1_text'] ?: ($sp['btn1_text'] ?? '')) ?: 'View Our Presentation'; ?>
                     <?php $btn1url = $c['btn1_url'] ?: '#'; ?>
-                    <a href="<?= e($btn1url) ?>" class="promo-category__btn button"><?= e($btn1) ?></a>
+                    <a href="<?= e($btn1url) ?>" target="_blank" class="promo-category__btn button"><?= e($btn1) ?></a>
                     <?php $btn2 = ($c['btn2_text'] ?: ($sp['btn2_text'] ?? '')) ?: 'Free audit'; ?>
                     <?php $btn2url = $c['btn2_url'] ?: '#getintouch'; ?>
                     <a href="<?= e($btn2url) ?>" class="promo-category__btn button button--icon">
@@ -181,7 +181,7 @@ function sol_url(string $path): string {
                 <div class="planning__info-title"><?= e($c['info_title']) ?></div>
                 <div class="planning__info-btns">
                     <?php if (!empty($c['info_btn1_text'])): ?>
-                    <a href="<?= e($c['info_btn1_url'] ?? '#') ?>" class="planning__info-btn button"><?= e($c['info_btn1_text']) ?></a>
+                    <a href="<?= e($c['info_btn1_url'] ?? '/assets/Sidis-Group.pdf') ?>" target="_blank" class="planning__info-btn button"><?= e($c['info_btn1_text']) ?></a>
                     <?php endif; ?>
                     <?php if (!empty($c['info_btn2_text'])): ?>
                     <a href="<?= e($c['info_btn2_url'] ?? '#getintouch') ?>" class="planning__info-btn button button--icon">
