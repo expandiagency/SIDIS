@@ -9,6 +9,7 @@ $dry     = isset($_GET['dry']);
 
 $data = [
     // ── SOLUTIONS ──────────────────────────────────────────────────────────────
+    'business-process-analysis-optimization' => 'Map, analyse, and redesign your core business processes to eliminate waste, reduce cycle times, and build a foundation ready for automation and sustainable scale.',
     'business-process-automation'           => 'Automate repetitive workflows — approvals, data entry, and notifications — with connected systems that eliminate bottlenecks and run reliably across your operations.',
     'sales-automation'                      => 'Automate CRM updates, lead routing, follow-up sequences, and pipeline reports so your reps focus on closing deals instead of administrative tasks that slow them down.',
     'marketing-automation'                  => 'Build systems that handle lead capture, nurturing sequences, segmentation, and campaign triggers — delivering the right message automatically at the right time.',
