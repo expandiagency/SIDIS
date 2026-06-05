@@ -1,28 +1,35 @@
 /* ── Article content: force Inter font regardless of inline styles */
 .article-block__content * { font-family: "Inter", sans-serif !important; }
 
-/* ── Article content: table styling ─────────────────────────── */
+/* ── Article content: table — card-grid style ────────────────── */
 .article-block__content table {
-    border-collapse: collapse !important;
-    border-spacing: 0 !important;
+    border-collapse: separate !important;
+    border-spacing: 8px !important;
     border: none !important;
-    border-radius: 12px;
-    overflow: hidden;
+    width: calc(100% + 16px) !important;
+    margin-left: -8px !important;
+    table-layout: fixed !important;
 }
 .article-block__content table td,
 .article-block__content table th {
-    padding: 18px 22px !important;
-    border: 1px solid var(--clr-gray) !important;
+    padding: 20px 22px !important;
+    border: none !important;
+    border-radius: 10px !important;
+    background: var(--clr-bg-soft) !important;
     vertical-align: top !important;
-    line-height: 150% !important;
+    line-height: 155% !important;
+    font-size: 15px !important;
 }
 .article-block__content table td strong,
-.article-block__content table th {
+.article-block__content table th strong {
     display: block;
-    margin-bottom: 6px;
     font-weight: 700;
+    font-size: 15px;
+    margin-bottom: 8px;
+    color: var(--clr-accent);
+    line-height: 130%;
 }
-.article-block__content table tr:hover td { background: transparent; }
+.article-block__content table tr:hover td { background: var(--clr-bg-soft) !important; }
 
 /* ── Article: numbered list — description paragraph inside li ── */
 .article-block__content ol > li > p {
