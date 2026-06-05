@@ -6,6 +6,7 @@ require_once __DIR__ . '/includes/functions.php';
 
 $video_path   = './assets/video/compressed-v2/Video-cover-roadmap.mp4';
 $video_poster = './assets/video/compressed-v2/Video-cover-blog-roadmap-poster.webp';
+$btn1_url     = '/assets/Sidis-Group.pdf';
 
 header('Content-Type: text/plain; charset=utf-8');
 
@@ -24,6 +25,7 @@ foreach ($blocks as $b) {
     $c = json_decode($b['content'] ?: '{}', true) ?: [];
     $c['video_path']   = $video_path;
     $c['video_poster'] = $video_poster;
+    $c['btn1_url']     = $btn1_url;
     update('sol_page_blocks', ['content' => json_encode($c, JSON_UNESCAPED_UNICODE)], ['id' => $b['id']]);
     echo "✅  [{$b['type']}] {$b['slug']}\n";
     $ok++;
