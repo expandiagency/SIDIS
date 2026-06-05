@@ -99,7 +99,7 @@ if ($method === 'GET') {
     }
 
     if ($action === 'page' && $id) {
-        $p = row('SELECT sp.*, sp.icon_svg, spt.title, spt.description, spt.btn1_text, spt.btn2_text, spt.meta_title, spt.meta_description, m.path as image_path
+        $p = row('SELECT sp.*, sp.icon_svg, sp.icon_svg_white, spt.title, spt.description, spt.btn1_text, spt.btn2_text, spt.meta_title, spt.meta_description, m.path as image_path
                   FROM solution_pages sp
                   LEFT JOIN solution_pages_t spt ON sp.id=spt.page_id AND spt.lang_id=?
                   LEFT JOIN media m ON sp.image_id=m.id
@@ -116,12 +116,13 @@ if ($method === 'POST') {
 
     if ($action === 'save_page') {
         $d = [
-            'slug'       => $data['slug'] ?? '',
-            'type'       => $data['type'] ?? 'solution',
-            'sort_order' => (int)($data['sort_order'] ?? 0),
-            'is_active'  => (int)($data['is_active'] ?? 1),
-            'image_id'   => ($data['image_id'] ?? null) ?: null,
-            'icon_svg'   => $data['icon_svg'] ?? null,
+            'slug'           => $data['slug'] ?? '',
+            'type'           => $data['type'] ?? 'solution',
+            'sort_order'     => (int)($data['sort_order'] ?? 0),
+            'is_active'      => (int)($data['is_active'] ?? 1),
+            'image_id'       => ($data['image_id'] ?? null) ?: null,
+            'icon_svg'       => $data['icon_svg'] ?? null,
+            'icon_svg_white' => $data['icon_svg_white'] ?? null,
         ];
         if (!$id) $id = insert('solution_pages', $d);
         else update('solution_pages', $d, ['id' => $id]);

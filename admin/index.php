@@ -566,12 +566,21 @@ tr:hover td{background:#fafafa}
                             <div class="field field--full"><label>Description</label><textarea v-model="solPageForm.description" rows="3"></textarea></div>
                             <div class="field"><label>Button 1 Text</label><input v-model="solPageForm.btn1_text"></div>
                             <div class="field"><label>Button 2 Text</label><input v-model="solPageForm.btn2_text"></div>
-                            <div class="field field--full"><label>Icon SVG (for homepage tabs)</label>
+                            <div class="field field--full"><label>Icon SVG (black — for homepage tabs)</label>
                                 <div class="svg-field-row">
                                     <div v-if="solPageForm.icon_svg" v-html="solPageForm.icon_svg" style="width:44px;height:44px;flex-shrink:0;overflow:hidden"></div>
                                     <textarea v-model="solPageForm.icon_svg" rows="3" placeholder="Paste SVG code or upload file"></textarea>
                                     <label class="btn btn--outline btn--sm" style="cursor:pointer;white-space:nowrap">
                                         Upload SVG<input type="file" accept=".svg,image/svg+xml" style="display:none" @change="loadSvgInto($event,solPageForm,'icon_svg')">
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="field field--full"><label>Icon SVG White (for hover / active states)</label>
+                                <div class="svg-field-row">
+                                    <div v-if="solPageForm.icon_svg_white" v-html="solPageForm.icon_svg_white" style="width:44px;height:44px;flex-shrink:0;overflow:hidden;background:#222;border-radius:6px;padding:4px"></div>
+                                    <textarea v-model="solPageForm.icon_svg_white" rows="3" placeholder="Paste white SVG code or upload file"></textarea>
+                                    <label class="btn btn--outline btn--sm" style="cursor:pointer;white-space:nowrap">
+                                        Upload SVG<input type="file" accept=".svg,image/svg+xml" style="display:none" @change="loadSvgInto($event,solPageForm,'icon_svg_white')">
                                     </label>
                                 </div>
                             </div>
@@ -1969,7 +1978,7 @@ createApp({
         const editingSolBlocks = ref(false);
         const editingSolPageObj = ref(null);
         const solPageBlocks = ref([]);
-        const solPageForm = reactive({id:0,type:'solution',slug:'',title:'',description:'',btn1_text:'Try AI assistant',btn2_text:'Free audit',icon_svg:'',image_id:null,image_url:'',sort_order:0,is_active:1,meta_title:'',meta_description:''});
+        const solPageForm = reactive({id:0,type:'solution',slug:'',title:'',description:'',btn1_text:'Try AI assistant',btn2_text:'Free audit',icon_svg:'',icon_svg_white:'',image_id:null,image_url:'',sort_order:0,is_active:1,meta_title:'',meta_description:''});
         const allReviews = ref([]);
         const allCases   = ref([]);
         const allPosts   = ref([]);
@@ -1978,7 +1987,7 @@ createApp({
             solPagesList.value = await api(`/admin/api/sol_pages.php?action=list&lang_id=${langId.value}`);
         };
         const openSolPageEditor = (p=null) => {
-            Object.assign(solPageForm, p ? {...p,image_url:p.image_url||'',icon_svg:p.icon_svg||''} : {id:0,type:solPagesTab.value,slug:'',title:'',description:'',btn1_text:'Try AI assistant',btn2_text:'Free audit',icon_svg:'',image_id:null,image_url:'',sort_order:0,is_active:1,meta_title:'',meta_description:''});
+            Object.assign(solPageForm, p ? {...p,image_url:p.image_url||'',icon_svg:p.icon_svg||'',icon_svg_white:p.icon_svg_white||''} : {id:0,type:solPagesTab.value,slug:'',title:'',description:'',btn1_text:'Try AI assistant',btn2_text:'Free audit',icon_svg:'',icon_svg_white:'',image_id:null,image_url:'',sort_order:0,is_active:1,meta_title:'',meta_description:''});
             editingSolBlocks.value = false;
             editingSolPage.value = true;
         };

@@ -45,6 +45,8 @@ function active_lang_url(string $path, array $lang, array $default_lang): string
         if(icon)icon.style.filter='brightness(0) invert(1)';
         var photo=link.getAttribute('data-dept-photo');
         if(photo){var img=document.getElementById('dept-submenu-photo');if(img)img.src=photo;}
+        var text=link.getAttribute('data-dept-text');
+        if(text){var tx=document.getElementById('dept-submenu-text');if(tx)tx.textContent=text;}
     });
     document.addEventListener('mouseout',function(e){
         var link=e.target.closest('.submenu__info-link');
@@ -117,7 +119,7 @@ function active_lang_url(string $path, array $lang, array $default_lang): string
                                                 <?php foreach ($col as $sub): ?>
                                                 <?php $dept_slug = basename(rtrim($sub['url'], '/')); ?>
                                                 <li class="submenu__info-item">
-                                                    <a href="<?= e($sub['url']) ?>" class="submenu__info-link" data-dept-photo="/assets/img/departments/<?= e($dept_slug) ?>.webp">
+                                                    <a href="<?= e($sub['url']) ?>" class="submenu__info-link" data-dept-photo="/assets/img/departments/<?= e($dept_slug) ?>.webp"<?= !empty($sub['description']) ? ' data-dept-text="' . e($sub['description']) . '"' : '' ?>>
                                                         <?php if ($sub['icon_svg']): ?>
                                                         <span class="submenu__info-icon icon--dark"><?= $sub['icon_svg'] ?></span>
                                                         <?php endif; ?>
@@ -133,7 +135,7 @@ function active_lang_url(string $path, array $lang, array $default_lang): string
                                         </div>
                                         <div class="submenu__img" id="dept-submenu-img">
                                             <img alt="Image" loading="lazy" src="/assets/img/header/image.webp" id="dept-submenu-photo">
-                                            <div class="submenu__img-text"><?= e($img_text) ?></div>
+                                            <div class="submenu__img-text" id="dept-submenu-text"><?= e($img_text) ?></div>
                                         </div>
                                     </div>
 
