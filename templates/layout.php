@@ -32,6 +32,8 @@ function active_lang_url(string $path, array $lang, array $default_lang): string
     <link rel="stylesheet" href="/css/icons.css?v=1">
     <style>
     .submenu__info-icon.icon--white{display:none}
+    /* Fallback: if no white icon file in DOM, CSS filter turns dark icon white on hover */
+    .submenu__info-link:hover .submenu__info-icon{filter:brightness(0) invert(1)}
     .solutions__slide-icon.icon--white{display:none}
     .solutions__slide .solutions__slide-icon.icon--dark{filter:invert(1) brightness(.706)}
     .solutions__slide.swiper-slide-active .solutions__slide-icon.icon--dark{display:none}
@@ -40,12 +42,18 @@ function active_lang_url(string $path, array $lang, array $default_lang): string
     <script>
     document.addEventListener('DOMContentLoaded',function(){
         document.querySelectorAll('.submenu__info-link').forEach(function(link){
-            function swap(on){
-                link.querySelectorAll('.icon--dark').forEach(function(e){e.style.display=on?'none':'';});
-                link.querySelectorAll('.icon--white').forEach(function(e){e.style.display=on?'flex':'';});
-            }
-            link.addEventListener('mouseenter',function(){swap(true);});
-            link.addEventListener('mouseleave',function(){swap(false);});
+            link.addEventListener('mouseenter',function(){
+                var whites=link.querySelectorAll('.icon--white');
+                if(whites.length){
+                    link.querySelectorAll('.icon--dark').forEach(function(e){e.style.display='none';});
+                    whites.forEach(function(e){e.style.display='flex';});
+                }
+                // No white icon: CSS filter above handles the color change
+            });
+            link.addEventListener('mouseleave',function(){
+                link.querySelectorAll('.icon--dark').forEach(function(e){e.style.display='';});
+                link.querySelectorAll('.icon--white').forEach(function(e){e.style.display='';});
+            });
         });
     });
     </script>

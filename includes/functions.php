@@ -105,13 +105,11 @@ function get_nav(int $lang_id, string $location): array {
                     // Fallback: read white SVG directly from file if DB column is empty
                     if (!$white && !empty($p['title'])) {
                         $folder_map = ['department'=>'Departments','industry'=>'Industries','solution'=>'Solutions'];
-                        $dir = realpath(__DIR__ . '/../Icons/' . ($folder_map[$p['type']] ?? ''));
-                        if ($dir) {
-                            $fn = str_replace([' / ', '/'], [' - ', '-'], $p['title']);
-                            $path = $dir . '/' . $fn . '-white.svg';
-                            if (file_exists($path)) {
-                                $white = trim(preg_replace('/<\?xml[^?]*\?>\s*/i', '', file_get_contents($path)));
-                            }
+                        $dir = __DIR__ . '/../Icons/' . ($folder_map[$p['type']] ?? '');
+                        $fn = str_replace([' / ', '/'], [' - ', '-'], $p['title']);
+                        $path = $dir . '/' . $fn . '-white.svg';
+                        if (@file_exists($path)) {
+                            $white = trim(preg_replace('/<\?xml[^?]*\?>\s*/i', '', @file_get_contents($path)));
                         }
                     }
                     $subitems[] = [
