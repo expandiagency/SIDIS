@@ -578,6 +578,16 @@ function render_article_content(string $content, array $extras = []): string {
         return '<div class="article-block__quote" style="' . $style . '">' . $inner . '</div>';
     }, $content);
 
+    // [conclusion title="Conclusion" text="..."]
+    $content = preg_replace_callback('/\[conclusion([^\]]*)\]/i', function($m) {
+        $attrs = [];
+        preg_match_all('/(\w+)=["\']([^"\']*)["\']/', $m[1], $am, PREG_SET_ORDER);
+        foreach ($am as $a) $attrs[$a[1]] = $a[2];
+        $title = htmlspecialchars($attrs['title'] ?? 'Conclusion', ENT_QUOTES, 'UTF-8');
+        $text  = nl2br(htmlspecialchars(html_entity_decode($attrs['text'] ?? '', ENT_QUOTES, 'UTF-8'), ENT_QUOTES, 'UTF-8'));
+        return '<div class="article-conclusion"><div class="article-conclusion__title">' . $title . '</div><p>' . $text . '</p></div>';
+    }, $content);
+
     // [cta] or [cta title="..." btn1_text="..." btn1_url="..." btn2_text="..." btn2_url="..."]
     $content = preg_replace_callback('/\[cta([^\]]*)\]/i', function($m) use ($extras) {
         $attrs = [];

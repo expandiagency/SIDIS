@@ -1,6 +1,53 @@
 /* ── Article content: force Inter font regardless of inline styles */
 .article-block__content * { font-family: "Inter", sans-serif !important; }
 
+/* ── Article content: table styling ─────────────────────────── */
+.article-block__content table {
+    border-collapse: collapse !important;
+    border-spacing: 0 !important;
+    border: none !important;
+    border-radius: 12px;
+    overflow: hidden;
+}
+.article-block__content table td,
+.article-block__content table th {
+    padding: 18px 22px !important;
+    border: 1px solid var(--clr-gray) !important;
+    vertical-align: top !important;
+    line-height: 150% !important;
+}
+.article-block__content table td strong,
+.article-block__content table th {
+    display: block;
+    margin-bottom: 6px;
+    font-weight: 700;
+}
+.article-block__content table tr:hover td { background: transparent; }
+
+/* ── Article: numbered list — description paragraph inside li ── */
+.article-block__content ol > li > p {
+    flex: 0 0 100%;
+    margin-left: 40px;
+    margin-top: 4px;
+    opacity: 0.85;
+}
+
+/* ── Article: Conclusion block ───────────────────────────────── */
+.article-conclusion {
+    border-left: 3px solid var(--clr-accent);
+    padding: 22px 30px;
+    background: rgba(167, 57, 188, 0.05);
+    border-radius: 0 12px 12px 0;
+    margin: 0;
+}
+.article-conclusion__title {
+    font-size: 26px;
+    font-weight: 700;
+    line-height: 122%;
+    margin-bottom: 14px;
+}
+.article-conclusion p { line-height: 160%; opacity: 0.9; }
+
 /* ── Hero background: remove pink tint, show video as-is ─────── */
 .hero__bg { background: #000; }
 .hero__bg video, .hero__bg img { mix-blend-mode: normal; }

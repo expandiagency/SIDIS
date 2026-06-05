@@ -1100,6 +1100,9 @@ tr:hover td{background:#fafafa}
                             <button class="btn btn--outline btn--sm" @click="openQuoteModal()" style="display:flex;align-items:center;gap:5px">
                                 💬 Insert Quote Block
                             </button>
+                            <button class="btn btn--outline btn--sm" @click="openConclusionModal()" style="display:flex;align-items:center;gap:5px">
+                                📝 Insert Conclusion
+                            </button>
                         </div>
                         <!-- Shortcode instructions -->
                         <details style="margin-bottom:12px;border:1px solid #e0e7ff;border-radius:8px;overflow:hidden">
@@ -1115,6 +1118,7 @@ tr:hover td{background:#fafafa}
                                         <tr style="background:#fafafa"><td style="padding:6px 10px;border:1px solid #e2e4e8">🎬 Insert Media</td><td style="padding:6px 10px;border:1px solid #e2e4e8">Two-slot media block (photo + video/photo)</td><td style="padding:6px 10px;border:1px solid #e2e4e8">Two slots (left and right). Click a slot → pick from the library. Toggle Library / YouTube for each slot independently.</td></tr>
                                         <tr><td style="padding:6px 10px;border:1px solid #e2e4e8">📣 Insert CTA</td><td style="padding:6px 10px;border:1px solid #e2e4e8">Call-to-action block with buttons</td><td style="padding:6px 10px;border:1px solid #e2e4e8">A form opens — fill in the title and button labels/URLs, then click "Insert into Content"</td></tr>
                                         <tr style="background:#fafafa"><td style="padding:6px 10px;border:1px solid #e2e4e8">💬 Insert Quote</td><td style="padding:6px 10px;border:1px solid #e2e4e8">Two-column purple pull-quote block</td><td style="padding:6px 10px;border:1px solid #e2e4e8">Fill in the left text (short supporting paragraph) and the right text (the main bold quote), then click "Insert"</td></tr>
+                                        <tr><td style="padding:6px 10px;border:1px solid #e2e4e8">📝 Insert Conclusion</td><td style="padding:6px 10px;border:1px solid #e2e4e8">Styled conclusion block with purple accent border</td><td style="padding:6px 10px;border:1px solid #e2e4e8">Fill in the conclusion title and body text, then click "Insert"</td></tr>
                                     </tbody>
                                 </table>
                                 <p style="margin-top:10px;color:#888;font-size:12px">💡 H2, H3, H4 headings automatically appear in the article's sidebar Table of Contents. Use H2 for main sections, H3 for subsections.</p>
@@ -1874,6 +1878,23 @@ tr:hover td{background:#fafafa}
     </div>
 </div>
 
+<!-- Conclusion Modal -->
+<div v-if="modals.conclusionModal" class="modal-overlay" @click.self="modals.conclusionModal=false">
+    <div class="modal" style="max-width:560px">
+        <div class="modal__head"><h3>📝 Insert Conclusion</h3><button class="btn btn--icon" @click="modals.conclusionModal=false">×</button></div>
+        <div class="modal__body">
+            <div class="form-grid cols-1" style="gap:12px">
+                <div class="field"><label>Title</label><input v-model="conclusionForm.title" placeholder="Conclusion"></div>
+                <div class="field"><label>Text</label><textarea v-model="conclusionForm.text" rows="6" placeholder="Write your conclusion text here..."></textarea></div>
+            </div>
+        </div>
+        <div class="modal__foot">
+            <button class="btn btn--outline" @click="modals.conclusionModal=false">Cancel</button>
+            <button class="btn btn--primary" @click="confirmConclusion()">Insert into Content</button>
+        </div>
+    </div>
+</div>
+
 </div><!-- #app -->
 
 <script>
@@ -1948,7 +1969,7 @@ createApp({
         /* ─── Languages ─────────────────────────────────────────────────── */
         const langForm = reactive({id:0, code:'', name:'', is_active:1});
         const modals = reactive({lang:false, whySlide:false, review:false, nav:false, mega:false,
-                                  solutionItem:false, term:false, author:false, mediaPicker:false, mediaShortcode:false, ctaModal:false, quoteModal:false});
+                                  solutionItem:false, term:false, author:false, mediaPicker:false, mediaShortcode:false, ctaModal:false, quoteModal:false, conclusionModal:false});
 
         const loadLanguages = async () => {
             languages.value = await api('/admin/api/languages.php');
@@ -2397,6 +2418,14 @@ createApp({
         const openCtaModal = () => { modals.ctaModal = true; };
         const quoteForm = reactive({left:'', right:'', cols:2, left_size:16, right_size:26});
         const openQuoteModal = () => { modals.quoteModal = true; };
+        const conclusionForm = reactive({title:'Conclusion', text:''});
+        const openConclusionModal = () => { modals.conclusionModal = true; };
+        const confirmConclusion = () => {
+            const esc = s => s.replace(/"/g, '&quot;');
+            insertShortcode(`[conclusion title="${esc(conclusionForm.title)}" text="${esc(conclusionForm.text)}"]`);
+            conclusionForm.text = '';
+            modals.conclusionModal = false;
+        };
         const buildQuoteShortcode = () => {
             const esc = s => s.replace(/"/g, '&quot;');
             let sc = `[quote cols="${quoteForm.cols}" right_size="${quoteForm.right_size}" right="${esc(quoteForm.right)}"`;
@@ -2564,6 +2593,7 @@ createApp({
             mediaScSlots, mediaScActiveSlot, mediaScPickSlot, buildMediaShortcodeFromSlots,
             mediaScImg, mediaScVideo, openMediaShortcodeModal, confirmMediaShortcode,
             ctaForm, openCtaModal, buildCtaShortcode, confirmCta,
+            conclusionForm, openConclusionModal, confirmConclusion,
             quoteForm, openQuoteModal, buildQuoteShortcode, confirmQuote,
             openPostEditor, switchPostTab, savePost, deletePost, backFromPost, copyGalleryShortcode, copyMediaShortcode,
             termForm, openTermModal, saveTerm, deleteTerm,
