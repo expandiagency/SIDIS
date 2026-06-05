@@ -404,9 +404,13 @@ require __DIR__ . '/layout.php';
             </div>
         </div>
     </div>
+    <?php
+        $roadmap_vid = ltrim($h['roadmap_video'] ?? '', '.') ?: '/assets/video/1-hero.mp4';
+        $roadmap_poster = !empty($h['roadmap_poster_url']) ? media_url($h['roadmap_poster_url']) : '';
+    ?>
     <div class="roadmap__bg" data-video-autoplay="">
-        <video muted loop playsinline preload="none">
-            <source src="./assets/video/1-hero.mp4" type="video/mp4">
+        <video muted loop playsinline preload="none"<?= $roadmap_poster ? ' poster="' . e($roadmap_poster) . '"' : '' ?>>
+            <source src="<?= e($roadmap_vid) ?>" type="video/mp4">
         </video>
     </div>
 </section>
@@ -447,7 +451,7 @@ require __DIR__ . '/layout.php';
 <?php endif; ?>
 
 <?php /* ═══════ PRESENTATION ════════════════════════════════════════ */ ?>
-<?php if ($bk === 'presentation'): ?>
+<?php if ($bk === 'presentation' && !empty($h['presentation_enabled'])): ?>
 <section class="presentation">
     <div class="presentation__container">
         <?php

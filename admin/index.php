@@ -242,7 +242,7 @@ tr:hover td{background:#fafafa}
                 <button class="btn btn--primary" @click="saveHome">Save All</button>
             </div>
             <div class="tabs">
-                <button v-for="t in ['Hero','Why Slides','Automation','Partner Logos','Reviews','Solutions Section','Roadmap & CTA','Page Blocks']" :key="t"
+                <button v-for="t in ['Hero','Why Slides','Automation','Partner Logos','Reviews','Solutions Section','Roadmap & CTA','Presentation','Page Blocks']" :key="t"
                     class="tab-btn" :class="{active:homeTab===t}" @click="homeTab=t;if(t==='Page Blocks')loadBlocks()">{{ t }}</button>
             </div>
 
@@ -413,7 +413,35 @@ tr:hover td{background:#fafafa}
                     <div class="field"><label>Submit Button Text</label><input v-model="homeData.cta_btn_text"></div>
                 </div>
                 <hr style="margin:20px 0;border:none;border-top:1px solid var(--border)">
-                <p style="font-size:13px;font-weight:600;margin-bottom:12px">Video Presentation Section</p>
+                <p style="font-size:13px;font-weight:600;margin-bottom:12px">Roadmap Background Video</p>
+                <div class="form-grid">
+                    <div class="field field--full">
+                        <label>Video Path</label>
+                        <div style="display:flex;gap:8px;align-items:center">
+                            <input v-model="homeData.roadmap_video" placeholder="./assets/video/1-hero.mp4" style="flex:1">
+                            <button class="btn btn--outline btn--sm" @click="pickMedia(m=>{homeData.roadmap_video=m.url})">Pick from library</button>
+                        </div>
+                    </div>
+                    <div class="field field--full">
+                        <label>Poster Image <span style="font-weight:normal;color:var(--muted)">(обложка до загрузки видео)</span></label>
+                        <div class="img-picker">
+                            <img v-if="homeData.roadmap_poster_url" :src="homeData.roadmap_poster_url" class="img-thumb" style="max-height:80px;object-fit:cover">
+                            <button class="btn btn--outline btn--sm" @click="pickMedia(m=>{homeData.roadmap_poster_url=m.url})">Choose from library</button>
+                            <button v-if="homeData.roadmap_poster_url" class="btn btn--danger btn--sm" @click="homeData.roadmap_poster_url=''">Remove</button>
+                        </div>
+                    </div>
+                </div>
+            </div></div>
+
+            <!-- Presentation -->
+            <div v-if="homeTab==='Presentation'" class="card"><div class="card__body">
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
+                    <p style="font-size:15px;font-weight:600;margin:0">Video Presentation Section</p>
+                    <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:13px">
+                        <input type="checkbox" v-model="homeData.presentation_enabled" :true-value="1" :false-value="0" style="width:16px;height:16px;accent-color:var(--accent)">
+                        <span>Show on homepage</span>
+                    </label>
+                </div>
                 <div class="form-grid">
                     <div class="field"><label>Subtitle (small text above title)</label><input v-model="homeData.presentation_subtitle" placeholder="Bring Ideas To Life"></div>
                     <div class="field"><label>Play Button Text</label><input v-model="homeData.presentation_play_text" placeholder="Play"></div>
@@ -1934,6 +1962,7 @@ createApp({
             if (!Array.isArray(d.departments_ids)) d.departments_ids = [];
             if (!Array.isArray(d.industries_ids)) d.industries_ids = [];
             if (!Array.isArray(d.featured_cases_ids)) d.featured_cases_ids = [];
+            d.presentation_enabled = d.presentation_enabled ? 1 : 0;
             Object.assign(homeData, d);
             if (!allCases.value.length) {
                 allCases.value = await api(`/admin/api/cases.php?lang_id=${langId.value}`);

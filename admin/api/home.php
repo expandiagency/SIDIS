@@ -22,6 +22,9 @@ try { db()->exec("ALTER TABLE home_content ADD COLUMN presentation_play_text VAR
 try { db()->exec("ALTER TABLE home_content ADD COLUMN solutions_ids TEXT DEFAULT NULL"); } catch(Exception $e) {}
 try { db()->exec("ALTER TABLE home_content ADD COLUMN departments_ids TEXT DEFAULT NULL"); } catch(Exception $e) {}
 try { db()->exec("ALTER TABLE home_content ADD COLUMN industries_ids TEXT DEFAULT NULL"); } catch(Exception $e) {}
+try { db()->exec("ALTER TABLE home_content ADD COLUMN roadmap_video VARCHAR(500) DEFAULT NULL"); } catch(Exception $e) {}
+try { db()->exec("ALTER TABLE home_content ADD COLUMN roadmap_poster_url VARCHAR(500) DEFAULT NULL"); } catch(Exception $e) {}
+try { db()->exec("ALTER TABLE home_content ADD COLUMN presentation_enabled TINYINT(1) DEFAULT 0"); } catch(Exception $e) {}
 
 if ($method === 'GET') {
     if ($action === 'why_slides') {
@@ -74,9 +77,11 @@ if ($method === 'POST') {
                    'solutions_title','projects_title','projects_btn_text','projects_btn_url',
                    'reviews_title','cta_title','cta_subtitle','cta_btn_text','cta_btn_url',
                    'presentation_subtitle','presentation_title','presentation_text',
-                   'presentation_video','presentation_poster_url','presentation_play_text'];
+                   'presentation_video','presentation_poster_url','presentation_play_text',
+                   'roadmap_video','roadmap_poster_url'];
         $save = ['lang_id' => $lang_id];
         foreach ($fields as $f) $save[$f] = $data[$f] ?? '';
+        $save['presentation_enabled'] = empty($data['presentation_enabled']) ? 0 : 1;
         $save['solutions_ids']     = json_encode(array_map('intval', $data['solutions_ids']     ?? []));
         $save['departments_ids']   = json_encode(array_map('intval', $data['departments_ids']   ?? []));
         $save['industries_ids']    = json_encode(array_map('intval', $data['industries_ids']    ?? []));
