@@ -54,7 +54,7 @@ function get_nav(int $lang_id, string $location): array {
             if (in_array($mega_type, ['departments', 'industries'])) {
                 $sp_type = $mega_type === 'departments' ? 'department' : 'industry';
                 $pages = rows(
-                    'SELECT sp.slug, sp.type, sp.icon_svg, spt.title, spt.description
+                    'SELECT sp.slug, sp.type, sp.icon_svg, sp.icon_svg_white, spt.title, spt.description
                      FROM solution_pages sp
                      LEFT JOIN solution_pages_t spt ON sp.id=spt.page_id AND spt.lang_id=?
                      WHERE sp.type=? AND sp.is_active=1 ORDER BY sp.sort_order',
@@ -63,10 +63,11 @@ function get_nav(int $lang_id, string $location): array {
                 $subitems = [];
                 foreach ($pages as $p) {
                     $subitems[] = [
-                        'title'       => $p['title'] ?: $p['slug'],
-                        'description' => $p['description'] ?: '',
-                        'url'         => '/' . sp_type_prefix($p['type']) . '/' . $p['slug'] . '/',
-                        'icon_svg'    => $p['icon_svg'] ?: '',
+                        'title'          => $p['title'] ?: $p['slug'],
+                        'description'    => $p['description'] ?: '',
+                        'url'            => '/' . sp_type_prefix($p['type']) . '/' . $p['slug'] . '/',
+                        'icon_svg'       => $p['icon_svg'] ?: '',
+                        'icon_svg_white' => $p['icon_svg_white'] ?: '',
                     ];
                 }
                 $item['mega_categories'] = [['id'=>0,'title'=>'','description'=>'','subitems'=>$subitems]];
@@ -86,11 +87,13 @@ function get_mega_categories(int $lang_id, int $nav_item_id): array {
     // Build maps from solution_pages: url→icon and title→url (for URL correction)
     $sp_icons    = [];
     $sp_title_url = [];
-    $all_sp = rows('SELECT sp.slug, sp.type, sp.icon_svg, spt.title FROM solution_pages sp LEFT JOIN solution_pages_t spt ON sp.id=spt.page_id AND spt.lang_id=? WHERE sp.is_active=1', [$lang_id]);
+    $sp_icons_white = [];
+    $all_sp = rows('SELECT sp.slug, sp.type, sp.icon_svg, sp.icon_svg_white, spt.title FROM solution_pages sp LEFT JOIN solution_pages_t spt ON sp.id=spt.page_id AND spt.lang_id=? WHERE sp.is_active=1', [$lang_id]);
     foreach ($all_sp as $sp) {
         $url = '/' . sp_type_prefix($sp['type']) . '/' . $sp['slug'] . '/';
-        if ($sp['icon_svg']) $sp_icons[$url] = $sp['icon_svg'];
-        if ($sp['title'])    $sp_title_url[strtolower(trim($sp['title']))] = $url;
+        if ($sp['icon_svg'])       $sp_icons[$url]       = $sp['icon_svg'];
+        if ($sp['icon_svg_white']) $sp_icons_white[$url] = $sp['icon_svg_white'];
+        if ($sp['title'])          $sp_title_url[strtolower(trim($sp['title']))] = $url;
     }
     foreach ($cats as &$cat) {
         $cat['subitems'] = rows(
@@ -108,6 +111,9 @@ function get_mega_categories(int $lang_id, int $nav_item_id): array {
             // Always prefer solution_pages icon over the stored one
             if (!empty($sp_icons[$sub['url']])) {
                 $sub['icon_svg'] = $sp_icons[$sub['url']];
+            }
+            if (!empty($sp_icons_white[$sub['url']])) {
+                $sub['icon_svg_white'] = $sp_icons_white[$sub['url']];
             }
         }
     }
@@ -220,7 +226,7 @@ function get_sol_page_blocks(int $page_id, int $lang_id): array {
 }
 
 function get_solution_items(int $lang_id, string $type = null, array $ids = []): array {
-    $sql = "SELECT sp.id, sp.type, sp.sort_order, sp.is_active, sp.icon_svg,
+    $sql = "SELECT sp.id, sp.type, sp.sort_order, sp.is_active, sp.icon_svg, sp.icon_svg_white,
                    CASE WHEN sp.type='industry' THEN CONCAT('/industries/', sp.slug, '/') ELSE CONCAT('/', sp.type, 's/', sp.slug, '/') END as btn_url,
                    spt.title, spt.description, spt.btn1_text as btn_text
             FROM solution_pages sp

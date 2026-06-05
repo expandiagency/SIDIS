@@ -94,7 +94,10 @@ function active_lang_url(string $path, array $lang, array $default_lang): string
                                                 <li class="submenu__info-item">
                                                     <a href="<?= e($sub['url']) ?>" class="submenu__info-link">
                                                         <?php if ($sub['icon_svg']): ?>
-                                                        <span class="submenu__info-icon"><?= $sub['icon_svg'] ?></span>
+                                                        <span class="submenu__info-icon icon--dark"><?= $sub['icon_svg'] ?></span>
+                                                        <?php endif; ?>
+                                                        <?php if (!empty($sub['icon_svg_white'])): ?>
+                                                        <span class="submenu__info-icon icon--white"><?= $sub['icon_svg_white'] ?></span>
                                                         <?php endif; ?>
                                                         <span class="submenu__info-title"><?= e($sub['title']) ?></span>
                                                     </a>

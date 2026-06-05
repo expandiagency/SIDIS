@@ -220,7 +220,8 @@ require __DIR__ . '/layout.php';
                             <div class="solutions__slide swiper-slide">
                                 <div class="solutions__slide-body">
                                     <div class="solutions__slide-title"><?= e($card['title']) ?></div>
-                                    <div class="solutions__slide-icon"><?= $card['icon_svg'] ?></div>
+                                    <div class="solutions__slide-icon icon--dark"><?= $card['icon_svg'] ?></div>
+                                    <?php if (!empty($card['icon_svg_white'])): ?><div class="solutions__slide-icon icon--white"><?= $card['icon_svg_white'] ?></div><?php endif; ?>
                                     <div class="solutions__slide-descr">
                                         <div class="solutions__slide-inner">
                                             <div class="solutions__slide-text"><?= e($card['description']) ?></div>
