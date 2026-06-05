@@ -84,17 +84,24 @@ $articles_title = $extras['articles_title'] ?? 'Latest Automation Insights';
                         <?php endforeach; ?>
                     </ul>
                     <?php endif; ?>
+                    <?php
+                    $_aside_img      = media_url(get_setting('aside_demo_image_url') ?: '') ?: '/assets/img/projects/image-5.webp';
+                    $_aside_demo_txt = get_setting('aside_demo_btn_text', $lang_id) ?: 'Demo';
+                    $_aside_demo_url = get_setting('aside_demo_btn_url') ?: '#getintouch';
+                    $_aside_cta_txt  = get_setting('aside_contact_btn_text', $lang_id) ?: 'Contact us';
+                    $_aside_cta_url  = get_setting('aside_contact_btn_url') ?: '#getintouch';
+                    ?>
                     <div class="aside-nav__demo">
-                        <img alt="Image" loading="lazy" src="/assets/img/projects/image-5.webp">
-                        <a href="#getintouch" class="aside-nav__demo-btn button button--icon button--border button--border-white">
-                            <span class="button__text">Demo</span>
+                        <img alt="Image" loading="lazy" src="<?= e($_aside_img) ?>">
+                        <a href="<?= e($_aside_demo_url) ?>" class="aside-nav__demo-btn button button--icon button--border button--border-white">
+                            <span class="button__text"><?= e($_aside_demo_txt) ?></span>
                             <span class="button__icon"><?= $arrow_svg ?></span>
                         </a>
                     </div>
                 </div>
                 <div class="aside-nav__bottom">
                     <button type="button" class="aside-nav__burger" data-article-menu-btn=""><span></span><span></span><span></span><span></span></button>
-                    <a href="#getintouch" class="aside-nav__btn button button--third button--dark-hover">Contact us</a>
+                    <a href="<?= e($_aside_cta_url) ?>" class="aside-nav__btn button button--third button--dark-hover"><?= e($_aside_cta_txt) ?></a>
                 </div>
             </aside>
             <div class="article-block__content">
