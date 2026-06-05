@@ -37,7 +37,7 @@ function sol_url(string $path): string {
                 <div class="promo-category__text"><?= nl2br(e($promo_text)) ?></div>
                 <?php endif; ?>
                 <div class="promo-category__btns">
-                    <?php $btn1 = ($c['btn1_text'] ?: ($sp['btn1_text'] ?? '')) ?: 'Try AI assistant'; ?>
+                    <?php $btn1 = ($c['btn1_text'] ?: ($sp['btn1_text'] ?? '')) ?: 'View Our Presentation'; ?>
                     <?php $btn1url = $c['btn1_url'] ?: '#'; ?>
                     <a href="<?= e($btn1url) ?>" class="promo-category__btn button"><?= e($btn1) ?></a>
                     <?php $btn2 = ($c['btn2_text'] ?: ($sp['btn2_text'] ?? '')) ?: 'Free audit'; ?>

@@ -683,7 +683,7 @@ tr:hover td{background:#fafafa}
                                 <hr style="margin:16px 0;border:none;border-top:1px solid var(--border)">
                                 <div class="form-grid cols-1">
                                     <div class="field"><label>Info Box Title</label><input v-model="blk.content_obj.info_title"></div>
-                                    <div class="field"><label>Button 1 Text</label><input v-model="blk.content_obj.info_btn1_text" placeholder="Try AI assistant"></div>
+                                    <div class="field"><label>Button 1 Text</label><input v-model="blk.content_obj.info_btn1_text" placeholder="View Our Presentation"></div>
                                     <div class="field"><label>Button 1 URL</label><input v-model="blk.content_obj.info_btn1_url" placeholder="#"></div>
                                     <div class="field"><label>Button 2 Text (with arrow icon)</label><input v-model="blk.content_obj.info_btn2_text" placeholder="Free audit"></div>
                                     <div class="field"><label>Button 2 URL</label><input v-model="blk.content_obj.info_btn2_url" placeholder="#getintouch"></div>
@@ -1733,7 +1733,7 @@ tr:hover td{background:#fafafa}
             <div class="form-grid cols-1" style="gap:12px">
                 <div class="field"><label>Title</label><input v-model="ctaForm.title" placeholder="Curious which solution fits your business needs?"></div>
                 <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
-                    <div class="field"><label>Button 1 Text</label><input v-model="ctaForm.btn1_text" placeholder="Try AI assistant"></div>
+                    <div class="field"><label>Button 1 Text</label><input v-model="ctaForm.btn1_text" placeholder="View Our Presentation"></div>
                     <div class="field"><label>Button 1 URL</label><input v-model="ctaForm.btn1_url" placeholder="#"></div>
                     <div class="field"><label>Button 2 Text</label><input v-model="ctaForm.btn2_text" placeholder="Free audit"></div>
                     <div class="field"><label>Button 2 URL</label><input v-model="ctaForm.btn2_url" placeholder="#getintouch"></div>
@@ -2011,7 +2011,7 @@ createApp({
         const editingSolBlocks = ref(false);
         const editingSolPageObj = ref(null);
         const solPageBlocks = ref([]);
-        const solPageForm = reactive({id:0,type:'solution',slug:'',title:'',description:'',btn1_text:'Try AI assistant',btn2_text:'Free audit',icon_svg:'',icon_svg_white:'',image_id:null,image_url:'',sort_order:0,is_active:1,meta_title:'',meta_description:''});
+        const solPageForm = reactive({id:0,type:'solution',slug:'',title:'',description:'',btn1_text:'View Our Presentation',btn2_text:'Free audit',icon_svg:'',icon_svg_white:'',image_id:null,image_url:'',sort_order:0,is_active:1,meta_title:'',meta_description:''});
         const allReviews = ref([]);
         const allCases   = ref([]);
         const allPosts   = ref([]);
@@ -2020,7 +2020,7 @@ createApp({
             solPagesList.value = await api(`/admin/api/sol_pages.php?action=list&lang_id=${langId.value}`);
         };
         const openSolPageEditor = (p=null) => {
-            Object.assign(solPageForm, p ? {...p,image_url:p.image_url||'',icon_svg:p.icon_svg||'',icon_svg_white:p.icon_svg_white||''} : {id:0,type:solPagesTab.value,slug:'',title:'',description:'',btn1_text:'Try AI assistant',btn2_text:'Free audit',icon_svg:'',icon_svg_white:'',image_id:null,image_url:'',sort_order:0,is_active:1,meta_title:'',meta_description:''});
+            Object.assign(solPageForm, p ? {...p,image_url:p.image_url||'',icon_svg:p.icon_svg||'',icon_svg_white:p.icon_svg_white||''} : {id:0,type:solPagesTab.value,slug:'',title:'',description:'',btn1_text:'View Our Presentation',btn2_text:'Free audit',icon_svg:'',icon_svg_white:'',image_id:null,image_url:'',sort_order:0,is_active:1,meta_title:'',meta_description:''});
             editingSolBlocks.value = false;
             editingSolPage.value = true;
         };
@@ -2105,7 +2105,7 @@ createApp({
         const editingPost = ref(null);
         const postTab = ref('Basic');
         const authorsList = ref([]);
-        const defaultExtras = () => ({cta_title:'',cta_btn1_text:'Try AI assistant',cta_btn1_url:'#',cta_btn2_text:'Free audit',cta_btn2_url:'#getintouch',faq_title:'Questions & answers',faq_enabled:true,faq:[],articles_title:'Latest Automation\nInsights',related_post_ids:[],_gallery_imgs:[],_media_img_url:'',_media_video_url:''});
+        const defaultExtras = () => ({cta_title:'',cta_btn1_text:'View Our Presentation',cta_btn1_url:'/assets/Sidis-Group.pdf',cta_btn2_text:'Free audit',cta_btn2_url:'#getintouch',faq_title:'Questions & answers',faq_enabled:true,faq:[],articles_title:'Latest Automation\nInsights',related_post_ids:[],_gallery_imgs:[],_media_img_url:'',_media_video_url:''});
         const postForm = reactive({id:0,slug:'',title:'',subtitle:'',content:'',excerpt:'',meta_title:'',meta_description:'',is_active:1,featured_image_id:null,image_url:'',author_id:null,published_at:'',tags_text:'',tags:[],toc:[],extras:defaultExtras()});
 
         const loadPosts = async () => { postsList.value = await api(`/admin/api/posts.php?lang_id=${langId.value}`); };
@@ -2305,7 +2305,7 @@ createApp({
             modals.mediaShortcode = false;
         };
         // CTA modal
-        const ctaForm = reactive({title:'', btn1_text:'Try AI assistant', btn1_url:'#', btn2_text:'Free audit', btn2_url:'#getintouch'});
+        const ctaForm = reactive({title:'', btn1_text:'View Our Presentation', btn1_url:'/assets/Sidis-Group.pdf', btn2_text:'Free audit', btn2_url:'#getintouch'});
         const openCtaModal = () => { modals.ctaModal = true; };
         const quoteForm = reactive({left:'', right:'', cols:2, left_size:16, right_size:26});
         const openQuoteModal = () => { modals.quoteModal = true; };
