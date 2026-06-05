@@ -29,6 +29,7 @@ function active_lang_url(string $path, array $lang, array $default_lang): string
     <!-- CSS: preload hint so browser discovers it before parsing <link> -->
     <link rel="preload" as="style" href="/css/app.min.css">
     <link rel="stylesheet" href="/css/app.min.css" fetchpriority="high">
+    <link rel="stylesheet" href="/css/icons.css?v=1">
     <!-- JS: modulepreload fetches + parses the module before execution -->
     <link rel="modulepreload" crossorigin href="/js/app.min.js">
     <script type="module" crossorigin src="/js/app.min.js"></script>

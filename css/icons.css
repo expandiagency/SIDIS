@@ -1,0 +1,17 @@
+/* ── Departments mega menu icons ─────────────────────────────── */
+/* White icon variants in the nav menu are not needed — hide them */
+.submenu__info-icon.icon--white { display: none !important; }
+
+/* On hover (is-active), invert the black icon to white */
+.submenu__info-link.is-active .submenu__info-icon {
+    filter: brightness(0) invert(1) !important;
+}
+
+/* ── Solutions / Departments / Industries slider (home page) ─── */
+/* Inactive cards: show black icon grayed out */
+.solutions__slide-icon.icon--white { display: none; }
+.solutions__slide .solutions__slide-icon.icon--dark { filter: invert(1) brightness(0.706); }
+
+/* Active (dark bg) card: hide dark icon, show white icon */
+.solutions__slide.swiper-slide-active .solutions__slide-icon.icon--dark { display: none; }
+.solutions__slide.swiper-slide-active .solutions__slide-icon.icon--white { display: flex; }
