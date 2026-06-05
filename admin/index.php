@@ -546,7 +546,7 @@ tr:hover td{background:#fafafa}
                     <div style="display:flex;align-items:center;gap:12px;margin-bottom:20px">
                         <button class="btn btn--outline" @click="editingSolPage=false">← Back</button>
                         <h2 style="font-size:18px;font-weight:600">{{ solPageForm.id ? 'Edit' : 'New' }} Page Settings</h2>
-                        <a v-if="solPageForm.slug" :href="'/'+solPageForm.type+'s/'+solPageForm.slug+'/'" target="_blank" class="btn btn--outline btn--sm" style="margin-left:auto">↗ View Page</a>
+                        <a v-if="solPageForm.slug" :href="'/'+(solPageForm.type==='industry'?'industries':solPageForm.type+'s')+'/'+solPageForm.slug+'/'" target="_blank" class="btn btn--outline btn--sm" style="margin-left:auto">↗ View Page</a>
                         <button class="btn btn--primary" @click="saveSolPage">Save</button>
                     </div>
                     <div class="card"><div class="card__body">
@@ -560,7 +560,7 @@ tr:hover td{background:#fafafa}
                             </div>
                             <div class="field"><label>Slug (URL)</label>
                                 <input v-model="solPageForm.slug" @input="solPageForm.slug=slugify(solPageForm.slug)">
-                                <div class="slug-preview">/{{ solPageForm.type }}s/{{ solPageForm.slug }}/</div>
+                                <div class="slug-preview">/{{ solPageForm.type === 'industry' ? 'industries' : solPageForm.type + 's' }}/{{ solPageForm.slug }}/</div>
                             </div>
                             <div class="field field--full"><label>Title</label><input v-model="solPageForm.title"></div>
                             <div class="field field--full"><label>Description</label><textarea v-model="solPageForm.description" rows="3"></textarea></div>
@@ -598,7 +598,7 @@ tr:hover td{background:#fafafa}
                     <div style="display:flex;align-items:center;gap:12px;margin-bottom:20px">
                         <button class="btn btn--outline" @click="editingSolBlocks=false;editingSolPage=false">← Back to Pages</button>
                         <h2 style="font-size:18px;font-weight:600">Blocks: {{ editingSolPageObj?.title }}</h2>
-                        <a :href="'/'+editingSolPageObj?.type+'s/'+editingSolPageObj?.slug+'/' " target="_blank" class="btn btn--outline btn--sm" style="margin-left:auto">↗ View Page</a>
+                        <a :href="'/'+(editingSolPageObj?.type==='industry'?'industries':(editingSolPageObj?.type||'')+'s')+'/'+editingSolPageObj?.slug+'/' " target="_blank" class="btn btn--outline btn--sm" style="margin-left:auto">↗ View Page</a>
                     </div>
 
                     <div v-for="(blk,bi) in solPageBlocks" :key="blk.id" class="card" style="margin-bottom:12px">
@@ -1943,7 +1943,7 @@ createApp({
                 const pages = await api(`/admin/api/solutions.php?action=pages&lang_id=${langId.value}`);
                 allNavSolPages.value = (pages||[]).map(p=>({
                     id: p.id, type: p.type, title: p.title||p.slug, icon_svg: p.icon_svg||'',
-                    url: '/'+p.type+'s/'+p.slug+'/'
+                    url: '/'+(p.type==='industry'?'industries':p.type+'s')+'/'+p.slug+'/'
                 }));
             }
             modals.mega=true;

@@ -35,6 +35,10 @@ function lang_url(string $path, array $lang, array $default_lang): string {
 
 /* ─── Navigation ───────────────────────────────────────────────────────── */
 
+function sp_type_prefix(string $type): string {
+    return $type === 'industry' ? 'industries' : $type . 's';
+}
+
 function get_nav(int $lang_id, string $location): array {
     $items = rows(
         'SELECT n.*, COALESCE(n.mega_type,"solutions") as mega_type FROM nav_items n WHERE lang_id=? AND location=? AND parent_id IS NULL AND is_active=1 ORDER BY sort_order',
@@ -61,7 +65,7 @@ function get_nav(int $lang_id, string $location): array {
                     $subitems[] = [
                         'title'       => $p['title'] ?: $p['slug'],
                         'description' => $p['description'] ?: '',
-                        'url'         => '/' . $p['type'] . 's/' . $p['slug'] . '/',
+                        'url'         => '/' . sp_type_prefix($p['type']) . '/' . $p['slug'] . '/',
                         'icon_svg'    => $p['icon_svg'] ?: '',
                     ];
                 }
@@ -84,7 +88,7 @@ function get_mega_categories(int $lang_id, int $nav_item_id): array {
     $sp_title_url = [];
     $all_sp = rows('SELECT sp.slug, sp.type, sp.icon_svg, spt.title FROM solution_pages sp LEFT JOIN solution_pages_t spt ON sp.id=spt.page_id AND spt.lang_id=? WHERE sp.is_active=1', [$lang_id]);
     foreach ($all_sp as $sp) {
-        $url = '/' . $sp['type'] . 's/' . $sp['slug'] . '/';
+        $url = '/' . sp_type_prefix($sp['type']) . '/' . $sp['slug'] . '/';
         if ($sp['icon_svg']) $sp_icons[$url] = $sp['icon_svg'];
         if ($sp['title'])    $sp_title_url[strtolower(trim($sp['title']))] = $url;
     }
@@ -217,7 +221,7 @@ function get_sol_page_blocks(int $page_id, int $lang_id): array {
 
 function get_solution_items(int $lang_id, string $type = null, array $ids = []): array {
     $sql = "SELECT sp.id, sp.type, sp.sort_order, sp.is_active, sp.icon_svg,
-                   CONCAT('/', sp.type, 's/', sp.slug, '/') as btn_url,
+                   CASE WHEN sp.type='industry' THEN CONCAT('/industries/', sp.slug, '/') ELSE CONCAT('/', sp.type, 's/', sp.slug, '/') END as btn_url,
                    spt.title, spt.description, spt.btn1_text as btn_text
             FROM solution_pages sp
             LEFT JOIN solution_pages_t spt ON sp.id=spt.page_id AND spt.lang_id=?

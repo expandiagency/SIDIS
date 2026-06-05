@@ -89,7 +89,7 @@ $sp_map = [];
 $all_sp = rows('SELECT sp.slug, sp.type, spt.title FROM solution_pages sp LEFT JOIN solution_pages_t spt ON sp.id=spt.page_id AND spt.lang_id=1 WHERE sp.is_active=1', []);
 foreach ($all_sp as $sp) {
     if ($sp['title']) {
-        $sp_map[strtolower(trim($sp['title']))] = '/' . $sp['type'] . 's/' . $sp['slug'] . '/';
+        $sp_map[strtolower(trim($sp['title']))] = '/' . ($sp['type'] === 'industry' ? 'industries' : $sp['type'] . 's') . '/' . $sp['slug'] . '/';
     }
 }
 
