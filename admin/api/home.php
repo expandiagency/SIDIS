@@ -75,7 +75,9 @@ if ($method === 'POST') {
                    'hero_video_path','hero_poster_url','why_title','automation_title','automation_text',
                    'automation_loc1_title','automation_loc1_city','automation_loc2_title','automation_loc2_city',
                    'solutions_title','projects_title','projects_btn_text','projects_btn_url',
+                   'roadmap_title','roadmap_btn1_text','roadmap_btn1_url','roadmap_btn2_text','roadmap_btn2_url',
                    'reviews_title','cta_title','cta_subtitle','cta_btn_text','cta_btn_url',
+                   'cta_text','cta_item2','cta_item3','cta_form_title',
                    'presentation_subtitle','presentation_title','presentation_text',
                    'presentation_video','presentation_poster_url','presentation_play_text',
                    'roadmap_video','roadmap_poster_url'];
