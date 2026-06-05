@@ -92,7 +92,7 @@ function active_lang_url(string $path, array $lang, array $default_lang): string
                     <ul class="menu__list">
                         <?php foreach ($nav_header as $item): ?>
                         <li class="menu__item<?= $item['has_mega'] ? ' menu__item--dropdown' : '' ?>">
-                            <a href="<?= e($item['url']) ?>" class="menu__link"<?= $item['has_mega'] ? ' data-menu="mega-' . $item['id'] . '"' : '' ?>>
+                            <a href="<?= $item['has_mega'] ? '#' : e($item['url']) ?>" class="menu__link"<?= $item['has_mega'] ? ' data-menu="mega-' . $item['id'] . '"' : '' ?>>
                                 <span class="menu__link-text"><?= e($item['title']) ?></span>
                             </a>
                             <?php if ($item['has_mega'] && !empty($item['mega_categories'])): ?>
