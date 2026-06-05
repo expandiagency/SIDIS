@@ -32,29 +32,28 @@
 .article-block__content ol {
     padding-left: 0;
     counter-reset: article-ol;
-    gap: 12px;
+    gap: 6px;
 }
 .article-block__content ol li {
     list-style: none;
     counter-increment: article-ol;
     display: flex;
-    align-items: flex-start;
-    gap: 14px;
+    align-items: center;
+    gap: 12px;
 }
 .article-block__content ol li::before {
     content: counter(article-ol);
-    min-width: 32px;
-    height: 32px;
+    min-width: 28px;
+    height: 28px;
     background-color: var(--clr-accent);
     color: #fff;
     font-weight: 700;
-    font-size: 13px;
+    font-size: 15px;
     display: flex;
     align-items: center;
     justify-content: center;
     border-radius: 6px;
     flex-shrink: 0;
-    margin-top: 2px;
 }
 
 /* ── Blog article: unordered list — / as bullet ──────────────── */
