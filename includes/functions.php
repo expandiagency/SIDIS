@@ -4,6 +4,42 @@ require_once __DIR__ . '/db.php';
 // One-time migration: add icon_svg_white column if not yet present
 try { db()->exec("ALTER TABLE solution_pages ADD COLUMN icon_svg_white MEDIUMTEXT DEFAULT NULL"); } catch(Exception $e) {}
 
+// Auto-seed white icons from Icons/ folder on first page load after deploy
+function _sidis_seed_white_icons(): void {
+    $chk = row('SELECT id FROM solution_pages WHERE is_active=1 AND (icon_svg_white IS NULL OR icon_svg_white="") LIMIT 1');
+    if (!$chk) return; // already seeded
+    $base = realpath(__DIR__ . '/../Icons');
+    if (!$base || !is_dir($base)) return;
+    $map   = ['Departments'=>'department','Industries'=>'industry','Solutions'=>'solution'];
+    $pages = rows('SELECT sp.id, sp.type, sp.slug, spt.title FROM solution_pages sp LEFT JOIN solution_pages_t spt ON sp.id=spt.page_id AND spt.lang_id=1', []);
+    $norm  = function(string $s): string {
+        $s = strtolower($s);
+        $s = str_replace(['&','-','_','(',')'],' ',$s);
+        $s = preg_replace('/[^a-z0-9 ]/','',$s);
+        return trim(preg_replace('/\s+/',' ',$s));
+    };
+    foreach ($map as $folder => $type) {
+        $dir = $base.'/'.$folder;
+        if (!is_dir($dir)) continue;
+        $files = glob($dir.'/*-white.svg');
+        if (!$files) continue;
+        foreach ($files as $file) {
+            $content = @file_get_contents($file);
+            if (!$content) continue;
+            $fn = basename($file,'.svg');
+            $nf = $norm(substr($fn,0,-6)); // strip '-white'
+            foreach ($pages as $p) {
+                if ($p['type'] !== $type) continue;
+                if ($norm($p['title'] ?: $p['slug']) !== $nf) continue;
+                $svg = trim(preg_replace('/<\?xml[^?]*\?>\s*/i','',$content));
+                try { db()->exec("UPDATE solution_pages SET icon_svg_white=".db()->quote($svg)." WHERE id={$p['id']}"); } catch(Exception $e) {}
+                break;
+            }
+        }
+    }
+}
+_sidis_seed_white_icons();
+
 /* ─── Language ─────────────────────────────────────────────────────────── */
 
 function get_languages(bool $active_only = true): array {

@@ -30,6 +30,15 @@ function active_lang_url(string $path, array $lang, array $default_lang): string
     <link rel="preload" as="style" href="/css/app.min.css">
     <link rel="stylesheet" href="/css/app.min.css" fetchpriority="high">
     <link rel="stylesheet" href="/css/icons.css?v=1">
+    <style>
+    .submenu__info-icon.icon--white{display:none}
+    .submenu__info-link.is-active .submenu__info-icon.icon--dark{display:none!important}
+    .submenu__info-link.is-active .submenu__info-icon.icon--white{display:flex!important}
+    .solutions__slide-icon.icon--white{display:none}
+    .solutions__slide .solutions__slide-icon.icon--dark{filter:invert(1) brightness(.706)}
+    .solutions__slide.swiper-slide-active .solutions__slide-icon.icon--dark{display:none}
+    .solutions__slide.swiper-slide-active .solutions__slide-icon.icon--white{display:flex}
+    </style>
     <!-- JS: modulepreload fetches + parses the module before execution -->
     <link rel="modulepreload" crossorigin href="/js/app.min.js">
     <script type="module" crossorigin src="/js/app.min.js"></script>
