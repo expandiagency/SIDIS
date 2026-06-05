@@ -31,12 +31,21 @@
 }
 .article-block__content table tr:hover td { background: var(--clr-bg-soft) !important; }
 
-/* ── Article: numbered list — description paragraph inside li ── */
-.article-block__content ol > li > p {
+/* ── Article: numbered list — title p on same row as badge, desc p below ── */
+/* CKEditor wraps <strong> in <p>, so first-child p = title, rest = description */
+.article-block__content ol > li > p:first-child {
+    flex: 1;
+    min-width: 0;
+    margin: 0;
+    opacity: 1;
+    font-weight: 700;
+}
+.article-block__content ol > li > p:not(:first-child) {
     flex: 0 0 100%;
     margin-left: 40px;
     margin-top: 4px;
     opacity: 0.85;
+    font-weight: 400;
 }
 
 /* ── Article: Conclusion block ───────────────────────────────── */
