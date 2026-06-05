@@ -617,9 +617,11 @@ function media_url($path): string {
 }
 
 function upload_file(array $file, string $subdir = ''): int {
-    $allowed = ['image/jpeg', 'image/png', 'image/webp', 'image/gif', 'image/svg+xml'];
+    $allowed = ['image/jpeg', 'image/png', 'image/webp', 'image/gif', 'image/svg+xml',
+                'video/mp4', 'video/webm', 'video/ogg'];
     if (!in_array($file['type'], $allowed)) throw new Exception('File type not allowed');
-    if ($file['size'] > 10 * 1024 * 1024) throw new Exception('File too large (max 10MB)');
+    $max_size = (strpos($file['type'], 'video/') === 0) ? 200 * 1024 * 1024 : 10 * 1024 * 1024;
+    if ($file['size'] > $max_size) throw new Exception('File too large (max 10MB for images, 200MB for video)');
 
     $ext  = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
     $name = date('Ymd_His') . '_' . bin2hex(random_bytes(4)) . '.' . $ext;

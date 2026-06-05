@@ -1223,7 +1223,7 @@ tr:hover td{background:#fafafa}
         <template v-if="currentView==='media'">
             <div class="section-head"><h1>Media Library</h1>
                 <label class="btn btn--primary" style="cursor:pointer">
-                    + Upload <input type="file" accept="image/*" multiple style="display:none" @change="uploadFiles">
+                    + Upload <input type="file" accept="image/*,video/mp4,video/webm" multiple style="display:none" @change="uploadFiles">
                 </label>
             </div>
             <div class="media-grid">
@@ -1690,7 +1690,7 @@ tr:hover td{background:#fafafa}
         </div>
         <div class="modal__body">
             <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;flex-wrap:wrap">
-                <label class="btn btn--outline" style="cursor:pointer">+ Upload New <input type="file" accept="image/*" style="display:none" @change="uploadAndPick"></label>
+                <label class="btn btn--outline" style="cursor:pointer">+ Upload New <input type="file" accept="image/*,video/mp4,video/webm" style="display:none" @change="uploadAndPick"></label>
                 <template v-if="mediaPickerIsMulti">
                     <span style="font-size:13px;color:var(--muted)">{{ multiSelectedMedia.length }} selected</span>
                     <button class="btn btn--primary" :disabled="!multiSelectedMedia.length" @click="confirmMultiSelect()">Insert {{ multiSelectedMedia.length }} Image{{ multiSelectedMedia.length!==1?'s':'' }}</button>
