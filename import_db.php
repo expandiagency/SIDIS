@@ -77,11 +77,33 @@ function split_sql(string $sql): array {
     return $stmts;
 }
 
+// --- Strip DEFAULT clauses from TEXT/BLOB/JSON columns inside CREATE TABLE ---
+// (MySQL forbids literal defaults on these types; harmless to drop on MariaDB.)
+function fix_text_defaults(string $stmt): string {
+    if (stripos($stmt, 'CREATE TABLE') === false) { return $stmt; }
+    return preg_replace(
+        '/(`[^`]+`\s+(?:tiny|medium|long)?(?:text|blob)\b[^,\n]*?)\s+DEFAULT\s+(?:\'(?:[^\'\\\\]|\\\\.)*\'|"(?:[^"\\\\]|\\\\.)*"|NULL)/i',
+        '$1',
+        $stmt
+    );
+}
+
 $pdo = db();
 $pdo->exec('SET NAMES utf8mb4');
 $pdo->exec('SET FOREIGN_KEY_CHECKS=0');
 
-$statements = split_sql($sql);
+// Clean slate: drop every existing table so the import is repeatable.
+if (($_GET['fresh'] ?? '') === '1') {
+    $existing = $pdo->query(
+        "SELECT table_name FROM information_schema.tables WHERE table_schema = DATABASE()"
+    )->fetchAll(PDO::FETCH_COLUMN);
+    foreach ($existing as $t) {
+        try { $pdo->exec("DROP TABLE IF EXISTS `$t`"); } catch (Throwable $e) {}
+    }
+    echo "Dropped " . count($existing) . " existing tables\n\n";
+}
+
+$statements = array_map('fix_text_defaults', split_sql($sql));
 echo "Parsed " . count($statements) . " statements\n\n";
 
 $ok = 0; $errors = 0;
