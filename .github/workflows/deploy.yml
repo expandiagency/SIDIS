@@ -15,8 +15,8 @@ jobs:
       - name: Deploy via FTP
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
-          server: sidis.expandi.agency
-          username: sidis@sidis.expandi.agency
+          server: sidisgr.ftp.tools
+          username: sidisgr_git
           password: ${{ secrets.FTP_PASSWORD }}
           port: 21
           protocol: ftps
