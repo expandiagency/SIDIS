@@ -1,13 +1,6 @@
 <?php
 require_once __DIR__ . '/includes/functions.php';
 
-/* ─── One-off: clear site password gate: ?clear_site_pass=sidis2026 ────── */
-if (($_GET['clear_site_pass'] ?? '') === 'sidis2026') {
-    update('settings', ['value' => ''], ['key' => 'site_password']);
-    echo 'Site password cleared.';
-    exit;
-}
-
 /* ─── Seed admin user trigger: ?seed_admin=sidis2026 ───────────────────── */
 if (($_GET['seed_admin'] ?? '') === 'sidis2026') {
     try { db()->exec("ALTER TABLE admin_users ADD COLUMN role VARCHAR(20) NOT NULL DEFAULT 'administrator'"); } catch(Exception $e) {}
