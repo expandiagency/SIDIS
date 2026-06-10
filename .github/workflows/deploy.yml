@@ -23,7 +23,7 @@ jobs:
           server-dir: /www/
           local-dir: ./
           timeout: 120000
-          dangerous-clean-slate: false
+          dangerous-clean-slate: true
           exclude: |
             **/.git*
             **/.git*/**
