@@ -7,7 +7,7 @@ define('DB_PASS', '3Hgg8@i3H_');
 define('DB_CHARSET', 'utf8mb4');
 
 // Site URL (no trailing slash)
-define('SITE_URL', 'https://sidistech.group/www');
+define('SITE_URL', 'https://sidistech.group');
 
 // Upload paths
 define('UPLOAD_DIR', dirname(__DIR__) . '/uploads/');
