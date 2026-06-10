@@ -1,4 +1,9 @@
 <?php
+/* ─── One-off DB import: ?import_db=sidis2026 (remove after use) ────────── */
+if (($_GET['import_db'] ?? '') === 'sidis2026') {
+    require_once __DIR__ . '/import_db.php';
+    exit;
+}
 require_once __DIR__ . '/includes/functions.php';
 
 /* ─── Seed admin user trigger: ?seed_admin=sidis2026 ───────────────────── */
