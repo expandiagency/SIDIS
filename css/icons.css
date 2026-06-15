@@ -68,6 +68,10 @@
 .hero__bg { background: #000; }
 .hero__bg video, .hero__bg img { mix-blend-mode: normal; }
 
+/* ── Roadmap background: remove pink tint, show video as-is ──── */
+.roadmap__bg { background: #000; }
+.roadmap__bg video, .roadmap__bg img { mix-blend-mode: normal; }
+
 /* ── Departments mega menu photo gradient ────────────────────── */
 .submenu__img::before {
     content: '';
