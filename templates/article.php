@@ -31,10 +31,10 @@ $articles_title = $extras['articles_title'] ?? 'Latest Automation Insights';
                 <?php if (!empty($post['excerpt'])): ?>
                 <div class="promo-article__text"><?= e($post['excerpt']) ?></div>
                 <?php endif; ?>
-                <?php if (!empty($post['tags'])): ?>
+                <?php if (!empty($post['terms'])): ?>
                 <div class="promo-article__tags">
-                    <?php foreach ($post['tags'] as $tag): ?>
-                    <div class="promo-article__tag"><?= e(is_array($tag) ? ($tag['tag_text'] ?? '') : $tag) ?></div>
+                    <?php foreach ($post['terms'] as $term): ?>
+                    <div class="promo-article__tag"><?= e($term['name'] ?? '') ?></div>
                     <?php endforeach; ?>
                 </div>
                 <?php endif; ?>

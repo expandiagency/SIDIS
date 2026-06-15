@@ -5847,6 +5847,7 @@ window.customMiniSelect = function() {
 				return;
 			}
 			selBlock.classList.remove("is-placeholder");
+			if (selDropdownValueSpan) selDropdownValueSpan.innerHTML = activeOption.textContent.replace(/\s+/g, " ").trim();
 		}
 		function setPlaceholder() {
 			selBlock.classList.add("is-placeholder");

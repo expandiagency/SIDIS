@@ -436,7 +436,6 @@ function get_posts(int $lang_id, array $filters = [], int $limit = 50, int $offs
         $posts = rows($sql, $params);
     }
     foreach ($posts as &$post) {
-        $post['tags'] = rows('SELECT tag_text FROM post_tags WHERE post_id=? AND lang_id=? ORDER BY sort_order', [$post['id'], $lang_id]);
         $post['read_time'] = reading_time($post['content'] ?? '');
     }
     return $posts;
@@ -458,7 +457,7 @@ function get_post(int $lang_id, string $slug): ?array {
         [$lang_id, $lang_id, $slug]
     );
     if ($post) {
-        $post['tags'] = rows('SELECT tag_text FROM post_tags WHERE post_id=? AND lang_id=? ORDER BY sort_order', [$post['id'], $lang_id]);
+        $post['terms'] = rows('SELECT pt.type, tt.name FROM post_terms pt JOIN terms_t tt ON pt.term_id=tt.term_id AND tt.lang_id=? WHERE pt.post_id=?', [$lang_id, $post['id']]);
         $post['toc']  = rows('SELECT * FROM post_toc WHERE post_id=? AND lang_id=? ORDER BY sort_order', [$post['id'], $lang_id]);
         // Fetch extras safely — column may not exist yet on first deploy
         $extras_raw = null;
@@ -632,11 +631,14 @@ function render_article_content(string $content, array $extras = []): string {
 
 /* ─── Terms (Taxonomy) ─────────────────────────────────────────────────── */
 
-function get_terms(int $lang_id, string $type): array {
-    return rows(
-        'SELECT t.*, tt.name FROM terms t LEFT JOIN terms_t tt ON t.id=tt.term_id AND tt.lang_id=? WHERE t.type=? AND t.is_active=1 ORDER BY t.sort_order',
-        [$lang_id, $type]
-    );
+function get_terms(int $lang_id, string $type, ?string $relation_table = null): array {
+    $sql = 'SELECT t.*, tt.name FROM terms t LEFT JOIN terms_t tt ON t.id=tt.term_id AND tt.lang_id=? WHERE t.type=? AND t.is_active=1';
+    $params = [$lang_id, $type];
+    if (in_array($relation_table, ['case_terms', 'post_terms'], true)) {
+        $sql .= " AND EXISTS (SELECT 1 FROM {$relation_table} rt WHERE rt.term_id=t.id)";
+    }
+    $sql .= ' ORDER BY t.sort_order';
+    return rows($sql, $params);
 }
 
 /* ─── Media ─────────────────────────────────────────────────────────────── */

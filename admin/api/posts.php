@@ -31,7 +31,6 @@ function post_full(int $id, int $lang_id): array {
                  WHERE p.id=?', [$lang_id, $id]) ?? [];
     if ($post) {
         $post['image_url'] = $post['image_path'] ? admin_url($post['image_path']) : '';
-        $post['tags'] = rows('SELECT * FROM post_tags WHERE post_id=? AND lang_id=? ORDER BY sort_order', [$id,$lang_id]);
         $post['toc']  = rows('SELECT * FROM post_toc WHERE post_id=? AND lang_id=? ORDER BY sort_order', [$id,$lang_id]);
         $post['term_ids'] = array_column(rows('SELECT term_id FROM post_terms WHERE post_id=?', [$id]), 'term_id');
         // Decode extras
@@ -72,12 +71,6 @@ if ($method === 'POST') {
               'extras'=>$extras_val];
         $et = row('SELECT id FROM posts_t WHERE post_id=? AND lang_id=?', [$id,$lang_id]);
         if ($et) update('posts_t', $t, ['id'=>$et['id']]); else insert('posts_t', $t);
-
-        // Tags
-        delete('post_tags', ['post_id'=>$id,'lang_id'=>$lang_id]);
-        foreach ($data['tags']??[] as $i=>$tag) {
-            if (trim($tag)) insert('post_tags', ['post_id'=>$id,'lang_id'=>$lang_id,'tag_text'=>trim($tag),'sort_order'=>$i]);
-        }
 
         // TOC
         delete('post_toc', ['post_id'=>$id,'lang_id'=>$lang_id]);

@@ -361,9 +361,9 @@ switch ($page) {
         } else {
             $template_data['cases']   = get_cases($lang_id, $_GET);
             $template_data['terms']   = [
-                'solutions'   => get_terms($lang_id, 'solution'),
-                'departments' => get_terms($lang_id, 'department'),
-                'industries'  => get_terms($lang_id, 'industry'),
+                'solutions'   => get_terms($lang_id, 'solution', 'case_terms'),
+                'departments' => get_terms($lang_id, 'department', 'case_terms'),
+                'industries'  => get_terms($lang_id, 'industry', 'case_terms'),
             ];
             $template_data['page_class'] = '';
             render('cases', $template_data);
@@ -394,9 +394,9 @@ switch ($page) {
         } else {
             $template_data['posts'] = get_posts($lang_id, $_GET);
             $template_data['terms'] = [
-                'solutions'   => get_terms($lang_id, 'solution'),
-                'departments' => get_terms($lang_id, 'department'),
-                'industries'  => get_terms($lang_id, 'industry'),
+                'solutions'   => get_terms($lang_id, 'solution', 'post_terms'),
+                'departments' => get_terms($lang_id, 'department', 'post_terms'),
+                'industries'  => get_terms($lang_id, 'industry', 'post_terms'),
             ];
             $template_data['page_class'] = '';
             render('blog', $template_data);

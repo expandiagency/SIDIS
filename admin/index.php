@@ -1069,7 +1069,7 @@ tr:hover td{background:#fafafa}
                     <button class="btn btn--primary" @click="savePost">Save</button>
                 </div>
                 <div class="tabs">
-                    <button v-for="t in ['Basic','Content','Tags & TOC','Filters','SEO','Extras']" :key="t"
+                    <button v-for="t in ['Basic','Content','Filters & TOC','SEO','Extras']" :key="t"
                         class="tab-btn" :class="{active:postTab===t}" @click="switchPostTab(t)">{{ t }}</button>
                 </div>
                 <div class="card"><div class="card__body">
@@ -1134,10 +1134,18 @@ tr:hover td{background:#fafafa}
                         <div id="ckeditor-mount" style="min-height:500px"></div>
                     </div>
 
-                    <div v-if="postTab==='Tags & TOC'">
+                    <div v-if="postTab==='Filters & TOC'">
                         <div style="margin-bottom:20px">
-                            <strong style="font-size:14px">Tags (one per line)</strong>
-                            <textarea class="field" style="display:block;width:100%;margin-top:8px;padding:9px 12px;border:1px solid var(--border);border-radius:8px;font-family:inherit;font-size:14px" v-model="postForm.tags_text" rows="5" placeholder="Automation&#10;AI&#10;ERP"></textarea>
+                            <p style="font-size:13px;color:var(--muted);margin-bottom:16px">Select which taxonomy terms apply to this post. These are used both for filtering on /blog/ and shown as tags on the article page.</p>
+                            <div v-for="termType in ['solution','department','industry']" :key="termType" style="margin-bottom:20px">
+                                <strong style="font-size:13px;text-transform:capitalize">{{ termType }}s</strong>
+                                <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:8px">
+                                    <label v-for="term in allTerms.filter(t=>t.type===termType)" :key="term.id" style="display:flex;align-items:center;gap:6px;cursor:pointer;padding:4px 10px;background:#f8f9fa;border-radius:6px;font-size:13px">
+                                        <input type="checkbox" :value="term.id" v-model="postForm.term_ids">
+                                        {{ term.name }}
+                                    </label>
+                                </div>
+                            </div>
                         </div>
                         <div>
                             <div style="display:flex;justify-content:space-between;margin-bottom:12px">
@@ -1157,19 +1165,6 @@ tr:hover td{background:#fafafa}
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div v-if="postTab==='Filters'">
-                        <p style="font-size:13px;color:var(--muted);margin-bottom:16px">Select which taxonomy terms apply to this post (used for filtering on /blog/).</p>
-                        <div v-for="termType in ['solution','department','industry']" :key="termType" style="margin-bottom:20px">
-                            <strong style="font-size:13px;text-transform:capitalize">{{ termType }}s</strong>
-                            <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:8px">
-                                <label v-for="term in allTerms.filter(t=>t.type===termType)" :key="term.id" style="display:flex;align-items:center;gap:6px;cursor:pointer;padding:4px 10px;background:#f8f9fa;border-radius:6px;font-size:13px">
-                                    <input type="checkbox" :value="term.id" v-model="postForm.term_ids">
-                                    {{ term.name }}
-                                </label>
                             </div>
                         </div>
                     </div>
@@ -2231,7 +2226,7 @@ createApp({
         const postTab = ref('Basic');
         const authorsList = ref([]);
         const defaultExtras = () => ({cta_title:'',cta_btn1_text:'View Our Presentation',cta_btn1_url:'/assets/Sidis-Group.pdf',cta_btn2_text:'Free audit',cta_btn2_url:'#getintouch',faq_title:'Questions & answers',faq_enabled:true,faq:[],articles_title:'Latest Automation\nInsights',related_post_ids:[],_gallery_imgs:[],_media_img_url:'',_media_video_url:''});
-        const postForm = reactive({id:0,slug:'',title:'',subtitle:'',content:'',excerpt:'',meta_title:'',meta_description:'',is_active:1,featured_image_id:null,image_url:'',author_id:null,published_at:'',tags_text:'',tags:[],toc:[],term_ids:[],extras:defaultExtras()});
+        const postForm = reactive({id:0,slug:'',title:'',subtitle:'',content:'',excerpt:'',meta_title:'',meta_description:'',is_active:1,featured_image_id:null,image_url:'',author_id:null,published_at:'',toc:[],term_ids:[],extras:defaultExtras()});
 
         const loadPosts = async () => { postsList.value = await api(`/admin/api/posts.php?lang_id=${langId.value}`); };
         const loadAuthors = async () => { authorsList.value = await api(`/admin/api/authors.php?lang_id=${langId.value}`); };
@@ -2240,9 +2235,9 @@ createApp({
             if (p) {
                 const full = await api(`/admin/api/posts.php?id=${p.id}&lang_id=${langId.value}`);
                 const loadedExtras = Object.assign(defaultExtras(), full.extras||{});
-                Object.assign(postForm,{...full,tags_text:(full.tags||[]).map(t=>t.tag_text).join('\n'),toc:full.toc||[],term_ids:full.term_ids||[],extras:loadedExtras});
+                Object.assign(postForm,{...full,toc:full.toc||[],term_ids:full.term_ids||[],extras:loadedExtras});
             } else {
-                Object.assign(postForm,{id:0,slug:'',title:'',subtitle:'',content:'',excerpt:'',meta_title:'',meta_description:'',is_active:1,featured_image_id:null,image_url:'',author_id:null,published_at:new Date().toISOString().slice(0,16),tags_text:'',tags:[],toc:[],term_ids:[],extras:defaultExtras()});
+                Object.assign(postForm,{id:0,slug:'',title:'',subtitle:'',content:'',excerpt:'',meta_title:'',meta_description:'',is_active:1,featured_image_id:null,image_url:'',author_id:null,published_at:new Date().toISOString().slice(0,16),toc:[],term_ids:[],extras:defaultExtras()});
             }
             editingPost.value = true;
             if (!authorsList.value.length) await loadAuthors();
@@ -2300,7 +2295,7 @@ createApp({
         };
         const savePost = async () => {
             if (_ckEditor) postForm.content = _ckEditor.getData();
-            const payload = {...postForm, tags:postForm.tags_text.split('\n').filter(l=>l.trim()), extras:postForm.extras};
+            const payload = {...postForm, extras:postForm.extras};
             const r = await api(`/admin/api/posts.php?action=save&lang_id=${langId.value}${postForm.id?'&id='+postForm.id:''}`,{method:'POST',body:JSON.stringify(payload)});
             if (r.ok) { postForm.id=r.id; showAlert('Post saved!'); }
             else showAlert(r.error||'Error','error');
