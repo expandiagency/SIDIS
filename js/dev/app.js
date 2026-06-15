@@ -5816,6 +5816,8 @@ window.customMiniSelect = function() {
 	const selParents = document.querySelectorAll("[data-sel-block]");
 	if (!selParents.length) return;
 	selParents.forEach((selBlock) => {
+		if (selBlock.dataset.miniSelectInit) return;
+		selBlock.dataset.miniSelectInit = "1";
 		const isSearch = selBlock.hasAttribute("data-sel-block-search");
 		const selDropdownButton = selBlock.querySelector("[data-sel-block-current]");
 		const selDropdownValueSpan = selDropdownButton.querySelector("[data-sel-block-value] span");

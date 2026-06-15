@@ -65,11 +65,11 @@ require __DIR__ . '/layout.php'; ?>
                                 <div class="sel-block__options">
                                     <button data-sel-block-btn="" data-sel-block-all="" type="button"
                                         class="sel-block__option<?= !$active ? ' is-active' : '' ?>"
-                                        onclick="window.location='/blog/'">All</button>
+                                        data-filter-url="/blog/">All</button>
                                     <?php foreach ($f['items'] as $term): ?>
                                     <button data-sel-block-btn="" type="button"
                                         class="sel-block__option<?= $active == $term['id'] ? ' is-active' : '' ?>"
-                                        onclick="window.location='/blog/?<?= e($f['key']) ?>=<?= e($term['id']) ?>'">
+                                        data-filter-url="/blog/?<?= e($f['key']) ?>=<?= e($term['id']) ?>">
                                         <?= e($term['name']) ?>
                                     </button>
                                     <?php endforeach; ?>

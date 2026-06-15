@@ -72,6 +72,13 @@
 .roadmap__bg { background: #000; }
 .roadmap__bg video, .roadmap__bg img { mix-blend-mode: normal; }
 
+/* ── Catalog (blog/cases): AJAX filter loading state ──────────── */
+.catalog.is-loading .catalog__items {
+    opacity: 0.5;
+    pointer-events: none;
+    transition: opacity 0.2s;
+}
+
 /* ── Departments mega menu photo gradient ────────────────────── */
 .submenu__img::before {
     content: '';
