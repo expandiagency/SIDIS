@@ -14,7 +14,7 @@ $id      = (int)($_GET['id'] ?? 0);
 try { db()->exec("ALTER TABLE solution_pages ADD COLUMN icon_svg MEDIUMTEXT DEFAULT NULL"); } catch(Exception $e) {}
 
 // ── Ensure sol_page_blocks table exists ─────────────────────────────────────
-$pdo->exec("CREATE TABLE IF NOT EXISTS sol_page_blocks (
+try { $pdo->exec("CREATE TABLE IF NOT EXISTS sol_page_blocks (
     id INT AUTO_INCREMENT PRIMARY KEY,
     page_id INT NOT NULL,
     lang_id INT NOT NULL,
@@ -22,9 +22,9 @@ $pdo->exec("CREATE TABLE IF NOT EXISTS sol_page_blocks (
     label VARCHAR(100) NOT NULL DEFAULT '',
     sort_order INT DEFAULT 0,
     is_active TINYINT DEFAULT 1,
-    content MEDIUMTEXT DEFAULT '{}',
+    content MEDIUMTEXT,
     UNIQUE KEY uk_spb (page_id, lang_id, block_key)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4");
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4"); } catch(Exception $e) {}
 
 // Default blocks for a new solution page
 function default_sol_blocks(): array {

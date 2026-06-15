@@ -1,8 +1,19 @@
 <?php
 if (($_GET['key'] ?? '') !== 'sidis2026') { http_response_code(403); die('Forbidden'); }
+$t0 = microtime(true);
 require_once __DIR__ . '/includes/functions.php';
+$t1 = microtime(true);
 
 header('Content-Type: text/plain');
+echo "bootstrap (functions.php incl. DB connect + seed_white_icons): " . round(($t1-$t0)*1000,1) . "ms\n\n";
+
+echo "--- active solution_pages with empty icon_svg_white ---\n";
+print_r(rows("SELECT id,slug,type,is_active FROM solution_pages WHERE is_active=1 AND (icon_svg_white IS NULL OR icon_svg_white='')"));
+
+$t2 = microtime(true);
+get_home(1);
+$t3 = microtime(true);
+echo "\nget_home(1): " . round(($t3-$t2)*1000,1) . "ms\n";
 
 $tables = ['solution_pages','solution_pages_t','solution_items','solution_items_t','solution_features','nav_items','nav_mega_categories','nav_mega_subitems','settings','posts','cases','media'];
 foreach ($tables as $t) {
