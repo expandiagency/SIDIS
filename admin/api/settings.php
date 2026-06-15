@@ -20,6 +20,7 @@ $global_keys = [
     'tag_manager_code',
     'lead_emails',
     'aside_demo_image_url', 'aside_demo_btn_url', 'aside_contact_btn_url',
+    'solutions_hero_image_url',
 ];
 // These aside text fields are per-language
 $aside_lang_keys = ['aside_demo_btn_text', 'aside_contact_btn_text'];

@@ -1432,6 +1432,13 @@ tr:hover td{background:#fafafa}
 
             <div class="card"><div class="card__head"><h2>Solutions / Departments / Industries — Aside Panel</h2></div><div class="card__body">
                 <div class="form-grid">
+                    <div class="field field--full"><label>Default Hero Image <span style="color:var(--muted);font-size:12px">(shown in the page header when a page has no image set in its Hero / Promo block)</span></label>
+                        <div class="img-picker">
+                            <img v-if="settingsData.solutions_hero_image_url" :src="settingsData.solutions_hero_image_url" class="img-thumb">
+                            <button class="btn btn--outline btn--sm" @click="pickMedia(m=>{settingsData.solutions_hero_image_url=m.url})">Choose from library</button>
+                            <button v-if="settingsData.solutions_hero_image_url" class="btn btn--sm" @click="settingsData.solutions_hero_image_url=''">Remove</button>
+                        </div>
+                    </div>
                     <div class="field field--full"><label>Demo Image</label>
                         <div class="img-picker">
                             <img v-if="settingsData.aside_demo_image_url" :src="settingsData.aside_demo_image_url" class="img-thumb">

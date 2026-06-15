@@ -49,7 +49,7 @@ function sol_url(string $path): string {
                 </div>
             </div>
             <div class="promo-category__image">
-                <?php $img = media_url($c['image_url'] ?: ($sp['image_path'] ?: '/assets/img/promo/image-1.webp')); ?>
+                <?php $img = media_url($c['image_url'] ?: (get_setting('solutions_hero_image_url') ?: '/assets/img/promo/image-1.webp')); ?>
                 <img alt="<?= e($sp['title'] ?? '') ?>" loading="lazy" src="<?= e($img) ?>">
                 <?php $clutch_url = get_setting('clutch_url') ?: '#'; ?>
                 <div class="promo-category__rating">
