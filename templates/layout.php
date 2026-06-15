@@ -29,7 +29,7 @@ function active_lang_url(string $path, array $lang, array $default_lang): string
     <!-- CSS: preload hint so browser discovers it before parsing <link> -->
     <link rel="preload" as="style" href="/css/app.min.css">
     <link rel="stylesheet" href="/css/app.min.css" fetchpriority="high">
-    <link rel="stylesheet" href="/css/icons.css?v=1">
+    <link rel="stylesheet" href="/css/icons.css?v=2">
     <style>
     .submenu__info-icon.icon--white{display:none!important}
     .solutions__slide-icon.icon--white{display:none}
