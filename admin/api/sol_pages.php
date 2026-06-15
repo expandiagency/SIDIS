@@ -93,6 +93,7 @@ if ($method === 'GET') {
         foreach ($blocks as &$b) {
             $c = json_decode($b['content'] ?: '{}', true) ?: [];
             if (!empty($c['image_url'])) $c['image_url'] = admin_url($c['image_url']);
+            if (!empty($c['info_image_url'])) $c['info_image_url'] = admin_url($c['info_image_url']);
             $b['content_obj'] = $c;
         }
         json_response($blocks);

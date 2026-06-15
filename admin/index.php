@@ -750,6 +750,13 @@ tr:hover td{background:#fafafa}
                                     <div class="field"><label>Button 1 URL</label><input v-model="blk.content_obj.info_btn1_url" placeholder="#"></div>
                                     <div class="field"><label>Button 2 Text (with arrow icon)</label><input v-model="blk.content_obj.info_btn2_text" placeholder="Free audit"></div>
                                     <div class="field"><label>Button 2 URL</label><input v-model="blk.content_obj.info_btn2_url" placeholder="#getintouch"></div>
+                                    <div class="field"><label>Info Box Image</label>
+                                        <div class="img-picker">
+                                            <img :src="blk.content_obj.info_image_url || '/assets/img/RPA-3.webp'" class="img-thumb">
+                                            <button class="btn btn--outline btn--sm" @click="pickMedia(m=>{blk.content_obj.info_image_id=m.id;blk.content_obj.info_image_url=m.url})">Choose Image</button>
+                                            <button v-if="blk.content_obj.info_image_url" class="btn btn--sm" @click="blk.content_obj.info_image_id=null;blk.content_obj.info_image_url=''">Reset to default</button>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
 

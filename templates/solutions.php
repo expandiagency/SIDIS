@@ -182,7 +182,7 @@ function sol_url(string $path): string {
         <?php if (!empty($c['info_title'])): ?>
         <div class="planning__info">
             <div class="planning__info-img">
-                <img alt="Image" loading="lazy" src="/assets/img/projects/image-6.webp">
+                <img alt="Image" loading="lazy" src="<?= e(media_url($c['info_image_url'] ?: '/assets/img/RPA-3.webp')) ?>">
             </div>
             <div class="planning__info-body">
                 <div class="planning__info-title"><?= e($c['info_title']) ?></div>
