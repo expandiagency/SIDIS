@@ -7,6 +7,16 @@ admin_require_auth();
 // Auto-migrate: add extras column if not exists
 try { db()->exec("ALTER TABLE posts_t ADD COLUMN extras MEDIUMTEXT DEFAULT NULL"); } catch(Exception $e) {}
 
+// Auto-migrate: post_terms table (Solutions/Departments/Industries filters for blog posts)
+try { db()->exec("CREATE TABLE IF NOT EXISTS post_terms (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    post_id INT NOT NULL,
+    term_id INT NOT NULL,
+    type VARCHAR(20) NOT NULL,
+    KEY idx_post (post_id),
+    KEY idx_term (term_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4"); } catch(Exception $e) {}
+
 $method  = $_SERVER['REQUEST_METHOD'];
 $action  = $_GET['action'] ?? '';
 $lang_id = (int)($_GET['lang_id'] ?? 1);
@@ -23,6 +33,7 @@ function post_full(int $id, int $lang_id): array {
         $post['image_url'] = $post['image_path'] ? admin_url($post['image_path']) : '';
         $post['tags'] = rows('SELECT * FROM post_tags WHERE post_id=? AND lang_id=? ORDER BY sort_order', [$id,$lang_id]);
         $post['toc']  = rows('SELECT * FROM post_toc WHERE post_id=? AND lang_id=? ORDER BY sort_order', [$id,$lang_id]);
+        $post['term_ids'] = array_column(rows('SELECT term_id FROM post_terms WHERE post_id=?', [$id]), 'term_id');
         // Decode extras
         $extras_raw = $post['extras'] ?? null;
         $post['extras'] = $extras_raw ? (json_decode($extras_raw, true) ?: []) : [];
@@ -72,6 +83,13 @@ if ($method === 'POST') {
         delete('post_toc', ['post_id'=>$id,'lang_id'=>$lang_id]);
         foreach ($data['toc']??[] as $i=>$toc) {
             if (trim($toc['title']??'')) insert('post_toc', ['post_id'=>$id,'lang_id'=>$lang_id,'title'=>$toc['title'],'anchor'=>$toc['anchor']??slug($toc['title']),'sort_order'=>$i]);
+        }
+
+        // Terms (Solutions / Departments / Industries — used for /blog/ filters)
+        delete('post_terms', ['post_id'=>$id]);
+        foreach ($data['term_ids']??[] as $term_id) {
+            $term = row('SELECT type FROM terms WHERE id=?', [(int)$term_id]);
+            if ($term) insert('post_terms', ['post_id'=>$id,'term_id'=>(int)$term_id,'type'=>$term['type']]);
         }
 
         json_response(['ok'=>true,'id'=>$id]);

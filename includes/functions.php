@@ -408,9 +408,33 @@ function get_posts(int $lang_id, array $filters = [], int $limit = 50, int $offs
             LEFT JOIN media am ON a.image_id=am.id
             WHERE p.is_active=1';
     $params = [$lang_id, $lang_id];
+    if (!empty($filters['solution'])) {
+        $sql .= ' AND EXISTS (SELECT 1 FROM post_terms ptt WHERE ptt.post_id=p.id AND ptt.term_id=? AND ptt.type="solution")';
+        $params[] = $filters['solution'];
+    }
+    if (!empty($filters['department'])) {
+        $sql .= ' AND EXISTS (SELECT 1 FROM post_terms ptt WHERE ptt.post_id=p.id AND ptt.term_id=? AND ptt.type="department")';
+        $params[] = $filters['department'];
+    }
+    if (!empty($filters['industry'])) {
+        $sql .= ' AND EXISTS (SELECT 1 FROM post_terms ptt WHERE ptt.post_id=p.id AND ptt.term_id=? AND ptt.type="industry")';
+        $params[] = $filters['industry'];
+    }
     $sql .= ' ORDER BY p.published_at DESC LIMIT ? OFFSET ?';
     $params[] = $limit; $params[] = $offset;
-    $posts = rows($sql, $params);
+    try {
+        $posts = rows($sql, $params);
+    } catch (Exception $e) {
+        try { db()->exec("CREATE TABLE IF NOT EXISTS post_terms (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            post_id INT NOT NULL,
+            term_id INT NOT NULL,
+            type VARCHAR(20) NOT NULL,
+            KEY idx_post (post_id),
+            KEY idx_term (term_id)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4"); } catch (Exception $e2) {}
+        $posts = rows($sql, $params);
+    }
     foreach ($posts as &$post) {
         $post['tags'] = rows('SELECT tag_text FROM post_tags WHERE post_id=? AND lang_id=? ORDER BY sort_order', [$post['id'], $lang_id]);
         $post['read_time'] = reading_time($post['content'] ?? '');
