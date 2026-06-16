@@ -1343,37 +1343,12 @@ tr:hover td{background:#fafafa}
                 </div>
             </div></div>
 
-            <div class="card"><div class="card__head"><h2>Contact Form — Email Delivery</h2></div><div class="card__body">
+            <div class="card"><div class="card__head"><h2>Lead Notification Emails</h2></div><div class="card__body">
                 <div class="form-grid cols-1">
                     <div class="field field--full">
                         <label>Recipient Emails (comma-separated)</label>
                         <input v-model="settingsData.lead_emails" placeholder="services@sidis.group, hello@expandi.agency">
-                        <div style="margin-top:4px;font-size:11px;color:var(--muted)">All contact form submissions will be sent to these addresses.</div>
-                    </div>
-                </div>
-                <hr style="border:none;border-top:1px solid var(--border);margin:20px 0">
-                <h3 style="font-size:14px;font-weight:600;margin-bottom:4px">SMTP Settings</h3>
-                <p style="font-size:12px;color:var(--muted);margin-bottom:16px">If left empty, the server's PHP mail() is used (often unreliable). Fill in SMTP credentials from any provider — Gmail, Mailgun, Brevo, etc.</p>
-                <div class="form-grid">
-                    <div class="field field--full"><label>SMTP Host</label><input v-model="settingsData.smtp_host" placeholder="smtp.gmail.com  /  smtp.brevo.com  /  smtp.mailgun.org"></div>
-                    <div class="field"><label>Port</label><input v-model="settingsData.smtp_port" placeholder="587 (TLS) / 465 (SSL)"></div>
-                    <div class="field"><label>Encryption</label>
-                        <select v-model="settingsData.smtp_secure" style="width:100%;padding:8px 12px;border:1px solid var(--border);border-radius:8px;font-size:14px">
-                            <option value="tls">STARTTLS (port 587) — recommended</option>
-                            <option value="ssl">SSL (port 465)</option>
-                            <option value="none">None (port 25, not recommended)</option>
-                        </select>
-                    </div>
-                    <div class="field"><label>SMTP Username</label><input v-model="settingsData.smtp_user" placeholder="your@email.com or API login"></div>
-                    <div class="field"><label>SMTP Password / API Key</label><input v-model="settingsData.smtp_pass" type="password" placeholder="••••••••"></div>
-                    <div class="field"><label>From Email</label><input v-model="settingsData.smtp_from_email" placeholder="noreply@sidistech.group"></div>
-                    <div class="field"><label>From Name</label><input v-model="settingsData.smtp_from_name" placeholder="SIDIS Website"></div>
-                    <div class="field field--full" style="padding-top:8px">
-                        <button class="btn btn--outline" @click="testEmail" :disabled="testEmailState==='sending'">
-                            {{ testEmailState === 'sending' ? 'Sending…' : 'Send test email →' }}
-                        </button>
-                        <span v-if="testEmailMsg" :style="{marginLeft:'12px',fontSize:'13px',color:testEmailOk?'var(--green)':'var(--red)'}">{{ testEmailMsg }}</span>
-                        <div style="margin-top:6px;font-size:11px;color:var(--muted)">Sends a test message to the first Recipient Email above. Save settings first.</div>
+                        <div style="margin-top:4px;font-size:11px;color:var(--muted)">All contact form submissions will be sent to these addresses. Separate multiple emails with a comma.</div>
                     </div>
                 </div>
             </div></div>
@@ -2549,17 +2524,6 @@ createApp({
             await api(`/admin/api/settings.php?lang_id=${langId.value}`,{method:'POST',body:JSON.stringify(settingsData)});
             showAlert('Settings saved!');
         };
-        const testEmailState = ref('');
-        const testEmailMsg   = ref('');
-        const testEmailOk    = ref(false);
-        const testEmail = async () => {
-            testEmailState.value = 'sending';
-            testEmailMsg.value = '';
-            const r = await api('/admin/api/test_email.php', {method:'POST', body: JSON.stringify({to: settingsData.lead_emails})});
-            testEmailState.value = '';
-            if (r.ok) { testEmailOk.value = true; testEmailMsg.value = `Sent to ${r.sent_to}`; }
-            else { testEmailOk.value = false; testEmailMsg.value = r.error || 'Unknown error'; }
-        };
 
         /* ─── Home Blocks ───────────────────────────────────────────────── */
         const homeBlocksList = ref([]);
@@ -2677,7 +2641,7 @@ createApp({
             termForm, openTermModal, saveTerm, deleteTerm,
             authorForm, openAuthorModal, saveAuthor, deleteAuthor,
             mediaList, uploadFiles, uploadAndPick, pickMedia, selectMedia, deleteMedia, copyUrl,
-            settingsData, saveSettings, testEmail, testEmailState, testEmailMsg, testEmailOk,
+            settingsData, saveSettings,
             onLangChange, slugify, loadSvgInto,
             homeBlocksList, loadBlocks, toggleBlock, moveBlock, saveBlocksOrder,
         };
