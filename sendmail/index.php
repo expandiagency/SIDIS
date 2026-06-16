@@ -32,8 +32,13 @@ $headers .= "Content-Type: text/plain; charset=UTF-8\r\n";
 $headers .= "MIME-Version: 1.0\r\n";
 $headers .= "X-Mailer: PHP/" . phpversion() . "\r\n";
 
+$results = [];
 foreach ($recipients as $recipient) {
-    mail($recipient, $subject, $body, $headers);
+    $ok = mail($recipient, $subject, $body, $headers);
+    $results[] = $recipient . ':' . ($ok ? 'ok' : 'fail');
 }
 
-echo json_encode(['message' => 'Дані надіслані!']);
+$log_line = date('Y-m-d H:i:s') . ' | ' . $name . ' | ' . $email . ' | ' . implode(', ', $results) . "\n";
+file_put_contents(dirname(__DIR__) . '/sendmail/mail.log', $log_line, FILE_APPEND | LOCK_EX);
+
+echo json_encode(['message' => 'Дані надіслані!', 'debug' => $results]);
