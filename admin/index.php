@@ -1452,6 +1452,26 @@ tr:hover td{background:#fafafa}
                     <div class="field"><label>Contact Button URL</label><input v-model="settingsData.aside_contact_btn_url" placeholder="#getintouch"></div>
                 </div>
             </div></div>
+
+            <div class="card"><div class="card__head"><h2>Office Locations</h2></div><div class="card__body">
+                <p style="font-size:13px;color:var(--muted);margin-bottom:16px">Toggle which office locations are shown in the Home page and Footer. Disabling hides that location without breaking the layout.</p>
+                <div class="form-grid cols-1">
+                    <div style="display:flex;align-items:center;gap:14px;padding:8px 0;border-bottom:1px solid var(--border)">
+                        <label class="toggle"><input type="checkbox" :checked="settingsData.loc1_enabled !== '0'" @change="settingsData.loc1_enabled = $event.target.checked ? '1' : '0'"><span class="toggle__slider"></span></label>
+                        <div>
+                            <strong style="font-size:14px">Estonia, Tallinn</strong>
+                            <div style="font-size:12px;color:var(--muted)">Location 1 — shown on Home page and Footer</div>
+                        </div>
+                    </div>
+                    <div style="display:flex;align-items:center;gap:14px;padding:8px 0">
+                        <label class="toggle"><input type="checkbox" :checked="settingsData.loc2_enabled !== '0'" @change="settingsData.loc2_enabled = $event.target.checked ? '1' : '0'"><span class="toggle__slider"></span></label>
+                        <div>
+                            <strong style="font-size:14px">Switzerland, Lausanne</strong>
+                            <div style="font-size:12px;color:var(--muted)">Location 2 — shown on Home page and Footer</div>
+                        </div>
+                    </div>
+                </div>
+            </div></div>
         </template>
 
         <!-- ══ USERS ══ -->

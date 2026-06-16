@@ -21,6 +21,7 @@ $global_keys = [
     'lead_emails',
     'aside_demo_image_url', 'aside_demo_btn_url', 'aside_contact_btn_url',
     'solutions_hero_image_url',
+    'loc1_enabled', 'loc2_enabled',
 ];
 // These aside text fields are per-language
 $aside_lang_keys = ['aside_demo_btn_text', 'aside_contact_btn_text'];

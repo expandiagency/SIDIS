@@ -121,9 +121,12 @@ require __DIR__ . '/layout.php';
                     <div class="automation__text"><?= nl2br(e($h['automation_text'] ?? '')) ?></div>
                 </div>
                 <div class="automation__bottom">
+                    <?php $_loc1_on = get_setting('loc1_enabled') !== '0'; $_loc2_on = get_setting('loc2_enabled') !== '0'; ?>
+                    <?php if ($_loc1_on || $_loc2_on): ?>
                     <div class="automation__location">
                         <div class="automation__subtitle">Location</div>
                         <div class="automation__items">
+                            <?php if ($_loc1_on): ?>
                             <div class="automation__item">
                                 <div class="automation__item-icon"><svg width="22" height="30" viewbox="0 0 22 30" fill="none"><path d="M10.625 14.25C9.6186 14.25 8.65342 13.8549 7.94178 13.1517C7.23015 12.4484 6.83036 11.4946 6.83036 10.5C6.83036 9.50544 7.23015 8.55161 7.94178 7.84835C8.65342 7.14509 9.6186 6.75 10.625 6.75C11.6314 6.75 12.5966 7.14509 13.3082 7.84835C14.0199 8.55161 14.4196 9.50544 14.4196 10.5C14.4196 11.4946 14.0199 12.4484 13.3082 13.1517C12.5966 13.8549 11.6314 14.25 10.625 14.25ZM10.625 0C7.80707 0 5.10456 1.10625 3.11199 3.07538C1.11942 5.04451 0 7.71523 0 10.5C0 18.375 10.625 30 10.625 30C10.625 30 21.25 18.375 21.25 10.5C21.25 7.71523 20.1306 5.04451 18.138 3.07538C16.1454 1.10625 13.4429 0 10.625 0Z" fill="currentColor"></path></svg></div>
                                 <div class="automation__item-body">
@@ -131,6 +134,8 @@ require __DIR__ . '/layout.php';
                                     <div class="automation__item-text"><?= e($h['automation_loc1_city'] ?? 'Tallinn') ?></div>
                                 </div>
                             </div>
+                            <?php endif; ?>
+                            <?php if ($_loc2_on): ?>
                             <div class="automation__item">
                                 <div class="automation__item-icon"><svg width="22" height="30" viewbox="0 0 22 30" fill="none"><path d="M10.625 14.25C9.6186 14.25 8.65342 13.8549 7.94178 13.1517C7.23015 12.4484 6.83036 11.4946 6.83036 10.5C6.83036 9.50544 7.23015 8.55161 7.94178 7.84835C8.65342 7.14509 9.6186 6.75 10.625 6.75C11.6314 6.75 12.5966 7.14509 13.3082 7.84835C14.0199 8.55161 14.4196 9.50544 14.4196 10.5C14.4196 11.4946 14.0199 12.4484 13.3082 13.1517C12.5966 13.8549 11.6314 14.25 10.625 14.25ZM10.625 0C7.80707 0 5.10456 1.10625 3.11199 3.07538C1.11942 5.04451 0 7.71523 0 10.5C0 18.375 10.625 30 10.625 30C10.625 30 21.25 18.375 21.25 10.5C21.25 7.71523 20.1306 5.04451 18.138 3.07538C16.1454 1.10625 13.4429 0 10.625 0Z" fill="currentColor"></path></svg></div>
                                 <div class="automation__item-body">
@@ -138,8 +143,10 @@ require __DIR__ . '/layout.php';
                                     <div class="automation__item-text"><?= e($h['automation_loc2_city'] ?? 'Lausanne') ?></div>
                                 </div>
                             </div>
+                            <?php endif; ?>
                         </div>
                     </div>
+                    <?php endif; ?>
                     <div class="automation__btns">
                         <button type="button" class="automation__btn button button--secondary button--dark-hover"><?= e($h['automation_btn1_text'] ?? 'Contact us') ?></button>
                         <button type="button" class="automation__btn button button--icon">
