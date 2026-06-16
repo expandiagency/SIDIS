@@ -56,8 +56,8 @@ function active_lang_url(string $path, array $lang, array $default_lang): string
     });
     </script>
     <!-- JS: modulepreload fetches + parses the module before execution -->
-    <link rel="modulepreload" crossorigin href="/js/app.min.js?v=2">
-    <script type="module" crossorigin src="/js/app.min.js?v=2"></script>
+    <link rel="modulepreload" crossorigin href="/js/app.min.js?v=3">
+    <script type="module" crossorigin src="/js/app.min.js?v=3"></script>
     <script defer src="/js/catalog-filters.js?v=1"></script>
     <link rel="shortcut icon" href="/assets/img/favicon.ico">
     <title><?= e($meta_title) ?></title>

@@ -5381,7 +5381,7 @@ function formInit() {
 	formSubmit();
 	formFieldsInit();
 }
-document.querySelector("[data-fls-form]") && window.addEventListener("load", formInit);
+document.querySelector("[data-fls-form]") && formInit();
 //#endregion
 //#region src/components/effects/watcher/watcher.js
 var ScrollWatcher = class {
