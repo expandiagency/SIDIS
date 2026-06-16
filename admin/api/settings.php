@@ -22,6 +22,7 @@ $global_keys = [
     'aside_demo_image_url', 'aside_demo_btn_url', 'aside_contact_btn_url',
     'solutions_hero_image_url',
     'loc1_enabled', 'loc2_enabled',
+    'smtp_host', 'smtp_port', 'smtp_secure', 'smtp_user', 'smtp_pass', 'smtp_from_email', 'smtp_from_name',
 ];
 // These aside text fields are per-language
 $aside_lang_keys = ['aside_demo_btn_text', 'aside_contact_btn_text'];
