@@ -436,7 +436,7 @@ require __DIR__ . '/layout.php';
                     <div class="getintouch__item"><?= e($h['cta_item3'] ?? 'We choose a model and approach suitable for your case and budget.') ?></div>
                 </div>
             </div>
-            <form class="getintouch__form" data-fls-form="ajax" method="POST" action="/sendmail">
+            <form class="getintouch__form" data-fls-form="ajax" method="POST" action="/sendmail/">
                 <div class="getintouch__form-title"><?= e($h['cta_form_title'] ?? 'Request a free Consultation') ?></div>
                 <div class="input-field">
                     <input required type="text" name="form[name]" data-fls-form-errtext="Error" placeholder="Full name" class="input-field__input input">
