@@ -30,6 +30,14 @@ function case_full(int $id, int $lang_id): array {
         $case['tech_items'] = rows('SELECT * FROM case_tech_items WHERE case_id=? AND lang_id=? ORDER BY sort_order', [$id,$lang_id]);
         $case['services']   = rows('SELECT * FROM case_services WHERE case_id=? AND lang_id=? ORDER BY sort_order', [$id,$lang_id]);
         $case['term_ids']   = array_column(rows('SELECT term_id FROM case_terms WHERE case_id=?', [$id]), 'term_id');
+        $extras_raw = null;
+        try {
+            $er = row('SELECT extras FROM cases_t WHERE case_id=? AND lang_id=?', [$id, $lang_id]);
+            $extras_raw = $er['extras'] ?? null;
+        } catch (Exception $e) {
+            try { db()->exec("ALTER TABLE cases_t ADD COLUMN extras MEDIUMTEXT DEFAULT NULL"); } catch (Exception $e2) {}
+        }
+        $case['extras'] = $extras_raw ? (json_decode($extras_raw, true) ?: []) : [];
     }
     return $case;
 }
@@ -60,7 +68,9 @@ if ($method === 'POST') {
               'title'=>$data['title']??'','description'=>$data['description']??'',
               'overview_text'=>$data['overview_text']??'','location'=>$data['location']??'',
               'cooperation_period'=>$data['cooperation_period']??'',
-              'meta_title'=>$data['meta_title']??'','meta_description'=>$data['meta_description']??''];
+              'meta_title'=>$data['meta_title']??'','meta_description'=>$data['meta_description']??'',
+              'extras'=>json_encode($data['extras']??[], JSON_UNESCAPED_UNICODE)];
+        try { db()->exec("ALTER TABLE cases_t ADD COLUMN extras MEDIUMTEXT DEFAULT NULL"); } catch (Exception $e) {}
         $et = row('SELECT id FROM cases_t WHERE case_id=? AND lang_id=?', [$id,$lang_id]);
         if ($et) update('cases_t', $t, ['id'=>$et['id']]); else insert('cases_t', $t);
 
