@@ -3201,6 +3201,9 @@ a.planning__marquee-item {
   mask-size: cover;
   aspect-ratio: 794/510;
 }
+.automation__slider:not(.swiper-initialized) .automation__slide:not(:first-child) {
+  display: none;
+}
 .automation__slide img {
   width: 100%;
   height: 100%;
