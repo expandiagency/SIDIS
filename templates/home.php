@@ -160,13 +160,13 @@ require __DIR__ . '/layout.php';
                 <div data-fls-slider="" class="automation__slider swiper">
                     <div class="automation__wrapper swiper-wrapper">
                         <?php if (!empty($auto_imgs)): ?>
-                        <?php foreach ($auto_imgs as $img): ?>
+                        <?php foreach ($auto_imgs as $ai => $img): ?>
                         <div class="automation__slide swiper-slide">
-                            <img alt="Image" loading="lazy" src="<?= e(media_url($img['image_path'])) ?>">
+                            <img alt="Image" <?= $ai === 0 ? 'fetchpriority="high"' : 'loading="lazy"' ?> src="<?= e(media_url($img['image_path'])) ?>">
                         </div>
                         <?php endforeach; ?>
                         <?php else: ?>
-                        <div class="automation__slide swiper-slide"><img alt="" loading="lazy" src="./assets/img/automation/image.webp"></div>
+                        <div class="automation__slide swiper-slide"><img alt="" fetchpriority="high" src="./assets/img/automation/image.webp"></div>
                         <div class="automation__slide swiper-slide"><img alt="" loading="lazy" src="./assets/img/promo/image-1.webp"></div>
                         <?php endif; ?>
                     </div>
