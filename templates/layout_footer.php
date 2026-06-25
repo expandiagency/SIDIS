@@ -135,6 +135,17 @@ document.querySelectorAll('a[href="#getintouch"]').forEach(function(a){
         el.scrollIntoView({behavior:'smooth',block:'center'});
     });
 });
+if (location.hash === '#getintouch') {
+    var _gitEl = document.getElementById('getintouch');
+    if (_gitEl) {
+        window.scrollTo(0, 0);
+        window.addEventListener('load', function(){
+            requestAnimationFrame(function(){
+                _gitEl.scrollIntoView({behavior:'smooth', block:'center'});
+            });
+        });
+    }
+}
 </script>
 </body>
 </html>

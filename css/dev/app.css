@@ -2614,7 +2614,7 @@ a.planning__marquee-item {
   margin-bottom: 100px;
 }
 .footer__lets {
-  vertical-align: super;
+  vertical-align: middle;
   margin-left: 30px;
   font-family: var(--font-family);
   display: inline-flex;
