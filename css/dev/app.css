@@ -2517,6 +2517,7 @@ a.planning__marquee-item {
   font-weight: 600;
   font-size: 26px;
   line-height: 120%;
+  min-height: 2.4em;
   word-break: break-word;
   overflow: hidden;
   display: -webkit-box;
