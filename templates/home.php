@@ -45,21 +45,21 @@ require __DIR__ . '/layout.php';
     <div class="hero__rating">
         <div class="hero__rating-body">
             <?php if ($_clutch_url): ?>
-            <a href="<?= e($_clutch_url) ?>" target="_blank" rel="noopener noreferrer" class="hero__rating-item"><img src="./assets/img/header/Rating%20Container.svg" width="111" height="54" alt="Clutch Rating" loading="lazy"></a>
+            <a href="<?= e($_clutch_url) ?>" target="_blank" rel="noopener noreferrer" class="hero__rating-item"><img src="/assets/img/header/Rating%20Container.svg" width="111" height="54" alt="Clutch Rating" loading="lazy"></a>
             <?php else: ?>
-            <div class="hero__rating-item"><img src="./assets/img/header/Rating%20Container.svg" width="111" height="54" alt="Clutch Rating" loading="lazy"></div>
+            <div class="hero__rating-item"><img src="/assets/img/header/Rating%20Container.svg" width="111" height="54" alt="Clutch Rating" loading="lazy"></div>
             <?php endif; ?>
             <?php if ($_upwork_url): ?>
-            <a href="<?= e($_upwork_url) ?>" target="_blank" rel="noopener noreferrer" class="hero__rating-item"><img src="./assets/img/header/Top%20Rated%20Badge.png" width="205" height="53" alt="Upwork Top Rated" loading="lazy"></a>
+            <a href="<?= e($_upwork_url) ?>" target="_blank" rel="noopener noreferrer" class="hero__rating-item"><img src="/assets/img/header/Top%20Rated%20Badge.png" width="205" height="53" alt="Upwork Top Rated" loading="lazy"></a>
             <?php else: ?>
-            <div class="hero__rating-item"><img src="./assets/img/header/Top%20Rated%20Badge.png" width="205" height="53" alt="Upwork Top Rated" loading="lazy"></div>
+            <div class="hero__rating-item"><img src="/assets/img/header/Top%20Rated%20Badge.png" width="205" height="53" alt="Upwork Top Rated" loading="lazy"></div>
             <?php endif; ?>
         </div>
     </div>
     <div class="hero__bg">
         <?php $hero_poster = media_url($h['hero_poster_url'] ?? '') ?: '/assets/img/poster.webp'; ?>
         <video autoplay muted loop playsinline preload="metadata" fetchpriority="high" poster="<?= e($hero_poster) ?>">
-            <source src="<?= e($h['hero_video_path'] ?? './assets/video/1-hero.mp4') ?>" type="video/mp4">
+            <source src="<?= e(media_url($h['hero_video_path'] ?? './assets/video/1-hero.mp4')) ?>" type="video/mp4">
         </video>
     </div>
 </section>
@@ -166,8 +166,8 @@ require __DIR__ . '/layout.php';
                         </div>
                         <?php endforeach; ?>
                         <?php else: ?>
-                        <div class="automation__slide swiper-slide"><img alt="" fetchpriority="high" src="./assets/img/automation/image.webp"></div>
-                        <div class="automation__slide swiper-slide"><img alt="" loading="lazy" src="./assets/img/promo/image-1.webp"></div>
+                        <div class="automation__slide swiper-slide"><img alt="" fetchpriority="high" src="/assets/img/automation/image.webp"></div>
+                        <div class="automation__slide swiper-slide"><img alt="" loading="lazy" src="/assets/img/promo/image-1.webp"></div>
                         <?php endif; ?>
                     </div>
                 </div>
@@ -183,12 +183,12 @@ require __DIR__ . '/layout.php';
             <div class="automation__marquee-item"><img alt="<?= e($logo['alt_text']) ?>" width="150" height="80" loading="lazy" src="<?= e(media_url($logo['image_path'])) ?>"></div>
             <?php endforeach; ?>
             <?php else: ?>
-            <div class="automation__marquee-item"><img alt="" width="150" height="80" loading="lazy" src="./assets/img/automation/partner-1.webp"></div>
-            <div class="automation__marquee-item"><img alt="" width="150" height="80" loading="lazy" src="./assets/img/automation/partner-2.webp"></div>
-            <div class="automation__marquee-item"><img alt="" width="150" height="80" loading="lazy" src="./assets/img/automation/partner-3.webp"></div>
-            <div class="automation__marquee-item"><img alt="" width="150" height="80" loading="lazy" src="./assets/img/automation/partner-4.webp"></div>
-            <div class="automation__marquee-item"><img alt="" width="150" height="80" loading="lazy" src="./assets/img/automation/partner-1.webp"></div>
-            <div class="automation__marquee-item"><img alt="" width="150" height="80" loading="lazy" src="./assets/img/automation/partner-2.webp"></div>
+            <div class="automation__marquee-item"><img alt="" width="150" height="80" loading="lazy" src="/assets/img/automation/partner-1.webp"></div>
+            <div class="automation__marquee-item"><img alt="" width="150" height="80" loading="lazy" src="/assets/img/automation/partner-2.webp"></div>
+            <div class="automation__marquee-item"><img alt="" width="150" height="80" loading="lazy" src="/assets/img/automation/partner-3.webp"></div>
+            <div class="automation__marquee-item"><img alt="" width="150" height="80" loading="lazy" src="/assets/img/automation/partner-4.webp"></div>
+            <div class="automation__marquee-item"><img alt="" width="150" height="80" loading="lazy" src="/assets/img/automation/partner-1.webp"></div>
+            <div class="automation__marquee-item"><img alt="" width="150" height="80" loading="lazy" src="/assets/img/automation/partner-2.webp"></div>
             <?php endif; ?>
         </div>
     </div>
@@ -340,7 +340,7 @@ require __DIR__ . '/layout.php';
                             <div class="reviews-card__user-socials">
                                 <?php if (!empty($r['linkedin_url'])): ?>
                                 <a href="<?= e($r['linkedin_url']) ?>" class="reviews-card__user-social" target="_blank">
-                                    <img src="./assets/img/icons/linkedin.svg" width="38" height="38" alt="LinkedIn" loading="lazy">
+                                    <img src="/assets/img/icons/linkedin.svg" width="38" height="38" alt="LinkedIn" loading="lazy">
                                 </a>
                                 <?php endif; ?>
                                 <?php $clutch_href = !empty($r['clutch_url']) ? $r['clutch_url'] : (get_setting('clutch_url') ?: '#'); ?>
@@ -350,7 +350,7 @@ require __DIR__ . '/layout.php';
                                 </a>
                                 <?php else: ?>
                                 <a href="<?= e($clutch_href) ?>" class="reviews-card__user-social" target="_blank" rel="noopener">
-                                    <img src="./assets/img/header/Rating%20Container.svg" width="78" height="38" alt="Rating" loading="lazy">
+                                    <img src="/assets/img/header/Rating%20Container.svg" width="78" height="38" alt="Rating" loading="lazy">
                                 </a>
                                 <?php endif; ?>
                             </div>
@@ -462,7 +462,7 @@ require __DIR__ . '/layout.php';
 <section class="presentation">
     <div class="presentation__container">
         <?php
-            $pres_poster = media_url($h['presentation_poster_url'] ?? '') ?: './assets/img/poster.webp';
+            $pres_poster = media_url($h['presentation_poster_url'] ?? '') ?: '/assets/img/poster.webp';
         ?>
         <div class="presentation__body video-paused" data-video-controlls-parent="">
             <div class="presentation__head">
@@ -477,7 +477,7 @@ require __DIR__ . '/layout.php';
             <div class="presentation__video">
                 <div class="video-controlls" data-video-controlls="">
                     <video loop playsinline muted preload="metadata">
-                        <source src="<?= e(media_url($h['presentation_video'] ?? '') ?: './assets/video/1-hero.mp4') ?>" type="video/mp4">
+                        <source src="<?= e(media_url($h['presentation_video'] ?? '') ?: '/assets/video/1-hero.mp4') ?>" type="video/mp4">
                     </video>
                     <div class="video-controlls__navigation">
                         <button class="video-controlls__mute" data-video-controlls-mute=""><svg width="36" height="36" viewbox="0 0 36 36" fill="none"><path d="M17.5534 14.3003L14.3169 11.0493L15.9188 9.44737C16.2144 9.14542 16.5606 9.07513 16.9578 9.23632C17.3549 9.39751 17.5534 9.68839 17.5534 10.1089V14.3003Z" fill="currentColor"></path></svg></button>

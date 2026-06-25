@@ -29,8 +29,8 @@ require __DIR__ . '/layout.php'; ?>
                 </picture>
                 <?php else: ?>
                 <picture>
-                    <source srcset="./assets/img/promo/image-2-mob.webp" media="(max-width: 650px)">
-                    <img alt="promo-img" loading="lazy" src="./assets/img/promo/image-2.webp">
+                    <source srcset="/assets/img/promo/image-2-mob.webp" media="(max-width: 650px)">
+                    <img alt="promo-img" loading="lazy" src="/assets/img/promo/image-2.webp">
                 </picture>
                 <?php endif; ?>
             </div>
