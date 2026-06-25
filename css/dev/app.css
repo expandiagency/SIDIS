@@ -874,7 +874,7 @@ textarea.input {
   position: absolute;
   inset: 0;
   background-color: rgba(0, 0, 0, 0.35);
-  transition: background 0.3s;
+  transition: background 0.9s;
 }
 .catalog-card__img img,
 .catalog-card__img video {
@@ -907,7 +907,7 @@ textarea.input {
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
-  transition: margin 0.3s;
+  transition: margin 0.9s;
 }
 .catalog-card__title::before {
   content: "";
@@ -922,7 +922,7 @@ textarea.input {
   position: relative;
   bottom: -100%;
   opacity: 0;
-  transition: margin 0.3s ease, grid-template-rows 0.3s ease, opacity 0.3s ease, bottom 0.25s ease;
+  transition: margin 0.9s ease, grid-template-rows 0.9s ease, opacity 0.9s ease, bottom 0.75s ease;
 }
 .catalog-card__bottom > * {
   overflow: hidden;
@@ -4999,15 +4999,18 @@ a.automation__marquee-item {
   }
   .catalog-card.--watcher-view .catalog-card__img::before {
     background-color: rgba(0, 0, 0, 0.65);
+    transition: background 0.3s;
   }
   .catalog-card.--watcher-view .catalog-card__title {
     margin-bottom: auto;
+    transition: margin 0.3s;
   }
   .catalog-card.--watcher-view .catalog-card__bottom {
     margin-top: 20px;
     grid-template-rows: 1fr;
     opacity: 1;
     bottom: 0;
+    transition: margin 0.3s ease, grid-template-rows 0.3s ease, opacity 0.3s ease, bottom 0.25s ease;
   }
   .header {
     padding-block: 10px;
@@ -6248,10 +6251,11 @@ a.automation__marquee-item {
   }
   .catalog-card.--watcher-view .catalog-card__bottom-inner > * {
     transform: translate(0px, 0px);
+    transition: transform 0.3s;
   }
   .catalog-card__bottom-inner > * {
     transform: translate(0px, 150%);
-    transition: transform 0.3s;
+    transition: transform 0.9s;
   }
   .catalog-card__author {
     gap: 20px;
