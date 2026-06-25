@@ -104,7 +104,7 @@ require __DIR__ . '/layout.php'; ?>
                             <div class="catalog-card__author">
                                 <?php if (!empty($post['author_image_path'])): ?>
                                 <div class="catalog-card__author-img">
-                                    <img alt="<?= e($post['author_name']) ?>" loading="lazy" src="<?= e(media_url($post['author_image_path'])) ?>">
+                                    <img alt="<?= e($post['author_name']) ?>" loading="lazy" src="<?= e(media_url($post['author_image_path'])) ?>"<?= ($_srcset = media_srcset($post['author_image_path'])) ? ' srcset="' . e($_srcset) . '" sizes="101px"' : '' ?>>
                                 </div>
                                 <?php endif; ?>
                                 <div class="catalog-card__author-body">

@@ -686,10 +686,12 @@ function generate_responsive_variants(string $abs_path, string $mime_type): void
 // (e.g. SVGs, or the source was already smaller than every target width).
 function media_srcset(string $path): string {
     if (!$path || $path[0] === '.' || strpos($path, 'http') === 0) return '';
-    $abs_path = UPLOAD_DIR . $path;
+    $bare = (strpos($path, UPLOAD_URL) === 0) ? substr($path, strlen(UPLOAD_URL)) : $path;
+    if ($bare === '' || $bare[0] === '/') return ''; // not an /uploads/ file (e.g. /assets/...)
+    $abs_path = UPLOAD_DIR . $bare;
     $dir  = pathinfo($abs_path, PATHINFO_DIRNAME);
     $base = pathinfo($abs_path, PATHINFO_FILENAME);
-    $rel_dir = pathinfo($path, PATHINFO_DIRNAME);
+    $rel_dir = pathinfo($bare, PATHINFO_DIRNAME);
     $rel_dir = ($rel_dir === '.') ? '' : $rel_dir . '/';
     $parts = [];
     foreach (RESPONSIVE_WIDTHS as $w) {
@@ -697,6 +699,29 @@ function media_srcset(string $path): string {
         if (file_exists($variant)) $parts[] = UPLOAD_URL . $rel_dir . $base . '-' . $w . 'w.webp ' . $w . 'w';
     }
     return implode(', ', $parts);
+}
+
+// For single-URL contexts that can't use srcset (e.g. <video poster>), returns
+// the largest generated variant's URL if one exists, otherwise the original.
+// Accepts either a bare media.path (e.g. "20260605_xxx.webp") or a full URL
+// produced by media_url() (e.g. "/uploads/20260605_xxx.webp").
+function media_poster_url(string $path): string {
+    if (!$path || $path[0] === '.' || strpos($path, 'http') === 0) return media_url($path);
+    $bare = (strpos($path, UPLOAD_URL) === 0) ? substr($path, strlen(UPLOAD_URL)) : $path;
+    if ($bare === '' || $bare[0] === '/') return media_url($path); // not an /uploads/ file (e.g. /assets/...)
+    $abs_path = UPLOAD_DIR . $bare;
+    $dir  = pathinfo($abs_path, PATHINFO_DIRNAME);
+    $base = pathinfo($abs_path, PATHINFO_FILENAME);
+    $rel_dir = pathinfo($bare, PATHINFO_DIRNAME);
+    $rel_dir = ($rel_dir === '.') ? '' : $rel_dir . '/';
+    $widths = RESPONSIVE_WIDTHS;
+    rsort($widths);
+    foreach ($widths as $w) {
+        if (file_exists($dir . '/' . $base . '-' . $w . 'w.webp')) {
+            return UPLOAD_URL . $rel_dir . $base . '-' . $w . 'w.webp';
+        }
+    }
+    return media_url($path);
 }
 
 function upload_file(array $file, string $subdir = ''): int {

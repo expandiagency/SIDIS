@@ -157,7 +157,7 @@ function sol_url(string $path): string {
         <div data-fls-marquee="" data-fls-marquee-space="60" data-fls-marquee-speed="765" class="planning__marquee">
             <?php if (!empty($partners)): ?>
             <?php foreach ($partners as $logo): ?>
-            <div class="planning__marquee-item"><img alt="<?= e($logo['alt_text']) ?>" width="150" height="80" loading="lazy" src="<?= e(media_url($logo['image_path'])) ?>"></div>
+            <div class="planning__marquee-item"><img alt="<?= e($logo['alt_text']) ?>" width="150" height="80" loading="lazy" src="<?= e(media_url($logo['image_path'])) ?>"<?= ($_srcset = media_srcset($logo['image_path'])) ? ' srcset="' . e($_srcset) . '" sizes="150px"' : '' ?>></div>
             <?php endforeach; ?>
             <?php else: ?>
             <div class="planning__marquee-item"><img alt="Partner" width="150" height="80" loading="lazy" src="/assets/img/automation/partner-1.webp"></div>

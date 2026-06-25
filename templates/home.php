@@ -57,7 +57,7 @@ require __DIR__ . '/layout.php';
         </div>
     </div>
     <div class="hero__bg">
-        <?php $hero_poster = media_url($h['hero_poster_url'] ?? '') ?: '/assets/img/poster.webp'; ?>
+        <?php $hero_poster = !empty($h['hero_poster_url']) ? media_poster_url($h['hero_poster_url']) : '/assets/img/poster.webp'; ?>
         <video autoplay muted loop playsinline preload="metadata" fetchpriority="high" poster="<?= e($hero_poster) ?>">
             <source src="<?= e(media_url($h['hero_video_path'] ?? './assets/video/1-hero.mp4')) ?>" type="video/mp4">
         </video>
@@ -162,12 +162,12 @@ require __DIR__ . '/layout.php';
                         <?php if (!empty($auto_imgs)): ?>
                         <?php foreach ($auto_imgs as $ai => $img): ?>
                         <div class="automation__slide swiper-slide">
-                            <img alt="Image" <?= $ai === 0 ? 'fetchpriority="high"' : 'loading="lazy"' ?> src="<?= e(media_url($img['image_path'])) ?>">
+                            <img alt="Image" <?= $ai === 0 ? 'fetchpriority="high"' : 'loading="lazy"' ?> src="<?= e(media_url($img['image_path'])) ?>"<?= ($_srcset = media_srcset($img['image_path'])) ? ' srcset="' . e($_srcset) . '" sizes="(max-width: 650px) 480px, 794px"' : '' ?>>
                         </div>
                         <?php endforeach; ?>
                         <?php else: ?>
-                        <div class="automation__slide swiper-slide"><img alt="" fetchpriority="high" src="/assets/img/automation/image.webp"></div>
-                        <div class="automation__slide swiper-slide"><img alt="" loading="lazy" src="/assets/img/promo/image-1.webp"></div>
+                        <div class="automation__slide swiper-slide"><img alt="" fetchpriority="high" src="/assets/img/automation/image.webp" srcset="/assets/img/automation/image-480w.webp 480w, /assets/img/automation/image.webp 794w" sizes="(max-width: 650px) 480px, 794px"></div>
+                        <div class="automation__slide swiper-slide"><img alt="" loading="lazy" src="/assets/img/promo/image-1.webp" srcset="/assets/img/promo/image-1-480w.webp 480w, /assets/img/promo/image-1.webp 874w" sizes="(max-width: 650px) 480px, 794px"></div>
                         <?php endif; ?>
                     </div>
                 </div>
@@ -180,7 +180,7 @@ require __DIR__ . '/layout.php';
         <div data-fls-marquee="" data-fls-marquee-space="60" data-fls-marquee-speed="765" class="automation__marquee">
             <?php if (!empty($partners)): ?>
             <?php foreach ($partners as $logo): ?>
-            <div class="automation__marquee-item"><img alt="<?= e($logo['alt_text']) ?>" width="150" height="80" loading="lazy" src="<?= e(media_url($logo['image_path'])) ?>"></div>
+            <div class="automation__marquee-item"><img alt="<?= e($logo['alt_text']) ?>" width="150" height="80" loading="lazy" src="<?= e(media_url($logo['image_path'])) ?>"<?= ($_srcset = media_srcset($logo['image_path'])) ? ' srcset="' . e($_srcset) . '" sizes="150px"' : '' ?>></div>
             <?php endforeach; ?>
             <?php else: ?>
             <div class="automation__marquee-item"><img alt="" width="150" height="80" loading="lazy" src="/assets/img/automation/partner-1.webp"></div>
@@ -329,7 +329,7 @@ require __DIR__ . '/layout.php';
                     <div class="reviews-card__user">
                         <div class="reviews-card__user-img">
                             <?php if (!empty($r['author_image_path'])): ?>
-                            <img alt="<?= e($r['author_name']) ?>" <?= $ri < 2 ? 'fetchpriority="high"' : 'loading="lazy"' ?> src="<?= e(media_url($r['author_image_path'])) ?>">
+                            <img alt="<?= e($r['author_name']) ?>" <?= $ri < 2 ? 'fetchpriority="high"' : 'loading="lazy"' ?> src="<?= e(media_url($r['author_image_path'])) ?>"<?= ($_srcset = media_srcset($r['author_image_path'])) ? ' srcset="' . e($_srcset) . '" sizes="101px"' : '' ?>>
                             <?php endif; ?>
                         </div>
                         <div class="reviews-card__user-body">
@@ -462,7 +462,7 @@ require __DIR__ . '/layout.php';
 <section class="presentation">
     <div class="presentation__container">
         <?php
-            $pres_poster = media_url($h['presentation_poster_url'] ?? '') ?: '/assets/img/poster.webp';
+            $pres_poster = !empty($h['presentation_poster_url']) ? media_poster_url($h['presentation_poster_url']) : '/assets/img/poster.webp';
         ?>
         <div class="presentation__body video-paused" data-video-controlls-parent="">
             <div class="presentation__head">
@@ -575,7 +575,7 @@ require __DIR__ . '/layout.php';
                     <div class="article-card__author">
                         <?php if (!empty($post['author_image_path'])): ?>
                         <div class="article-card__author-img">
-                            <img alt="<?= e($post['author_name']) ?>" loading="lazy" src="<?= e(media_url($post['author_image_path'])) ?>">
+                            <img alt="<?= e($post['author_name']) ?>" loading="lazy" src="<?= e(media_url($post['author_image_path'])) ?>"<?= ($_srcset = media_srcset($post['author_image_path'])) ? ' srcset="' . e($_srcset) . '" sizes="102px"' : '' ?>>
                         </div>
                         <?php endif; ?>
                         <div class="article-card__author-body">

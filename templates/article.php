@@ -44,7 +44,7 @@ $articles_title = $extras['articles_title'] ?? 'Latest Automation Insights';
                 <div data-fls-dynamic=".promo-article__container, 768" class="promo-article__author">
                     <?php if (!empty($post['author_image_path'])): ?>
                     <div class="promo-article__author-img">
-                        <img alt="<?= e($post['author_name']) ?>" loading="lazy" src="<?= e(media_url($post['author_image_path'])) ?>">
+                        <img alt="<?= e($post['author_name']) ?>" loading="lazy" src="<?= e(media_url($post['author_image_path'])) ?>"<?= ($_srcset = media_srcset($post['author_image_path'])) ? ' srcset="' . e($_srcset) . '" sizes="120px"' : '' ?>>
                     </div>
                     <?php endif; ?>
                     <div class="promo-article__author-body">
@@ -212,7 +212,7 @@ $articles_title = $extras['articles_title'] ?? 'Latest Automation Insights';
                     <div class="article-card__author">
                         <?php if (!empty($rp['author_image_path'])): ?>
                         <div class="article-card__author-img">
-                            <img alt="<?= e($rp['author_name']) ?>" loading="lazy" src="<?= e(media_url($rp['author_image_path'])) ?>">
+                            <img alt="<?= e($rp['author_name']) ?>" loading="lazy" src="<?= e(media_url($rp['author_image_path'])) ?>"<?= ($_srcset = media_srcset($rp['author_image_path'])) ? ' srcset="' . e($_srcset) . '" sizes="102px"' : '' ?>>
                         </div>
                         <?php endif; ?>
                         <div class="article-card__author-body">
