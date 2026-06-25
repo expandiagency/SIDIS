@@ -322,14 +322,14 @@ require __DIR__ . '/layout.php';
         <div data-fls-slider="" class="reviews__slider swiper">
             <div class="reviews__wrapper swiper-wrapper">
                 <?php if (!empty($reviews)): ?>
-                <?php foreach ($reviews as $r): ?>
+                <?php foreach ($reviews as $ri => $r): ?>
                 <div class="reviews-card swiper-slide">
                     <div class="reviews-card__title"><?= e($r['quote']) ?></div>
                     <div class="reviews-card__text"><?= nl2br(e($r['text'])) ?></div>
                     <div class="reviews-card__user">
                         <div class="reviews-card__user-img">
                             <?php if (!empty($r['author_image_path'])): ?>
-                            <img alt="<?= e($r['author_name']) ?>" loading="lazy" src="<?= e(media_url($r['author_image_path'])) ?>">
+                            <img alt="<?= e($r['author_name']) ?>" <?= $ri < 2 ? 'fetchpriority="high"' : 'loading="lazy"' ?> src="<?= e(media_url($r['author_image_path'])) ?>">
                             <?php endif; ?>
                         </div>
                         <div class="reviews-card__user-body">

@@ -31,8 +31,8 @@ $_getintouch_url = in_array($page_class ?? '', ['blog-list-page', 'cases-list-pa
     <link rel="preload" href="/assets/fonts/BasementGrotesque-Medium.woff2" as="font" type="font/woff2" crossorigin="anonymous" fetchpriority="low">
     <link rel="preload" href="/assets/fonts/BasementGrotesque-Bold.woff2" as="font" type="font/woff2" crossorigin="anonymous" fetchpriority="low">
     <!-- CSS: preload hint so browser discovers it before parsing <link> -->
-    <link rel="preload" as="style" href="/css/app.min.css?v=8">
-    <link rel="stylesheet" href="/css/app.min.css?v=8" fetchpriority="high">
+    <link rel="preload" as="style" href="/css/app.min.css?v=9">
+    <link rel="stylesheet" href="/css/app.min.css?v=9" fetchpriority="high">
     <link rel="stylesheet" href="/css/icons.css?v=2">
     <style>
     .submenu__info-icon.icon--white{display:none!important}
