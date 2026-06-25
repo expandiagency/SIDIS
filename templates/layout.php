@@ -27,8 +27,8 @@ function active_lang_url(string $path, array $lang, array $default_lang): string
     <link rel="preload" href="/assets/fonts/BasementGrotesque-Medium.woff2" as="font" type="font/woff2" crossorigin="anonymous">
     <link rel="preload" href="/assets/fonts/BasementGrotesque-Bold.woff2" as="font" type="font/woff2" crossorigin="anonymous">
     <!-- CSS: preload hint so browser discovers it before parsing <link> -->
-    <link rel="preload" as="style" href="/css/app.min.css">
-    <link rel="stylesheet" href="/css/app.min.css" fetchpriority="high">
+    <link rel="preload" as="style" href="/css/app.min.css?v=2">
+    <link rel="stylesheet" href="/css/app.min.css?v=2" fetchpriority="high">
     <link rel="stylesheet" href="/css/icons.css?v=2">
     <style>
     .submenu__info-icon.icon--white{display:none!important}
