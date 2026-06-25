@@ -102,7 +102,7 @@ $_getintouch_url = in_array($page_class ?? '', ['blog-list-page', 'cases-list-pa
                                 <span class="menu__link-text"><?= e($item['title']) ?></span>
                             </span>
                             <?php else: ?>
-                            <a href="<?= e($item['url']) ?>" class="menu__link">
+                            <a href="<?= e($item['url'] === '#getintouch' ? $_getintouch_url : $item['url']) ?>" class="menu__link">
                                 <span class="menu__link-text"><?= e($item['title']) ?></span>
                             </a>
                             <?php endif; ?>
