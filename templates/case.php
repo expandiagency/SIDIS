@@ -241,11 +241,9 @@ if (!empty($ex['tech_items'])) {
         <div class="result__body">
             <div class="result__text">"<?= e($ex['result_quote']) ?>"</div>
             <div class="result__user">
-                <?php if (!empty($ex['result_user_image'])): ?>
                 <div class="result__user-img">
-                    <img alt="<?= e($ex['result_user_name'] ?? '') ?>" loading="lazy" src="<?= e($ex['result_user_image']) ?>">
+                    <img alt="<?= e($ex['result_user_name'] ?? '') ?>" loading="lazy" src="<?= e($ex['result_user_image'] ?: '/assets/img/nda-user.webp') ?>">
                 </div>
-                <?php endif; ?>
                 <div class="result__user-body">
                     <div class="result__user-head">
                         <div class="result__user-name"><?= e($ex['result_user_name'] ?? '') ?></div>

@@ -3346,9 +3346,15 @@ a.automation__marquee-item {
   width: 100vw;
   background: linear-gradient(270deg, rgba(251, 251, 251, 0) 0%, #fbfbfb 1%);
 }
+.solutions__slider:not(.swiper-initialized) {
+  max-width: 100%;
+}
 .solutions__slider:not(.swiper-initialized) .solutions__wrapper {
   flex-wrap: wrap;
   gap: 20px;
+}
+.solutions__slider:not(.swiper-initialized) .solutions__slide {
+  flex: 1 1 280px;
 }
 .solutions__slider:not(.swiper-initialized) .solutions__slide:first-child {
   color: var(--clr-white);

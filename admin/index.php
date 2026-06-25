@@ -934,7 +934,7 @@ tr:hover td{background:#fafafa}
                     <button class="btn btn--primary" style="margin-left:auto" @click="saveCase">Save</button>
                 </div>
                 <div class="tabs">
-                    <button v-for="t in ['Basic','Content','Challenges','Tech Stack','Terms & Tags']" :key="t"
+                    <button v-for="t in ['Basic','Content','Challenges','Tech Stack','Testimonial','Terms & Tags']" :key="t"
                         class="tab-btn" :class="{active:caseTab===t}" @click="caseTab=t">{{ t }}</button>
                 </div>
 
@@ -1024,6 +1024,22 @@ tr:hover td{background:#fafafa}
                                         </div>
                                     </div>
                                 </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div v-if="caseTab==='Testimonial'" class="form-grid cols-1">
+                        <p style="font-size:13px;color:var(--muted);margin-bottom:4px">Shown as a quote block on the case study page. Leave the quote empty to hide this section entirely.</p>
+                        <div class="field"><label>Quote</label><textarea v-model="caseForm.extras.result_quote" rows="3" placeholder="Their automation expertise helped us..."></textarea></div>
+                        <div class="field"><label>Author Name</label><input v-model="caseForm.extras.result_user_name" placeholder="e.g. NDA, or a real name"></div>
+                        <div class="field"><label>Author Title / Company</label><input v-model="caseForm.extras.result_user_work" placeholder="e.g. CEO, Company Name"></div>
+                        <div class="field"><label>LinkedIn URL (optional)</label><input v-model="caseForm.extras.result_linkedin" placeholder="https://linkedin.com/in/..."></div>
+                        <div class="field"><label>Author Photo</label>
+                            <p style="font-size:12px;color:var(--muted);margin-bottom:6px">If left empty, a generic "NDA" placeholder photo is shown instead.</p>
+                            <div class="img-picker">
+                                <img :src="caseForm.extras.result_user_image || '/assets/img/nda-user.webp'" class="img-thumb">
+                                <button class="btn btn--outline btn--sm" @click="pickMedia(m=>{caseForm.extras.result_user_image=m.url})">Choose</button>
+                                <button v-if="caseForm.extras.result_user_image" class="btn btn--sm" @click="caseForm.extras.result_user_image=''">Reset to default</button>
                             </div>
                         </div>
                     </div>
@@ -2230,16 +2246,16 @@ createApp({
         const editingCase = ref(null);
         const caseTab = ref('Basic');
         const allTerms = ref([]);
-        const caseForm = reactive({id:0,slug:'',title:'',company_name:'',description:'',overview_text:'',location:'',cooperation_period:'',key_results_text:'',services_text:'',meta_title:'',meta_description:'',is_active:1,is_featured:0,sort_order:0,link_behavior:'case_page',external_url:'',featured_image_id:null,company_logo_id:null,image_url:'',logo_url:'',challenges:[],tech_items:[],term_ids:[]});
+        const caseForm = reactive({id:0,slug:'',title:'',company_name:'',description:'',overview_text:'',location:'',cooperation_period:'',key_results_text:'',services_text:'',meta_title:'',meta_description:'',is_active:1,is_featured:0,sort_order:0,link_behavior:'case_page',external_url:'',featured_image_id:null,company_logo_id:null,image_url:'',logo_url:'',challenges:[],tech_items:[],term_ids:[],extras:{}});
 
         const loadCases = async () => { casesList.value = await api(`/admin/api/cases.php?lang_id=${langId.value}`); };
         const openCaseEditor = async (c=null) => {
             caseTab.value='Basic';
             if (c) {
                 const full = await api(`/admin/api/cases.php?id=${c.id}&lang_id=${langId.value}`);
-                Object.assign(caseForm,{...full,link_behavior:full.link_behavior||'case_page',external_url:full.external_url||'',key_results_text:(full.key_results||[]).map(r=>r.text).join('\n'),services_text:(full.services||[]).map(s=>s.service_name).join('\n'),challenges:full.challenges.map(ch=>({id:ch.id,title:ch.ch_title||'',text:ch.ch_text||''})),tech_items:full.tech_items||[],term_ids:full.term_ids||[]});
+                Object.assign(caseForm,{...full,link_behavior:full.link_behavior||'case_page',external_url:full.external_url||'',key_results_text:(full.key_results||[]).map(r=>r.text).join('\n'),services_text:(full.services||[]).map(s=>s.service_name).join('\n'),challenges:full.challenges.map(ch=>({id:ch.id,title:ch.ch_title||'',text:ch.ch_text||''})),tech_items:full.tech_items||[],term_ids:full.term_ids||[],extras:full.extras||{}});
             } else {
-                Object.assign(caseForm,{id:0,slug:'',title:'',company_name:'',description:'',overview_text:'',location:'',cooperation_period:'',key_results_text:'',services_text:'',meta_title:'',meta_description:'',is_active:1,is_featured:0,sort_order:0,link_behavior:'case_page',external_url:'',featured_image_id:null,company_logo_id:null,image_url:'',logo_url:'',challenges:[],tech_items:[],term_ids:[]});
+                Object.assign(caseForm,{id:0,slug:'',title:'',company_name:'',description:'',overview_text:'',location:'',cooperation_period:'',key_results_text:'',services_text:'',meta_title:'',meta_description:'',is_active:1,is_featured:0,sort_order:0,link_behavior:'case_page',external_url:'',featured_image_id:null,company_logo_id:null,image_url:'',logo_url:'',challenges:[],tech_items:[],term_ids:[],extras:{}});
             }
             editingCase.value = true;
         };
