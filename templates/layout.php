@@ -93,9 +93,15 @@ function active_lang_url(string $path, array $lang, array $default_lang): string
                     <ul class="menu__list">
                         <?php foreach ($nav_header as $item): ?>
                         <li class="menu__item<?= $item['has_mega'] ? ' menu__item--dropdown' : '' ?>">
-                            <a href="<?= $item['has_mega'] ? '#' : e($item['url']) ?>" class="menu__link"<?= $item['has_mega'] ? ' data-menu="mega-' . $item['id'] . '"' : '' ?>>
+                            <?php if ($item['has_mega']): ?>
+                            <span class="menu__link" data-menu="mega-<?= $item['id'] ?>">
+                                <span class="menu__link-text"><?= e($item['title']) ?></span>
+                            </span>
+                            <?php else: ?>
+                            <a href="<?= e($item['url']) ?>" class="menu__link">
                                 <span class="menu__link-text"><?= e($item['title']) ?></span>
                             </a>
+                            <?php endif; ?>
                             <?php if ($item['has_mega'] && !empty($item['mega_categories'])): ?>
                             <div class="submenu" data-fls-lp="" data-menu-target="mega-<?= $item['id'] ?>" data-submenu="">
                                 <div class="submenu__container">
