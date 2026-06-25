@@ -652,6 +652,53 @@ function media_url($path): string {
     return UPLOAD_URL . $path;
 }
 
+// Widths (in px) of the resized variants generated alongside each uploaded image.
+const RESPONSIVE_WIDTHS = [480, 960];
+
+// Generates {name}-{width}w.webp variants next to the original, skipping widths
+// not smaller than the source (never upscale). Silently no-ops if GD is missing
+// or the file isn't a raster image GD can decode.
+function generate_responsive_variants(string $abs_path, string $mime_type): void {
+    if (!function_exists('imagecreatefromstring') || !in_array($mime_type, ['image/jpeg', 'image/png', 'image/webp'], true)) return;
+    $raw = @file_get_contents($abs_path);
+    if ($raw === false) return;
+    $src = @imagecreatefromstring($raw);
+    if (!$src) return;
+    $srcW = imagesx($src);
+    $srcH = imagesy($src);
+    $dir  = pathinfo($abs_path, PATHINFO_DIRNAME);
+    $base = pathinfo($abs_path, PATHINFO_FILENAME);
+    foreach (RESPONSIVE_WIDTHS as $w) {
+        if ($w >= $srcW) continue;
+        $h = (int)round($srcH * ($w / $srcW));
+        $dst = imagecreatetruecolor($w, $h);
+        imagealphablending($dst, false);
+        imagesavealpha($dst, true);
+        imagecopyresampled($dst, $src, 0, 0, 0, 0, $w, $h, $srcW, $srcH);
+        imagewebp($dst, $dir . '/' . $base . '-' . $w . 'w.webp', 82);
+        imagedestroy($dst);
+    }
+    imagedestroy($src);
+}
+
+// Builds a srcset string for a media path using whichever -{w}w.webp variants
+// exist on disk next to the original. Returns '' if none were generated
+// (e.g. SVGs, or the source was already smaller than every target width).
+function media_srcset(string $path): string {
+    if (!$path || $path[0] === '.' || strpos($path, 'http') === 0) return '';
+    $abs_path = UPLOAD_DIR . $path;
+    $dir  = pathinfo($abs_path, PATHINFO_DIRNAME);
+    $base = pathinfo($abs_path, PATHINFO_FILENAME);
+    $rel_dir = pathinfo($path, PATHINFO_DIRNAME);
+    $rel_dir = ($rel_dir === '.') ? '' : $rel_dir . '/';
+    $parts = [];
+    foreach (RESPONSIVE_WIDTHS as $w) {
+        $variant = $dir . '/' . $base . '-' . $w . 'w.webp';
+        if (file_exists($variant)) $parts[] = UPLOAD_URL . $rel_dir . $base . '-' . $w . 'w.webp ' . $w . 'w';
+    }
+    return implode(', ', $parts);
+}
+
 function upload_file(array $file, string $subdir = ''): int {
     $allowed = ['image/jpeg', 'image/png', 'image/webp', 'image/gif', 'image/svg+xml',
                 'video/mp4', 'video/webm', 'video/ogg'];
@@ -666,6 +713,7 @@ function upload_file(array $file, string $subdir = ''): int {
 
     move_uploaded_file($file['tmp_name'], $dir . $name);
     $rel_path = ($subdir ? rtrim($subdir, '/') . '/' : '') . $name;
+    generate_responsive_variants($dir . $name, $file['type']);
     return insert('media', [
         'filename'      => $name,
         'original_name' => $file['name'],
