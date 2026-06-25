@@ -58,7 +58,7 @@ require __DIR__ . '/layout.php';
     </div>
     <div class="hero__bg">
         <?php $hero_poster = media_url($h['hero_poster_url'] ?? '') ?: '/assets/img/poster.webp'; ?>
-        <video autoplay muted loop playsinline poster="<?= e($hero_poster) ?>">
+        <video autoplay muted loop playsinline preload="metadata" poster="<?= e($hero_poster) ?>">
             <source src="<?= e($h['hero_video_path'] ?? './assets/video/1-hero.mp4') ?>" type="video/mp4">
         </video>
     </div>

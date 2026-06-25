@@ -22,13 +22,13 @@ function active_lang_url(string $path, array $lang, array $default_lang): string
     <link rel="preload" href="/assets/fonts/Inter-Regular.woff2" as="font" type="font/woff2" crossorigin="anonymous">
     <link rel="preload" href="/assets/fonts/Inter-SemiBold.woff2" as="font" type="font/woff2" crossorigin="anonymous">
     <!-- Non-critical fonts — preloaded but lower priority -->
-    <link rel="preload" href="/assets/fonts/Inter-Medium.woff2" as="font" type="font/woff2" crossorigin="anonymous">
-    <link rel="preload" href="/assets/fonts/Inter-Bold.woff2" as="font" type="font/woff2" crossorigin="anonymous">
-    <link rel="preload" href="/assets/fonts/BasementGrotesque-Medium.woff2" as="font" type="font/woff2" crossorigin="anonymous">
-    <link rel="preload" href="/assets/fonts/BasementGrotesque-Bold.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+    <link rel="preload" href="/assets/fonts/Inter-Medium.woff2" as="font" type="font/woff2" crossorigin="anonymous" fetchpriority="low">
+    <link rel="preload" href="/assets/fonts/Inter-Bold.woff2" as="font" type="font/woff2" crossorigin="anonymous" fetchpriority="low">
+    <link rel="preload" href="/assets/fonts/BasementGrotesque-Medium.woff2" as="font" type="font/woff2" crossorigin="anonymous" fetchpriority="low">
+    <link rel="preload" href="/assets/fonts/BasementGrotesque-Bold.woff2" as="font" type="font/woff2" crossorigin="anonymous" fetchpriority="low">
     <!-- CSS: preload hint so browser discovers it before parsing <link> -->
-    <link rel="preload" as="style" href="/css/app.min.css?v=5">
-    <link rel="stylesheet" href="/css/app.min.css?v=5" fetchpriority="high">
+    <link rel="preload" as="style" href="/css/app.min.css?v=6">
+    <link rel="stylesheet" href="/css/app.min.css?v=6" fetchpriority="high">
     <link rel="stylesheet" href="/css/icons.css?v=2">
     <style>
     .submenu__info-icon.icon--white{display:none!important}

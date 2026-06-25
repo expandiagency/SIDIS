@@ -3029,6 +3029,9 @@ a.planning__marquee-item {
 .why__slider:not(.swiper-initialized) .why__slide:nth-child(n+4) {
   display: none;
 }
+.why__slider:not(.swiper-initialized) .why__wrapper {
+  gap: 12px;
+}
 .why__wrapper {
   pointer-events: none;
 }
