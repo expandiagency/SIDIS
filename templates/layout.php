@@ -37,7 +37,8 @@ $_getintouch_url = in_array($page_class ?? '', ['blog-list-page', 'cases-list-pa
     <!-- CSS: preload hint so browser discovers it before parsing <link> -->
     <link rel="preload" as="style" href="/css/app.min.css?v=10">
     <link rel="stylesheet" href="/css/app.min.css?v=10" fetchpriority="high">
-    <link rel="stylesheet" href="/css/icons.css?v=2">
+    <link rel="preload" href="/css/icons.css?v=2" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="/css/icons.css?v=2"></noscript>
     <style>
     .submenu__info-icon.icon--white{display:none!important}
     .solutions__slide-icon.icon--white{display:none}

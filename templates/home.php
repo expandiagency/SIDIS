@@ -58,7 +58,7 @@ require __DIR__ . '/layout.php';
     </div>
     <div class="hero__bg">
         <?php $hero_poster = media_url($h['hero_poster_url'] ?? '') ?: '/assets/img/poster.webp'; ?>
-        <video autoplay muted loop playsinline preload="metadata" poster="<?= e($hero_poster) ?>">
+        <video autoplay muted loop playsinline preload="metadata" fetchpriority="high" poster="<?= e($hero_poster) ?>">
             <source src="<?= e($h['hero_video_path'] ?? './assets/video/1-hero.mp4') ?>" type="video/mp4">
         </video>
     </div>
@@ -180,15 +180,15 @@ require __DIR__ . '/layout.php';
         <div data-fls-marquee="" data-fls-marquee-space="60" data-fls-marquee-speed="765" class="automation__marquee">
             <?php if (!empty($partners)): ?>
             <?php foreach ($partners as $logo): ?>
-            <div class="automation__marquee-item"><img alt="<?= e($logo['alt_text']) ?>" loading="lazy" src="<?= e(media_url($logo['image_path'])) ?>"></div>
+            <div class="automation__marquee-item"><img alt="<?= e($logo['alt_text']) ?>" width="150" height="80" loading="lazy" src="<?= e(media_url($logo['image_path'])) ?>"></div>
             <?php endforeach; ?>
             <?php else: ?>
-            <div class="automation__marquee-item"><img alt="" loading="lazy" src="./assets/img/automation/partner-1.webp"></div>
-            <div class="automation__marquee-item"><img alt="" loading="lazy" src="./assets/img/automation/partner-2.webp"></div>
-            <div class="automation__marquee-item"><img alt="" loading="lazy" src="./assets/img/automation/partner-3.webp"></div>
-            <div class="automation__marquee-item"><img alt="" loading="lazy" src="./assets/img/automation/partner-4.webp"></div>
-            <div class="automation__marquee-item"><img alt="" loading="lazy" src="./assets/img/automation/partner-1.webp"></div>
-            <div class="automation__marquee-item"><img alt="" loading="lazy" src="./assets/img/automation/partner-2.webp"></div>
+            <div class="automation__marquee-item"><img alt="" width="150" height="80" loading="lazy" src="./assets/img/automation/partner-1.webp"></div>
+            <div class="automation__marquee-item"><img alt="" width="150" height="80" loading="lazy" src="./assets/img/automation/partner-2.webp"></div>
+            <div class="automation__marquee-item"><img alt="" width="150" height="80" loading="lazy" src="./assets/img/automation/partner-3.webp"></div>
+            <div class="automation__marquee-item"><img alt="" width="150" height="80" loading="lazy" src="./assets/img/automation/partner-4.webp"></div>
+            <div class="automation__marquee-item"><img alt="" width="150" height="80" loading="lazy" src="./assets/img/automation/partner-1.webp"></div>
+            <div class="automation__marquee-item"><img alt="" width="150" height="80" loading="lazy" src="./assets/img/automation/partner-2.webp"></div>
             <?php endif; ?>
         </div>
     </div>
@@ -340,7 +340,7 @@ require __DIR__ . '/layout.php';
                             <div class="reviews-card__user-socials">
                                 <?php if (!empty($r['linkedin_url'])): ?>
                                 <a href="<?= e($r['linkedin_url']) ?>" class="reviews-card__user-social" target="_blank">
-                                    <img src="./assets/img/icons/linkedin.svg" alt="LinkedIn" loading="lazy">
+                                    <img src="./assets/img/icons/linkedin.svg" width="38" height="38" alt="LinkedIn" loading="lazy">
                                 </a>
                                 <?php endif; ?>
                                 <?php $clutch_href = !empty($r['clutch_url']) ? $r['clutch_url'] : (get_setting('clutch_url') ?: '#'); ?>
@@ -350,7 +350,7 @@ require __DIR__ . '/layout.php';
                                 </a>
                                 <?php else: ?>
                                 <a href="<?= e($clutch_href) ?>" class="reviews-card__user-social" target="_blank" rel="noopener">
-                                    <img src="./assets/img/header/Rating%20Container.svg" alt="Rating" loading="lazy">
+                                    <img src="./assets/img/header/Rating%20Container.svg" width="78" height="38" alt="Rating" loading="lazy">
                                 </a>
                                 <?php endif; ?>
                             </div>

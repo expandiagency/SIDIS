@@ -57,7 +57,7 @@ $articles_title = $extras['articles_title'] ?? 'Latest Automation Insights';
                         <?php if (!empty($post['author_linkedin'])): ?>
                         <div class="promo-article__author-socials">
                             <a href="<?= e($post['author_linkedin']) ?>" target="_blank" rel="noopener" class="promo-article__author-social">
-                                <img src="/assets/img/icons/linkedin.svg" alt="LinkedIn" loading="lazy">
+                                <img src="/assets/img/icons/linkedin.svg" width="38" height="38" alt="LinkedIn" loading="lazy">
                             </a>
                         </div>
                         <?php endif; ?>

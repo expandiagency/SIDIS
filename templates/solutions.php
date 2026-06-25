@@ -157,13 +157,13 @@ function sol_url(string $path): string {
         <div data-fls-marquee="" data-fls-marquee-space="60" data-fls-marquee-speed="765" class="planning__marquee">
             <?php if (!empty($partners)): ?>
             <?php foreach ($partners as $logo): ?>
-            <div class="planning__marquee-item"><img alt="<?= e($logo['alt_text']) ?>" loading="lazy" src="<?= e(media_url($logo['image_path'])) ?>"></div>
+            <div class="planning__marquee-item"><img alt="<?= e($logo['alt_text']) ?>" width="150" height="80" loading="lazy" src="<?= e(media_url($logo['image_path'])) ?>"></div>
             <?php endforeach; ?>
             <?php else: ?>
-            <div class="planning__marquee-item"><img alt="Partner" loading="lazy" src="/assets/img/automation/partner-1.webp"></div>
-            <div class="planning__marquee-item"><img alt="Partner" loading="lazy" src="/assets/img/automation/partner-2.webp"></div>
-            <div class="planning__marquee-item"><img alt="Partner" loading="lazy" src="/assets/img/automation/partner-3.webp"></div>
-            <div class="planning__marquee-item"><img alt="Partner" loading="lazy" src="/assets/img/automation/partner-4.webp"></div>
+            <div class="planning__marquee-item"><img alt="Partner" width="150" height="80" loading="lazy" src="/assets/img/automation/partner-1.webp"></div>
+            <div class="planning__marquee-item"><img alt="Partner" width="150" height="80" loading="lazy" src="/assets/img/automation/partner-2.webp"></div>
+            <div class="planning__marquee-item"><img alt="Partner" width="150" height="80" loading="lazy" src="/assets/img/automation/partner-3.webp"></div>
+            <div class="planning__marquee-item"><img alt="Partner" width="150" height="80" loading="lazy" src="/assets/img/automation/partner-4.webp"></div>
             <?php endif; ?>
         </div>
         <?php if (!empty($c['info_title'])): ?>

@@ -252,7 +252,7 @@ if (!empty($ex['tech_items'])) {
                     <div class="result__user-socials">
                         <?php if (!empty($ex['result_linkedin'])): ?>
                         <a href="<?= e($ex['result_linkedin']) ?>" class="result__user-social" target="_blank">
-                            <img src="/assets/img/icons/linkedin.svg" alt="LinkedIn" loading="lazy">
+                            <img src="/assets/img/icons/linkedin.svg" width="38" height="38" alt="LinkedIn" loading="lazy">
                         </a>
                         <?php endif; ?>
                     </div>
