@@ -20,7 +20,7 @@ require __DIR__ . '/layout.php'; ?>
             </div>
             <div class="promo__bg">
                 <?php if ($_blog_video): ?>
-                <video autoplay muted loop playsinline poster="<?= e($_blog_poster) ?>">
+                <video autoplay muted loop playsinline preload="metadata" poster="<?= e($_blog_poster) ?>">
                     <source src="<?= e($_blog_video) ?>" type="video/mp4">
                 </video>
                 <?php elseif ($_blog_img): ?>

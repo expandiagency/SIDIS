@@ -20,6 +20,10 @@ $_getintouch_url = in_array($page_class ?? '', ['blog-list-page', 'cases-list-pa
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <?php if (($page_class ?? '') === 'home-page'): ?>
+    <?php $_auto_preload_img = !empty($auto_imgs[0]['image_path']) ? media_url($auto_imgs[0]['image_path']) : '/assets/img/automation/image.webp'; ?>
+    <link rel="preload" href="<?= e($_auto_preload_img) ?>" as="image" fetchpriority="high">
+    <?php endif; ?>
     <!-- Critical fonts — only the two weights used above the fold -->
     <link rel="preload" href="/assets/fonts/BasementGrotesque-Black.woff2" as="font" type="font/woff2" crossorigin="anonymous">
     <link rel="preload" href="/assets/fonts/BasementGrotesqueExpanded-Black.woff2" as="font" type="font/woff2" crossorigin="anonymous">
