@@ -934,7 +934,7 @@ tr:hover td{background:#fafafa}
                     <button class="btn btn--primary" style="margin-left:auto" @click="saveCase">Save</button>
                 </div>
                 <div class="tabs">
-                    <button v-for="t in ['Basic','Content','Challenges','Tech Stack','Testimonial','Terms & Tags']" :key="t"
+                    <button v-for="t in ['Basic','Content','Challenges','Tech Stack','Solution','Results','Testimonial','Terms & Tags']" :key="t"
                         class="tab-btn" :class="{active:caseTab===t}" @click="caseTab=t">{{ t }}</button>
                 </div>
 
@@ -981,6 +981,7 @@ tr:hover td{background:#fafafa}
                     </div>
 
                     <div v-if="caseTab==='Challenges'">
+                        <div class="field" style="margin-bottom:16px"><label>Section Intro Text (optional)</label><textarea v-model="caseForm.extras.challenges_text" rows="2" placeholder="Shown above the challenges list"></textarea></div>
                         <div style="display:flex;justify-content:space-between;margin-bottom:12px">
                             <strong>Challenges</strong>
                             <button class="btn btn--outline btn--sm" @click="caseForm.challenges.push({id:0,title:'',text:''})">+ Add</button>
@@ -1002,9 +1003,10 @@ tr:hover td{background:#fafafa}
                     </div>
 
                     <div v-if="caseTab==='Tech Stack'">
+                        <div class="field" style="margin-bottom:16px"><label>Section Intro Text (optional)</label><textarea v-model="caseForm.extras.tech_text" rows="2" placeholder="Shown above the tech stack slider"></textarea></div>
                         <div style="display:flex;justify-content:space-between;margin-bottom:12px">
                             <strong>Tech Stack Items</strong>
-                            <button class="btn btn--outline btn--sm" @click="caseForm.tech_items.push({name:'',icon_svg:''})">+ Add</button>
+                            <button class="btn btn--outline btn--sm" @click="caseForm.tech_items.push({name:'',description:''})">+ Add</button>
                         </div>
                         <div class="repeat-list">
                             <div v-for="(ti,i) in caseForm.tech_items" :key="i" class="repeat-item">
@@ -1015,13 +1017,54 @@ tr:hover td{background:#fafafa}
                                 <div class="repeat-item__body">
                                     <div class="form-grid">
                                         <div class="field"><label>Name</label><input v-model="ti.name"></div>
-                                        <div class="field"><label>Icon SVG</label>
-                                            <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
-                                                <div class="svg-preview" v-html="ti.icon_svg||'<span style=color:#ccc;font-size:10px>No icon</span>'"></div>
-                                                <label class="btn btn--outline btn--sm" style="cursor:pointer">Upload SVG<input type="file" accept=".svg,image/svg+xml" style="display:none" @change="loadSvgInto($event,ti,'icon_svg')"></label>
-                                            </div>
-                                            <textarea v-model="ti.icon_svg" rows="2" placeholder="<svg...></svg>"></textarea>
-                                        </div>
+                                        <div class="field"><label>Description</label><textarea v-model="ti.description" rows="2"></textarea></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div v-if="caseTab==='Solution'" class="form-grid cols-1">
+                        <p style="font-size:13px;color:var(--muted);margin-bottom:4px">Shown as "The Solution" section. Leave the title empty to hide this section entirely.</p>
+                        <div class="field"><label>Subtitle</label><input v-model="caseForm.extras.solution_subtitle" placeholder="The Solution"></div>
+                        <div class="field"><label>Title</label><input v-model="caseForm.extras.solution_title"></div>
+                        <div class="field"><label>Text — Column 1</label><textarea v-model="caseForm.extras.solution_text1" rows="6" placeholder="Basic HTML allowed, e.g. <p>...</p><ul><li>...</li></ul>"></textarea></div>
+                        <div class="field"><label>Text — Column 2</label><textarea v-model="caseForm.extras.solution_text2" rows="6" placeholder="Basic HTML allowed, e.g. <p>...</p><ul><li>...</li></ul>"></textarea></div>
+                        <div class="field"><label>Image</label>
+                            <p style="font-size:12px;color:var(--muted);margin-bottom:6px">If left empty, a default solution illustration is used.</p>
+                            <div class="img-picker">
+                                <img :src="caseForm.extras.solution_image || '/assets/img/Solution.webp'" class="img-thumb">
+                                <button class="btn btn--outline btn--sm" @click="pickMedia(m=>{caseForm.extras.solution_image=m.url})">Choose</button>
+                                <button v-if="caseForm.extras.solution_image" class="btn btn--sm" @click="caseForm.extras.solution_image=''">Reset to default</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div v-if="caseTab==='Results'" class="form-grid cols-1">
+                        <p style="font-size:13px;color:var(--muted);margin-bottom:4px">Shown as the "Final Results" section. Leave the results list empty to hide this section entirely.</p>
+                        <div class="field"><label>Title</label><input v-model="caseForm.extras.results_title" placeholder="Final Results"></div>
+                        <div class="field"><label>Intro Text (optional)</label><textarea v-model="caseForm.extras.results_text" rows="2"></textarea></div>
+                        <div class="field"><label>Image (optional)</label>
+                            <div class="img-picker">
+                                <img v-if="caseForm.extras.results_image" :src="caseForm.extras.results_image" class="img-thumb">
+                                <button class="btn btn--outline btn--sm" @click="pickMedia(m=>{caseForm.extras.results_image=m.url})">Choose</button>
+                                <button v-if="caseForm.extras.results_image" class="btn btn--sm" @click="caseForm.extras.results_image=''">Remove</button>
+                            </div>
+                        </div>
+                        <div style="display:flex;justify-content:space-between;margin-bottom:4px;margin-top:8px">
+                            <strong>Result Items</strong>
+                            <button class="btn btn--outline btn--sm" @click="(caseForm.extras.results=caseForm.extras.results||[]).push({title:'',text:''})">+ Add</button>
+                        </div>
+                        <div class="repeat-list">
+                            <div v-for="(r,i) in caseForm.extras.results" :key="i" class="repeat-item">
+                                <div class="repeat-item__header">
+                                    <span class="repeat-item__header-label">{{ r.title || 'Result '+(i+1) }}</span>
+                                    <div class="repeat-item__actions"><button class="btn btn--danger btn--sm btn--icon" @click="caseForm.extras.results.splice(i,1)">×</button></div>
+                                </div>
+                                <div class="repeat-item__body">
+                                    <div class="form-grid cols-1" style="gap:8px">
+                                        <div class="field"><label>Title</label><input v-model="r.title"></div>
+                                        <div class="field"><label>Description</label><textarea v-model="r.text" rows="2"></textarea></div>
                                     </div>
                                 </div>
                             </div>
@@ -2253,9 +2296,13 @@ createApp({
             caseTab.value='Basic';
             if (c) {
                 const full = await api(`/admin/api/cases.php?id=${c.id}&lang_id=${langId.value}`);
-                Object.assign(caseForm,{...full,link_behavior:full.link_behavior||'case_page',external_url:full.external_url||'',key_results_text:(full.key_results||[]).map(r=>r.text).join('\n'),services_text:(full.services||[]).map(s=>s.service_name).join('\n'),challenges:full.challenges.map(ch=>({id:ch.id,title:ch.ch_title||'',text:ch.ch_text||''})),tech_items:full.tech_items||[],term_ids:full.term_ids||[],extras:full.extras||{}});
+                const extras = full.extras||{};
+                const techItems = (extras.tech_items && extras.tech_items.length)
+                    ? extras.tech_items.map(t=>({name:t.name||'',description:t.description||''}))
+                    : (full.tech_items||[]).map(t=>({name:t.name||'',description:''}));
+                Object.assign(caseForm,{...full,link_behavior:full.link_behavior||'case_page',external_url:full.external_url||'',key_results_text:(full.key_results||[]).map(r=>r.text).join('\n'),services_text:(full.services||[]).map(s=>s.service_name).join('\n'),challenges:full.challenges.map(ch=>({id:ch.id,title:ch.ch_title||'',text:ch.ch_text||''})),tech_items:techItems,term_ids:full.term_ids||[],extras:{...extras,results:extras.results||[]}});
             } else {
-                Object.assign(caseForm,{id:0,slug:'',title:'',company_name:'',description:'',overview_text:'',location:'',cooperation_period:'',key_results_text:'',services_text:'',meta_title:'',meta_description:'',is_active:1,is_featured:0,sort_order:0,link_behavior:'case_page',external_url:'',featured_image_id:null,company_logo_id:null,image_url:'',logo_url:'',challenges:[],tech_items:[],term_ids:[],extras:{}});
+                Object.assign(caseForm,{id:0,slug:'',title:'',company_name:'',description:'',overview_text:'',location:'',cooperation_period:'',key_results_text:'',services_text:'',meta_title:'',meta_description:'',is_active:1,is_featured:0,sort_order:0,link_behavior:'case_page',external_url:'',featured_image_id:null,company_logo_id:null,image_url:'',logo_url:'',challenges:[],tech_items:[],term_ids:[],extras:{results:[]}});
             }
             editingCase.value = true;
         };
@@ -2263,6 +2310,8 @@ createApp({
             const payload = {...caseForm,
                 key_results: caseForm.key_results_text.split('\n').filter(l=>l.trim()),
                 services: caseForm.services_text.split('\n').filter(l=>l.trim()),
+                tech_items: caseForm.tech_items.map(t=>({name:t.name||'',icon_svg:''})),
+                extras: {...caseForm.extras, tech_items: caseForm.tech_items.map(t=>({name:t.name||'',description:t.description||''}))},
             };
             const r = await api(`/admin/api/cases.php?action=save&lang_id=${langId.value}${caseForm.id?'&id='+caseForm.id:''}`,{method:'POST',body:JSON.stringify(payload)});
             if (r.ok) { caseForm.id = r.id; showAlert('Case saved!'); }

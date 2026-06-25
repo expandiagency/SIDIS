@@ -193,13 +193,11 @@ if (!empty($ex['tech_items'])) {
                     <?php endif; ?>
                 </div>
             </div>
-            <?php if (!empty($ex['solution_image'])): ?>
             <div class="descrblock__img">
                 <picture>
-                    <img alt="Solution" loading="lazy" src="<?= e($ex['solution_image']) ?>">
+                    <img alt="Solution" loading="lazy" src="<?= e($ex['solution_image'] ?: '/assets/img/Solution.webp') ?>">
                 </picture>
             </div>
-            <?php endif; ?>
         </div>
     </div>
 </section>
