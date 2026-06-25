@@ -4326,25 +4326,12 @@ function initSliders() {
 	});
 	const plannings = document.querySelectorAll(".planning");
 	if (plannings.length) plannings.forEach((block) => {
-		const blockImageSlider = block.querySelector(".planning__slider");
 		const blockDescrSlider = block.querySelector(".planning__descr");
 		const next = block.querySelector(".swiper-button-next");
 		const prev = block.querySelector(".swiper-button-prev");
 		const pagination = block.querySelector(".swiper-pagination");
-		const swiperImg = new Swiper(blockImageSlider, {
-			modules: [Controller, Navigation],
-			observer: true,
-			observeParents: true,
-			slidesPerView: 1,
-			spaceBetween: 0,
-			speed: 800,
-			navigation: {
-				prevEl: prev,
-				nextEl: next
-			}
-		});
-		const swiperText = new Swiper(blockDescrSlider, {
-			modules: [Pagination, Controller],
+		new Swiper(blockDescrSlider, {
+			modules: [Pagination, Navigation],
 			observer: true,
 			observeParents: true,
 			slidesPerView: 1,
@@ -4353,10 +4340,12 @@ function initSliders() {
 			pagination: {
 				el: pagination,
 				clickable: true
+			},
+			navigation: {
+				prevEl: prev,
+				nextEl: next
 			}
 		});
-		swiperImg.controller.control = swiperText;
-		swiperText.controller.control = swiperImg;
 	});
 	if (document.querySelector(".solved__slider")) document.querySelectorAll(".solved__slider").forEach((el) => {
 		const parent = el.parentElement;

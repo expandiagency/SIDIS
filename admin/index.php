@@ -745,6 +745,13 @@ tr:hover td{background:#fafafa}
                                 </div>
                                 <hr style="margin:16px 0;border:none;border-top:1px solid var(--border)">
                                 <div class="form-grid cols-1">
+                                    <div class="field"><label>Side Image</label>
+                                        <div class="img-picker">
+                                            <img v-if="(blk.content_obj.images||[])[0]?.image_url" :src="blk.content_obj.images[0].image_url" class="img-thumb">
+                                            <button class="btn btn--outline btn--sm" @click="pickMedia(m=>{blk.content_obj.images=[{image_id:m.id,image_url:m.url}]})">Choose Image</button>
+                                            <button v-if="(blk.content_obj.images||[])[0]?.image_url" class="btn btn--sm" @click="blk.content_obj.images=[]">Reset to default</button>
+                                        </div>
+                                    </div>
                                     <div class="field"><label>Info Box Title</label><input v-model="blk.content_obj.info_title"></div>
                                     <div class="field"><label>Button 1 Text</label><input v-model="blk.content_obj.info_btn1_text" placeholder="View Our Presentation"></div>
                                     <div class="field"><label>Button 1 URL</label><input v-model="blk.content_obj.info_btn1_url" placeholder="#"></div>

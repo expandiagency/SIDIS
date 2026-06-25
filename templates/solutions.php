@@ -143,22 +143,9 @@ function sol_url(string $path): string {
                 <div data-fls-dynamic=".planning__navigation, 992" class="swiper-pagination"></div>
             </div>
             <div class="planning__images">
-                <div data-fls-slider="" class="planning__slider swiper">
-                    <div class="planning__wrapper swiper-wrapper">
-                        <?php if (!empty($c['images'])): ?>
-                        <?php foreach ($c['images'] as $img): ?>
-                        <div class="planning__slide swiper-slide">
-                            <img alt="Image" loading="lazy" src="<?= e(sol_url($img['image_url'] ?? '')) ?>">
-                        </div>
-                        <?php endforeach; ?>
-                        <?php else: ?>
-                        <div class="planning__slide swiper-slide">
-                            <img alt="Image" loading="lazy" src="/assets/img/automation/image.webp">
-                        </div>
-                        <div class="planning__slide swiper-slide">
-                            <img alt="Image" loading="lazy" src="/assets/img/promo/image-1.webp">
-                        </div>
-                        <?php endif; ?>
+                <div class="planning__slider">
+                    <div class="planning__slide">
+                        <img alt="Image" loading="lazy" src="<?= e(!empty($c['images'][0]['image_url']) ? sol_url($c['images'][0]['image_url']) : '/assets/img/automation/image.webp') ?>">
                     </div>
                 </div>
                 <div data-fls-dynamic=".planning__body, 992" class="planning__navigation">
