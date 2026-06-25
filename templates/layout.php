@@ -10,6 +10,10 @@ function active_lang_url(string $path, array $lang, array $default_lang): string
     if ((int)($lang['is_default'] ?? 0)) return $path;
     return '/' . $lang['code'] . $path;
 }
+
+// Blog/Cases listing pages have no #getintouch section of their own — point those CTAs to the home page section
+$_home_url = $is_default ? '/' : '/' . $lang_code . '/';
+$_getintouch_url = in_array($page_class ?? '', ['blog-list-page', 'cases-list-page'], true) ? $_home_url . '#getintouch' : '#getintouch';
 ?>
 <!doctype html>
 <html lang="<?= e($lang_code) ?>" class="<?= e($page_class ?? '') ?>">
@@ -204,7 +208,7 @@ function active_lang_url(string $path, array $lang, array $default_lang): string
             </div>
 
             <div class="header__actions">
-                <a href="#getintouch" class="header__btn button button--secondary">Get in touch</a>
+                <a href="<?= e($_getintouch_url) ?>" class="header__btn button button--secondary">Get in touch</a>
                 <button type="button" class="header__burger" data-menu-burger="">
                     <svg width="25" height="14" viewbox="0 0 25 14" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="25" height="1.99897" rx="0.999485" transform="rotate(0.0330802)" fill="currentColor"/><rect y="6" width="25" height="2" rx="1" fill="currentColor"/><rect y="12" width="25" height="2" rx="1" fill="currentColor"/></svg>
                 </button>

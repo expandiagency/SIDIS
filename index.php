@@ -365,7 +365,7 @@ switch ($page) {
                 'departments' => get_terms($lang_id, 'department', 'case_terms'),
                 'industries'  => get_terms($lang_id, 'industry', 'case_terms'),
             ];
-            $template_data['page_class'] = '';
+            $template_data['page_class'] = 'cases-list-page';
             render('cases', $template_data);
         }
         break;
@@ -398,7 +398,7 @@ switch ($page) {
                 'departments' => get_terms($lang_id, 'department', 'post_terms'),
                 'industries'  => get_terms($lang_id, 'industry', 'post_terms'),
             ];
-            $template_data['page_class'] = '';
+            $template_data['page_class'] = 'blog-list-page';
             render('blog', $template_data);
         }
         break;

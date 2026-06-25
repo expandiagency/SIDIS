@@ -4,7 +4,7 @@
     <div class="footer__container">
         <h2 class="footer__title">
             Grow youre business with us
-            <a href="#getintouch" class="footer__lets button button--icon">
+            <a href="<?= e($_getintouch_url ?? '#getintouch') ?>" class="footer__lets button button--icon">
                 <span class="button__text">LET'S CONNECT</span>
                 <span class="button__icon">
                     <svg width="21" height="21" viewbox="0 0 21 21" fill="none" xmlns="http://www.w3.org/2000/svg">
