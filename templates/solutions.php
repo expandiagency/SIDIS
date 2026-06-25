@@ -175,7 +175,7 @@ function sol_url(string $path): string {
                 <div class="planning__info-title"><?= e($c['info_title']) ?></div>
                 <div class="planning__info-btns">
                     <?php if (!empty($c['info_btn1_text'])): ?>
-                    <a href="<?= e($c['info_btn1_url'] ?? '/assets/Sidis-Group.pdf') ?>" target="_blank" class="planning__info-btn button"><?= e($c['info_btn1_text']) ?></a>
+                    <a href="<?= e($c['info_btn1_url'] ?? '/assets/Sidis-Group.pdf?v=1') ?>" target="_blank" class="planning__info-btn button"><?= e($c['info_btn1_text']) ?></a>
                     <?php endif; ?>
                     <?php if (!empty($c['info_btn2_text'])): ?>
                     <a href="<?= e($c['info_btn2_url'] ?? '#getintouch') ?>" class="planning__info-btn button button--icon">

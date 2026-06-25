@@ -2259,7 +2259,7 @@ createApp({
         const editingPost = ref(null);
         const postTab = ref('Basic');
         const authorsList = ref([]);
-        const defaultExtras = () => ({cta_title:'',cta_btn1_text:'View Our Presentation',cta_btn1_url:'/assets/Sidis-Group.pdf',cta_btn2_text:'Free audit',cta_btn2_url:'#getintouch',faq_title:'Questions & answers',faq_enabled:true,faq:[],articles_title:'Latest Automation\nInsights',related_post_ids:[],_gallery_imgs:[],_media_img_url:'',_media_video_url:''});
+        const defaultExtras = () => ({cta_title:'',cta_btn1_text:'View Our Presentation',cta_btn1_url:'/assets/Sidis-Group.pdf?v=1',cta_btn2_text:'Free audit',cta_btn2_url:'#getintouch',faq_title:'Questions & answers',faq_enabled:true,faq:[],articles_title:'Latest Automation\nInsights',related_post_ids:[],_gallery_imgs:[],_media_img_url:'',_media_video_url:''});
         const postForm = reactive({id:0,slug:'',title:'',subtitle:'',content:'',excerpt:'',meta_title:'',meta_description:'',is_active:1,featured_image_id:null,image_url:'',author_id:null,published_at:'',toc:[],term_ids:[],extras:defaultExtras()});
 
         const loadPosts = async () => { postsList.value = await api(`/admin/api/posts.php?lang_id=${langId.value}`); };
@@ -2463,7 +2463,7 @@ createApp({
             modals.mediaShortcode = false;
         };
         // CTA modal
-        const ctaForm = reactive({title:'', btn1_text:'View Our Presentation', btn1_url:'/assets/Sidis-Group.pdf', btn2_text:'Free audit', btn2_url:'#getintouch'});
+        const ctaForm = reactive({title:'', btn1_text:'View Our Presentation', btn1_url:'/assets/Sidis-Group.pdf?v=1', btn2_text:'Free audit', btn2_url:'#getintouch'});
         const openCtaModal = () => { modals.ctaModal = true; };
         const quoteForm = reactive({left:'', right:'', cols:2, left_size:16, right_size:26});
         const openQuoteModal = () => { modals.quoteModal = true; };

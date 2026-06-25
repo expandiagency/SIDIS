@@ -30,7 +30,7 @@ require __DIR__ . '/layout.php';
             <h1 class="hero__title title"><?= e($h['hero_title'] ?? 'Business process automation') ?></h1>
             <div class="hero__text"><?= nl2br(e($h['hero_subtitle'] ?? 'Many growing businesses lose time and money due to inefficient workflows and outdated systems.')) ?></div>
             <div class="hero__btns">
-                <a href="<?= e($h['hero_btn1_url'] ?? '/assets/Sidis-Group.pdf') ?>"<?= !empty($h['hero_btn1_new_tab']) ? ' target="_blank" rel="noopener"' : '' ?> class="hero__btn button"><?= e($h['hero_btn1_text'] ?? 'View Our Presentation') ?></a>
+                <a href="<?= e($h['hero_btn1_url'] ?? '/assets/Sidis-Group.pdf?v=1') ?>"<?= !empty($h['hero_btn1_new_tab']) ? ' target="_blank" rel="noopener"' : '' ?> class="hero__btn button"><?= e($h['hero_btn1_text'] ?? 'View Our Presentation') ?></a>
                 <a href="<?= e($h['hero_btn2_url'] ?? '#getintouch') ?>"<?= !empty($h['hero_btn2_new_tab']) ? ' target="_blank" rel="noopener"' : '' ?> class="hero__btn button button--icon">
                     <span class="button__text"><?= e($h['hero_btn2_text'] ?? 'Free audit') ?></span>
                     <span class="button__icon">
