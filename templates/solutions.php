@@ -257,7 +257,7 @@ if (!empty($c['selected_ids']) && is_array($c['selected_ids'])) {
     $sel = array_map('intval', $c['selected_ids']);
     $block_cases = array_filter($block_cases ?? [], fn($x) => in_array((int)$x['id'], $sel));
     if (empty($block_cases) && !empty($sel)) {
-        $block_cases = rows('SELECT c.*, ct.title, ct.description, img.path as image_path, c.company
+        $block_cases = rows('SELECT c.*, ct.title, ct.description, img.path as image_path
                              FROM cases c
                              LEFT JOIN cases_t ct ON c.id=ct.case_id AND ct.lang_id=' . $lang_id . '
                              LEFT JOIN media img ON c.featured_image_id=img.id
