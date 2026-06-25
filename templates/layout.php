@@ -196,19 +196,22 @@ $_getintouch_url = in_array($page_class ?? '', ['blog-list-page', 'cases-list-pa
                             <?php endif; ?>
                         </li>
                         <?php endforeach; ?>
+                        <?php if (count($languages) > 1): ?>
+                        <li data-fls-dynamic=".menu__bottom, 992, first" class="menu__item menu__item--lang">
+                            <button type="button" class="menu__link" data-menu="lang">
+                                <span class="menu__link-text"><?= e(strtoupper($lang_code)) ?></span>
+                            </button>
+                            <div class="lang-block" data-menu-target="lang">
+                                <div class="lang-block__scroll" data-scroll-block="">
+                                    <?php foreach ($languages as $l): ?>
+                                    <a href="<?= e((int)$l['is_default'] ? '/' : '/' . $l['code'] . '/') ?>" class="lang-block__link<?= $l['code'] === $lang_code ? ' is-active' : '' ?>"><?= e(strtoupper($l['code'])) ?></a>
+                                    <?php endforeach; ?>
+                                </div>
+                            </div>
+                        </li>
+                        <?php endif; ?>
                     </ul>
-
-                    <!-- Language switcher -->
-                    <?php if (count($languages) > 1): ?>
-                    <div class="menu__lang lang-switcher">
-                        <?php foreach ($languages as $l): ?>
-                        <a href="<?= e((int)$l['is_default'] ? '/' : '/' . $l['code'] . '/') ?>"
-                           class="lang-switcher__item<?= $l['code'] === $lang_code ? ' lang-switcher__item--active' : '' ?>">
-                            <?= e(strtoupper($l['code'])) ?>
-                        </a>
-                        <?php endforeach; ?>
-                    </div>
-                    <?php endif; ?>
+                    <div class="menu__bottom"></div>
                 </nav>
             </div>
 
