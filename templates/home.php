@@ -158,16 +158,27 @@ require __DIR__ . '/layout.php';
             </div>
             <div class="automation__images">
                 <div data-fls-slider="" class="automation__slider swiper">
+                    <?php
+                    // Hand-made 480w variants for the bundled static images (these never go
+                    // through the upload pipeline's auto-generated variants).
+                    $_static_480w = [
+                        './assets/img/automation/image.webp' => '/assets/img/automation/image-480w.webp 480w, /assets/img/automation/image.webp 794w',
+                        '/assets/img/automation/image.webp'  => '/assets/img/automation/image-480w.webp 480w, /assets/img/automation/image.webp 794w',
+                        './assets/img/promo/image-1.webp'    => '/assets/img/promo/image-1-480w.webp 480w, /assets/img/promo/image-1.webp 874w',
+                        '/assets/img/promo/image-1.webp'     => '/assets/img/promo/image-1-480w.webp 480w, /assets/img/promo/image-1.webp 874w',
+                    ];
+                    ?>
                     <div class="automation__wrapper swiper-wrapper">
                         <?php if (!empty($auto_imgs)): ?>
                         <?php foreach ($auto_imgs as $ai => $img): ?>
+                        <?php $_srcset = $_static_480w[$img['image_path']] ?? media_srcset($img['image_path']); ?>
                         <div class="automation__slide swiper-slide">
-                            <img alt="Image" <?= $ai === 0 ? 'fetchpriority="high"' : 'loading="lazy"' ?> src="<?= e(media_url($img['image_path'])) ?>"<?= ($_srcset = media_srcset($img['image_path'])) ? ' srcset="' . e($_srcset) . '" sizes="(max-width: 650px) 480px, 794px"' : '' ?>>
+                            <img alt="Image" <?= $ai === 0 ? 'fetchpriority="high"' : 'loading="lazy"' ?> src="<?= e(media_url($img['image_path'])) ?>"<?= $_srcset ? ' srcset="' . e($_srcset) . '" sizes="(max-width: 650px) 480px, 794px"' : '' ?>>
                         </div>
                         <?php endforeach; ?>
                         <?php else: ?>
-                        <div class="automation__slide swiper-slide"><img alt="" fetchpriority="high" src="/assets/img/automation/image.webp" srcset="/assets/img/automation/image-480w.webp 480w, /assets/img/automation/image.webp 794w" sizes="(max-width: 650px) 480px, 794px"></div>
-                        <div class="automation__slide swiper-slide"><img alt="" loading="lazy" src="/assets/img/promo/image-1.webp" srcset="/assets/img/promo/image-1-480w.webp 480w, /assets/img/promo/image-1.webp 874w" sizes="(max-width: 650px) 480px, 794px"></div>
+                        <div class="automation__slide swiper-slide"><img alt="" fetchpriority="high" src="/assets/img/automation/image.webp" srcset="<?= e($_static_480w['/assets/img/automation/image.webp']) ?>" sizes="(max-width: 650px) 480px, 794px"></div>
+                        <div class="automation__slide swiper-slide"><img alt="" loading="lazy" src="/assets/img/promo/image-1.webp" srcset="<?= e($_static_480w['/assets/img/promo/image-1.webp']) ?>" sizes="(max-width: 650px) 480px, 794px"></div>
                         <?php endif; ?>
                     </div>
                 </div>
