@@ -35,8 +35,8 @@ $_getintouch_url = in_array($page_class ?? '', ['blog-list-page', 'cases-list-pa
     <link rel="preload" href="/assets/fonts/BasementGrotesque-Medium.woff2" as="font" type="font/woff2" crossorigin="anonymous" fetchpriority="low">
     <link rel="preload" href="/assets/fonts/BasementGrotesque-Bold.woff2" as="font" type="font/woff2" crossorigin="anonymous" fetchpriority="low">
     <!-- CSS: preload hint so browser discovers it before parsing <link> -->
-    <link rel="preload" as="style" href="/css/app.min.css?v=17">
-    <link rel="stylesheet" href="/css/app.min.css?v=17" fetchpriority="high">
+    <link rel="preload" as="style" href="/css/app.min.css?v=19">
+    <link rel="stylesheet" href="/css/app.min.css?v=19" fetchpriority="high">
     <link rel="preload" href="/css/icons.css?v=2" as="style" onload="this.onload=null;this.rel='stylesheet'">
     <noscript><link rel="stylesheet" href="/css/icons.css?v=2"></noscript>
     <style>
@@ -91,6 +91,17 @@ $_getintouch_url = in_array($page_class ?? '', ['blog-list-page', 'cases-list-pa
             ready?open():load();
         });
     })();
+    </script>
+    <!-- Hide promo background video until it has buffered enough to play through without stutter/partial frames, instead of showing it mid-decode -->
+    <script>
+    document.addEventListener('DOMContentLoaded',function(){
+        document.querySelectorAll('.promo__bg video').forEach(function(v){
+            var reveal=function(){v.classList.add('is-ready');};
+            if(v.readyState>=3){reveal();return;}
+            v.addEventListener('canplaythrough',reveal,{once:true});
+            setTimeout(reveal,4000);
+        });
+    });
     </script>
     <!-- JS: modulepreload fetches + parses the module before execution -->
     <link rel="modulepreload" crossorigin href="/js/app.min.js?v=4">
