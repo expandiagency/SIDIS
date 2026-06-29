@@ -3,7 +3,6 @@ $_cases_title  = get_setting('cases_hero_title', $lang_id) ?: 'Case Studies';
 $_cases_text   = get_setting('cases_hero_text', $lang_id) ?: 'See how Sidis Group has helped its clients achieve their vision of digital innovation.';
 $_cases_img    = media_url(get_setting('cases_hero_image_url') ?: '') ?: null;
 $_cases_video  = ltrim(get_setting('cases_hero_video_path') ?: '', '.') ?: null;
-$_cases_poster = media_url(get_setting('cases_hero_video_poster_url') ?: '') ?: '/assets/img/poster.webp';
 $meta_title       = get_setting('cases_meta_title', $lang_id) ?: $_cases_title;
 $meta_description = get_setting('cases_meta_description', $lang_id) ?: $_cases_text;
 $og_image         = get_setting('cases_og_image_url') ?: '';
@@ -20,7 +19,7 @@ require __DIR__ . '/layout.php'; ?>
             </div>
             <div class="promo__bg">
                 <?php if ($_cases_video): ?>
-                <video autoplay muted loop playsinline preload="metadata" poster="<?= e($_cases_poster) ?>">
+                <video autoplay muted loop playsinline preload="metadata">
                     <source src="<?= e($_cases_video) ?>" type="video/mp4">
                 </video>
                 <?php elseif ($_cases_img): ?>

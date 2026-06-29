@@ -3,7 +3,6 @@ $_blog_title  = get_setting('blog_hero_title', $lang_id) ?: 'Trends Blog';
 $_blog_text   = get_setting('blog_hero_text', $lang_id) ?: 'Explore how Sidis Group is shaping the future with innovative automation solutions.';
 $_blog_img    = media_url(get_setting('blog_hero_image_url') ?: '') ?: null;
 $_blog_video  = ltrim(get_setting('blog_hero_video_path') ?: '', '.') ?: null;
-$_blog_poster = media_url(get_setting('blog_hero_video_poster_url') ?: '') ?: '/assets/img/poster.webp';
 $meta_title       = get_setting('blog_meta_title', $lang_id) ?: $_blog_title;
 $meta_description = get_setting('blog_meta_description', $lang_id) ?: $_blog_text;
 $og_image         = get_setting('blog_og_image_url') ?: '';
@@ -20,7 +19,7 @@ require __DIR__ . '/layout.php'; ?>
             </div>
             <div class="promo__bg">
                 <?php if ($_blog_video): ?>
-                <video autoplay muted loop playsinline preload="metadata" poster="<?= e($_blog_poster) ?>">
+                <video autoplay muted loop playsinline preload="metadata">
                     <source src="<?= e($_blog_video) ?>" type="video/mp4">
                 </video>
                 <?php elseif ($_blog_img): ?>

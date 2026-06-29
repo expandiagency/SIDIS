@@ -1444,13 +1444,6 @@ tr:hover td{background:#fafafa}
                     <div class="field field--full"><label>Hero Video Path <span style="color:var(--muted);font-size:12px">(autoplay, replaces image when set, e.g. ./assets/video/compressed-v2/Video-cover-case-studies.mp4)</span></label>
                         <input v-model="settingsData.cases_hero_video_path" placeholder="./assets/video/compressed-v2/Video-cover-case-studies.mp4">
                     </div>
-                    <div class="field field--full"><label>Hero Video Poster <span style="color:var(--muted);font-size:12px">(shown while video loads)</span></label>
-                        <div class="img-picker">
-                            <img v-if="settingsData.cases_hero_video_poster_url" :src="settingsData.cases_hero_video_poster_url" class="img-thumb">
-                            <button class="btn btn--outline btn--sm" @click="pickMedia(m=>{settingsData.cases_hero_video_poster_url=m.url})">Choose from library</button>
-                            <button v-if="settingsData.cases_hero_video_poster_url" class="btn btn--sm" @click="settingsData.cases_hero_video_poster_url=''">Remove</button>
-                        </div>
-                    </div>
                     <div class="field field--full"><label>OG / Social Share Image</label>
                         <div class="img-picker">
                             <img v-if="settingsData.cases_og_image_url" :src="settingsData.cases_og_image_url" class="img-thumb">
@@ -1477,13 +1470,6 @@ tr:hover td{background:#fafafa}
                     </div>
                     <div class="field field--full"><label>Hero Video Path <span style="color:var(--muted);font-size:12px">(autoplay, replaces image when set, e.g. ./assets/video/compressed-v2/Video-cover-blog.mp4)</span></label>
                         <input v-model="settingsData.blog_hero_video_path" placeholder="./assets/video/compressed-v2/Video-cover-blog.mp4">
-                    </div>
-                    <div class="field field--full"><label>Hero Video Poster <span style="color:var(--muted);font-size:12px">(shown while video loads)</span></label>
-                        <div class="img-picker">
-                            <img v-if="settingsData.blog_hero_video_poster_url" :src="settingsData.blog_hero_video_poster_url" class="img-thumb">
-                            <button class="btn btn--outline btn--sm" @click="pickMedia(m=>{settingsData.blog_hero_video_poster_url=m.url})">Choose from library</button>
-                            <button v-if="settingsData.blog_hero_video_poster_url" class="btn btn--sm" @click="settingsData.blog_hero_video_poster_url=''">Remove</button>
-                        </div>
                     </div>
                     <div class="field field--full"><label>OG / Social Share Image</label>
                         <div class="img-picker">
