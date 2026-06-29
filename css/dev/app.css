@@ -2118,7 +2118,7 @@ a.planning__marquee-item {
   position: relative;
   z-index: 1;
   background-color: var(--clr-bg-soft);
-  transition: color 0.3s;
+  transition: max-width 0.3s, color 0.3s;
 }
 .projects-card__body::before {
   content: "";
@@ -2190,7 +2190,12 @@ a.planning__marquee-item {
   overflow: hidden;
 }
 .projects-card__text {
+  height: 100px;
   overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 5;
+  -webkit-box-orient: vertical;
+  text-overflow: ellipsis;
   font-size: 15px;
   line-height: 133%;
   opacity: 0;
@@ -2208,6 +2213,7 @@ a.planning__marquee-item {
   align-items: center;
   justify-content: center;
   padding: 10px;
+  transition: max-width 0.3s;
 }
 .projects-card__img::before {
   content: "";
@@ -5535,6 +5541,8 @@ a.automation__marquee-item {
     grid-template-rows: auto;
   }
   .projects-card__text {
+    height: auto;
+    -webkit-line-clamp: unset;
     opacity: 1;
     transform: none;
   }
@@ -7018,6 +7026,7 @@ a.automation__marquee-item {
 }
 @media (width >= 62em) and (any-hover: hover){
   .projects-card:hover .projects-card__body {
+    max-width: calc(68% - 12px);
     color: var(--clr-white);
   }
   .projects-card:hover .projects-card__body::before {
@@ -7031,6 +7040,9 @@ a.automation__marquee-item {
   .projects-card:hover .projects-card__text {
     opacity: 1;
     transform: translate(0px, 0px);
+  }
+  .projects-card:hover .projects-card__img {
+    max-width: 32.81%;
   }
   .projects-card:hover .projects-card__img::before {
     background-color: rgba(0, 0, 0, 0.6);
