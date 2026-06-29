@@ -2160,8 +2160,8 @@ a.planning__marquee-item {
   display: flex;
   justify-content: end;
   flex-direction: column;
-  gap: 0px;
-  transition: gap 0.5s, padding-bottom 0.5s;
+  gap: 26px;
+  padding-bottom: 16px;
 }
 .projects-card__tags {
   display: flex;
@@ -2184,8 +2184,7 @@ a.planning__marquee-item {
 }
 .projects-card__descr-inner {
   display: grid;
-  grid-template-rows: 0fr;
-  transition: grid-template-rows 0.5s;
+  grid-template-rows: 1fr;
 }
 .projects-card__descr-inner > * {
   overflow: hidden;
@@ -7026,17 +7025,10 @@ a.automation__marquee-item {
   .projects-card:hover .projects-card__body::before {
     opacity: 1;
   }
-  .projects-card:hover .projects-card__descr {
-    gap: 26px;
-    padding-bottom: 16px;
-  }
   .projects-card:hover .projects-card__tag {
     background-color: var(--clr-accent-soft);
     border-color: var(--clr-accent-soft);
     color: var(--clr-white);
-  }
-  .projects-card:hover .projects-card__descr-inner {
-    grid-template-rows: 1fr;
   }
   .projects-card:hover .projects-card__text {
     opacity: 1;
