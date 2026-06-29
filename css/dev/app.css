@@ -7516,20 +7516,24 @@ a.automation__marquee-item {
     color: var(--clr-white);
   }
 }.cookie-banner {
+  display: none;
   position: fixed;
   left: 20px;
   right: 20px;
   bottom: 20px;
   z-index: 1000;
-  display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 20px;
   background: linear-gradient(225deg, #2f113c 0%, #140a18 100%);
+  border: 1px solid rgba(255, 255, 255, 0.35);
   color: var(--clr-white);
   padding: 20px 25px;
   border-radius: 20px;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.25);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.35);
+}
+.cookie-banner.is-visible {
+  display: flex;
 }
 .cookie-banner__text {
   font-size: 14px;
@@ -7546,10 +7550,10 @@ a.automation__marquee-item {
   font-weight: 600;
   font-size: 14px;
   cursor: pointer;
-  transition: background-color 0.3s;
+  transition: filter 0.3s;
 }
 .cookie-banner__btn:hover {
-  background-color: var(--clr-black);
+  filter: brightness(1.2);
 }
 @media (width < 48em) {
   .cookie-banner {

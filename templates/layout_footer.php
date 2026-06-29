@@ -150,7 +150,7 @@ if (location.hash === '#getintouch') {
 
 <!-- ═══════════════════════════════ COOKIE CONSENT ═══════════════════════════ -->
 <?php $_is_uk = ($lang_code ?? 'en') === 'uk'; ?>
-<div class="cookie-banner" id="cookieBanner" hidden>
+<div class="cookie-banner" id="cookieBanner">
     <div class="cookie-banner__text">
         <?php if ($_is_uk): ?>
         Ми використовуємо файли cookie, щоб покращити роботу сайту. Продовжуючи перегляд, ви погоджуєтесь з їх використанням.
@@ -165,10 +165,10 @@ if (location.hash === '#getintouch') {
     var KEY = 'sidis_cookie_consent';
     var el = document.getElementById('cookieBanner');
     if (!el || localStorage.getItem(KEY) === '1') return;
-    el.hidden = false;
+    el.classList.add('is-visible');
     document.getElementById('cookieAcceptBtn').addEventListener('click', function(){
         localStorage.setItem(KEY, '1');
-        el.hidden = true;
+        el.classList.remove('is-visible');
     });
 })();
 </script>
