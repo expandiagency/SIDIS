@@ -3684,7 +3684,6 @@ a.automation__marquee-item {
 }
 .promo__bg video {
   opacity: 0;
-  transition: opacity 0.4s ease;
 }
 .promo__bg video.is-ready {
   opacity: 1;
