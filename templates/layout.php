@@ -64,6 +64,34 @@ $_getintouch_url = in_array($page_class ?? '', ['blog-list-page', 'cases-list-pa
         if(icon)icon.style.filter='';
     });
     </script>
+    <!-- Calendly: loaded on-demand only when the user clicks a [data-calendly] trigger, so it never blocks page load -->
+    <script>
+    (function(){
+        var url='https://calendly.com/services-sidis/30min';
+        var loading=false, ready=false;
+        function open(){
+            if(window.Calendly)Calendly.initPopupWidget({url:url});
+        }
+        function load(){
+            if(loading||ready)return;
+            loading=true;
+            var link=document.createElement('link');
+            link.rel='stylesheet';
+            link.href='https://assets.calendly.com/assets/external/widget.css';
+            document.head.appendChild(link);
+            var script=document.createElement('script');
+            script.src='https://assets.calendly.com/assets/external/widget.js';
+            script.onload=function(){ready=true;open();};
+            document.body.appendChild(script);
+        }
+        document.addEventListener('click',function(e){
+            var el=e.target.closest('[data-calendly]');
+            if(!el)return;
+            e.preventDefault();
+            ready?open():load();
+        });
+    })();
+    </script>
     <!-- JS: modulepreload fetches + parses the module before execution -->
     <link rel="modulepreload" crossorigin href="/js/app.min.js?v=4">
     <script type="module" crossorigin src="/js/app.min.js?v=4"></script>

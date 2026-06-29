@@ -148,11 +148,11 @@ require __DIR__ . '/layout.php';
                     </div>
                     <?php endif; ?>
                     <div class="automation__btns">
-                        <button type="button" class="automation__btn button button--secondary button--dark-hover"><?= e($h['automation_btn1_text'] ?? 'Contact us') ?></button>
-                        <button type="button" class="automation__btn button button--icon">
+                        <button type="button" data-calendly class="automation__btn button button--secondary button--dark-hover"><?= e($h['automation_btn1_text'] ?? 'Contact us') ?></button>
+                        <a href="#getintouch" class="automation__btn button button--icon">
                             <span class="button__text"><?= e($h['automation_btn2_text'] ?? 'Free audit') ?></span>
                             <span class="button__icon"><svg width="14" height="14" viewbox="0 0 14 14" fill="none"><path d="M0.56543 12.8L12.5654 0.799988M12.5654 0.799988L0.56543 0.799988M12.5654 0.799988V12.6868" stroke="currentColor" stroke-width="1.6"></path></svg></span>
-                        </button>
+                        </a>
                     </div>
                 </div>
             </div>
@@ -442,7 +442,7 @@ require __DIR__ . '/layout.php';
             <div class="getintouch__head">
                 <h2 class="getintouch__title title title--h1"><?= e($h['cta_title'] ?? 'GET IN TOUCH') ?></h2>
                 <div class="getintouch__items">
-                    <div class="getintouch__item"><?= nl2br(e($h['cta_text'] ?? 'Fill out our contact form for a free consultation, or book an online meeting directly.')) ?></div>
+                    <div class="getintouch__item"><?= str_replace('Calendly', '<span data-calendly style="text-decoration:underline;cursor:pointer">Calendly</span>', nl2br(e($h['cta_text'] ?? 'Fill out our contact form for a free consultation, or book an online meeting directly via Calendly.'))) ?></div>
                     <div class="getintouch__item"><?= e($h['cta_item2'] ?? 'We discuss your project even if you have just a raw idea.') ?></div>
                     <div class="getintouch__item"><?= e($h['cta_item3'] ?? 'We choose a model and approach suitable for your case and budget.') ?></div>
                 </div>

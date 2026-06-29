@@ -131,7 +131,7 @@ $articles_title = $extras['articles_title'] ?? 'Latest Automation Insights';
             <div class="getintouch__head">
                 <h2 class="getintouch__title title title--h1">GET IN TOUCH</h2>
                 <div class="getintouch__items">
-                    <div class="getintouch__item">Fill out our contact form for a free consultation, or book an online meeting directly via Google Meet.</div>
+                    <div class="getintouch__item">Fill out our contact form for a free consultation, or book an online meeting directly via <span data-calendly style="text-decoration:underline;cursor:pointer">Calendly</span>.</div>
                     <div class="getintouch__item">We discuss your project even if you have just a raw idea.</div>
                     <div class="getintouch__item">We choose a model and approach that are suitable for your case and budget.</div>
                 </div>
