@@ -1,4 +1,7 @@
 <?php
+$_sp_meta         = $solution_page ?? [];
+$meta_title       = $_sp_meta['meta_title'] ?: ($_sp_meta['title'] ?? null);
+$meta_description = $_sp_meta['meta_description'] ?: ($_sp_meta['description'] ?? null);
 require __DIR__ . '/layout.php';
 
 $sp     = $solution_page ?? [];
