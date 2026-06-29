@@ -917,12 +917,12 @@ textarea.input {
 }
 .catalog-card__bottom {
   display: grid;
-  grid-template-rows: 0fr;
-  margin-top: 0px;
+  grid-template-rows: 1fr;
+  margin-top: 20px;
   position: relative;
-  bottom: -100%;
+  bottom: 0;
   opacity: 0;
-  transition: margin 0.3s ease, grid-template-rows 0.3s ease, opacity 0.3s ease, bottom 0.25s ease;
+  transition: opacity 0.3s ease;
 }
 .catalog-card__bottom > * {
   overflow: hidden;
@@ -4719,7 +4719,7 @@ a.automation__marquee-item {
   display: flex;
 }
 .article-block__quote {
-  background: linear-gradient(135deg, #7c2891 0%, #3d1260 100%);
+  background: linear-gradient(225deg, #2f113c 0%, #140a18 100%);
   border-radius: 20px;
   padding: 60px 80px;
   display: grid;
@@ -5047,7 +5047,7 @@ a.automation__marquee-item {
     transition: margin 0.9s;
   }
   .catalog-card__bottom {
-    transition: margin 0.9s ease, grid-template-rows 0.9s ease, opacity 0.9s ease, bottom 0.75s ease;
+    transition: opacity 0.9s ease;
   }
   .catalog-card.--watcher-view .catalog-card__img::before {
     background-color: rgba(0, 0, 0, 0.65);
@@ -5058,11 +5058,8 @@ a.automation__marquee-item {
     transition: margin 0.3s;
   }
   .catalog-card.--watcher-view .catalog-card__bottom {
-    margin-top: 20px;
-    grid-template-rows: 1fr;
     opacity: 1;
-    bottom: 0;
-    transition: margin 0.3s ease, grid-template-rows 0.3s ease, opacity 0.3s ease, bottom 0.25s ease;
+    transition: opacity 0.3s ease;
   }
   .header {
     padding-block: 10px;
@@ -7366,10 +7363,7 @@ a.automation__marquee-item {
     margin-bottom: auto;
   }
   .catalog-card:hover .catalog-card__bottom {
-    margin-top: 20px;
-    grid-template-rows: 1fr;
     opacity: 1;
-    bottom: 0;
   }
   .header__logo[href]:hover {
     opacity: 0.6;
