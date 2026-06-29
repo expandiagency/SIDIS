@@ -880,6 +880,7 @@ textarea.input {
 .catalog-card__img video {
   width: 100%;
   object-fit: cover;
+  transition: transform 0.3s;
 }
 .catalog-card__category {
   font-weight: 400;
@@ -5043,6 +5044,10 @@ a.automation__marquee-item {
   .catalog-card__img::before {
     transition: background 0.9s;
   }
+  .catalog-card__img img,
+  .catalog-card__img video {
+    transition: transform 0.9s;
+  }
   .catalog-card__title {
     transition: margin 0.9s;
   }
@@ -5052,6 +5057,11 @@ a.automation__marquee-item {
   .catalog-card.--watcher-view .catalog-card__img::before {
     background-color: rgba(0, 0, 0, 0.65);
     transition: background 0.3s;
+  }
+  .catalog-card.--watcher-view .catalog-card__img img,
+  .catalog-card.--watcher-view .catalog-card__img video {
+    transform: scale(1.06);
+    transition: transform 0.3s;
   }
   .catalog-card.--watcher-view .catalog-card__title {
     margin-bottom: auto;
@@ -7358,6 +7368,10 @@ a.automation__marquee-item {
   }
   .catalog-card:hover .catalog-card__img::before {
     background-color: rgba(0, 0, 0, 0.65);
+  }
+  .catalog-card:hover .catalog-card__img img,
+  .catalog-card:hover .catalog-card__img video {
+    transform: scale(1.06);
   }
   .catalog-card:hover .catalog-card__title {
     margin-bottom: auto;
