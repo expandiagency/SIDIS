@@ -1,4 +1,9 @@
-<?php require __DIR__ . '/layout.php';
+<?php
+$_case_meta       = $case ?? [];
+$meta_title       = $_case_meta['meta_title'] ?: ($_case_meta['title'] ?? null);
+$meta_description = $_case_meta['meta_description'] ?: ($_case_meta['description'] ?? null);
+$og_image         = $_case_meta['og_image_url'] ?: ($_case_meta['image_path'] ?? '');
+require __DIR__ . '/layout.php';
 
 $nav_prev = '<svg style="margin-right:4px" width="11" height="18" viewbox="0 0 11 18" fill="none"><path d="M10.0527 0.523193L1.05273 8.52319L10.0527 16.5232" stroke="currentColor" stroke-width="1.4"/></svg>';
 $nav_next = '<svg style="margin-left:4px" width="11" height="18" viewbox="0 0 11 18" fill="none"><path d="M0.464844 0.523193L9.46484 8.52319L0.464844 16.5232" stroke="currentColor" stroke-width="1.4"/></svg>';

@@ -8,6 +8,7 @@ admin_require_auth();
 try { db()->exec("ALTER TABLE cases ADD COLUMN company_name VARCHAR(200) DEFAULT NULL"); } catch(Exception $e) {}
 try { db()->exec("ALTER TABLE cases ADD COLUMN link_behavior VARCHAR(20) NOT NULL DEFAULT 'case_page'"); } catch(Exception $e) {}
 try { db()->exec("ALTER TABLE cases ADD COLUMN external_url VARCHAR(500) NOT NULL DEFAULT ''"); } catch(Exception $e) {}
+try { db()->exec("ALTER TABLE cases ADD COLUMN og_image_url VARCHAR(500) DEFAULT NULL"); } catch(Exception $e) {}
 
 $method  = $_SERVER['REQUEST_METHOD'];
 $action  = $_GET['action'] ?? '';
@@ -60,7 +61,8 @@ if ($method === 'POST') {
               'link_behavior'=>in_array($data['link_behavior']??'',['case_page','external_url','inactive']) ? $data['link_behavior'] : 'case_page',
               'external_url'=>$data['external_url']??'',
               'company_logo_id'=>($data['company_logo_id']??null)?:null,
-              'featured_image_id'=>($data['featured_image_id']??null)?:null];
+              'featured_image_id'=>($data['featured_image_id']??null)?:null,
+              'og_image_url'=>$data['og_image_url']??''];
         if (!$id) $id = insert('cases', $c);
         else update('cases', $c, ['id'=>$id]);
 

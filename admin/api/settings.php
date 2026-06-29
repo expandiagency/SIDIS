@@ -22,6 +22,7 @@ $global_keys = [
     'aside_demo_image_url', 'aside_demo_btn_url', 'aside_contact_btn_url',
     'solutions_hero_image_url',
     'loc1_enabled', 'loc2_enabled',
+    'default_og_image_url',
 ];
 // These aside text fields are per-language
 $aside_lang_keys = ['aside_demo_btn_text', 'aside_contact_btn_text'];
@@ -29,6 +30,7 @@ $lang_keys   = [
     'site_description', 'footer_copyright', 'contact_address', 'contact_phone',
     'cases_hero_title', 'cases_hero_text', 'cases_meta_title', 'cases_meta_description',
     'blog_hero_title', 'blog_hero_text', 'blog_meta_title', 'blog_meta_description',
+    'terms_title', 'terms_hero_text', 'terms_content', 'terms_meta_title', 'terms_meta_description',
 ];
 
 if ($method === 'GET') {

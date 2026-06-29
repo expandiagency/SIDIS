@@ -12,6 +12,7 @@ $id      = (int)($_GET['id'] ?? 0);
 
 // ── Ensure icon_svg column exists on solution_pages ─────────────────────────
 try { db()->exec("ALTER TABLE solution_pages ADD COLUMN icon_svg MEDIUMTEXT DEFAULT NULL"); } catch(Exception $e) {}
+try { db()->exec("ALTER TABLE solution_pages ADD COLUMN og_image_url VARCHAR(500) DEFAULT NULL"); } catch(Exception $e) {}
 
 // ── Ensure sol_page_blocks table exists ─────────────────────────────────────
 try { $pdo->exec("CREATE TABLE IF NOT EXISTS sol_page_blocks (
@@ -124,6 +125,7 @@ if ($method === 'POST') {
             'image_id'       => ($data['image_id'] ?? null) ?: null,
             'icon_svg'       => $data['icon_svg'] ?? null,
             'icon_svg_white' => $data['icon_svg_white'] ?? null,
+            'og_image_url'   => $data['og_image_url'] ?? '',
         ];
         if (!$id) $id = insert('solution_pages', $d);
         else update('solution_pages', $d, ['id' => $id]);

@@ -403,6 +403,11 @@ switch ($page) {
         }
         break;
 
+    case 'terms':
+        $template_data['page_class'] = 'terms-page';
+        render('terms', $template_data);
+        break;
+
     default:
         render('404', $template_data);
         break;

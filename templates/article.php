@@ -1,4 +1,9 @@
-<?php require __DIR__ . '/layout.php';
+<?php
+$_post_meta       = $post ?? [];
+$meta_title       = $_post_meta['meta_title'] ?: ($_post_meta['title'] ?? null);
+$meta_description = $_post_meta['meta_description'] ?: ($_post_meta['excerpt'] ?? null);
+$og_image         = $_post_meta['og_image_url'] ?: ($_post_meta['image_path'] ?? '');
+require __DIR__ . '/layout.php';
 
 $arrow_svg = '<svg width="14" height="14" viewbox="0 0 14 14" fill="none"><path d="M0.566406 12.8L12.5664 0.800049M12.5664 0.800049L12.5664 12.8M12.5664 0.800049L0.679613 0.800049" stroke="currentColor" stroke-width="1.6"></path></svg>';
 $nav_prev  = '<svg style="margin-right:4px" width="11" height="18" viewbox="0 0 11 18" fill="none"><path d="M9.53516 0.523193L0.535156 8.52319L9.53516 16.5232" stroke="currentColor" stroke-width="1.4"></path></svg>';

@@ -29,6 +29,7 @@ try { db()->exec("ALTER TABLE home_content ADD COLUMN hero_btn1_new_tab TINYINT(
 try { db()->exec("ALTER TABLE home_content ADD COLUMN hero_btn2_new_tab TINYINT(1) DEFAULT 0"); } catch(Exception $e) {}
 try { db()->exec("ALTER TABLE home_content ADD COLUMN roadmap_btn1_new_tab TINYINT(1) DEFAULT 0"); } catch(Exception $e) {}
 try { db()->exec("ALTER TABLE home_content ADD COLUMN roadmap_btn2_new_tab TINYINT(1) DEFAULT 0"); } catch(Exception $e) {}
+try { db()->exec("ALTER TABLE home_content ADD COLUMN og_image_url VARCHAR(500) DEFAULT NULL"); } catch(Exception $e) {}
 
 if ($method === 'GET') {
     if ($action === 'why_slides') {
@@ -84,7 +85,7 @@ if ($method === 'POST') {
                    'cta_text','cta_item2','cta_item3','cta_form_title',
                    'presentation_subtitle','presentation_title','presentation_text',
                    'presentation_video','presentation_poster_url','presentation_play_text',
-                   'roadmap_video','roadmap_poster_url'];
+                   'roadmap_video','roadmap_poster_url','og_image_url'];
         $save = ['lang_id' => $lang_id];
         foreach ($fields as $f) $save[$f] = $data[$f] ?? '';
         $save['presentation_enabled']  = empty($data['presentation_enabled'])  ? 0 : 1;

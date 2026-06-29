@@ -6,6 +6,7 @@ admin_require_auth();
 
 // Auto-migrate: add extras column if not exists
 try { db()->exec("ALTER TABLE posts_t ADD COLUMN extras MEDIUMTEXT DEFAULT NULL"); } catch(Exception $e) {}
+try { db()->exec("ALTER TABLE posts ADD COLUMN og_image_url VARCHAR(500) DEFAULT NULL"); } catch(Exception $e) {}
 
 // Auto-migrate: post_terms table (Solutions/Departments/Industries filters for blog posts)
 try { db()->exec("CREATE TABLE IF NOT EXISTS post_terms (
@@ -55,6 +56,7 @@ if ($method === 'POST') {
               'is_active'=>(int)($data['is_active']??1),
               'author_id'=>($data['author_id']??null)?:null,
               'featured_image_id'=>($data['featured_image_id']??null)?:null,
+              'og_image_url'=>$data['og_image_url']??'',
               'published_at'=>$data['published_at']??date('Y-m-d H:i:s')];
         if (!$id) $id = insert('posts', $p);
         else update('posts', $p, ['id'=>$id]);

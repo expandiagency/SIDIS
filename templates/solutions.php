@@ -2,6 +2,7 @@
 $_sp_meta         = $solution_page ?? [];
 $meta_title       = $_sp_meta['meta_title'] ?: ($_sp_meta['title'] ?? null);
 $meta_description = $_sp_meta['meta_description'] ?: ($_sp_meta['description'] ?? null);
+$og_image         = $_sp_meta['og_image_url'] ?: ($_sp_meta['image_path'] ?? '');
 require __DIR__ . '/layout.php';
 
 $sp     = $solution_page ?? [];

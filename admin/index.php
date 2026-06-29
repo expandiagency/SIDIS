@@ -278,6 +278,14 @@ tr:hover td{background:#fafafa}
                             <button v-if="homeData.hero_poster_url" class="btn btn--danger btn--sm" @click="homeData.hero_poster_url=''">Remove</button>
                         </div>
                     </div>
+                    <div class="field field--full">
+                        <label>Social Share Image <span style="font-weight:normal;color:var(--muted)">(used when sharing the home page link, falls back to the site default if empty)</span></label>
+                        <div class="img-picker">
+                            <img v-if="homeData.og_image_url" :src="homeData.og_image_url" class="img-thumb" style="max-height:80px;object-fit:cover">
+                            <button class="btn btn--outline btn--sm" @click="pickMedia(m=>{homeData.og_image_url=m.url})">Choose from library</button>
+                            <button v-if="homeData.og_image_url" class="btn btn--danger btn--sm" @click="homeData.og_image_url=''">Remove</button>
+                        </div>
+                    </div>
                     <div class="field field--full"><label>CTA Section Title</label><input v-model="homeData.cta_title"></div>
                     <div class="field"><label>CTA Button Text</label><input v-model="homeData.cta_btn_text"></div>
                     <div class="field"><label>CTA Button URL</label><input v-model="homeData.cta_btn_url"></div>
@@ -661,6 +669,13 @@ tr:hover td{background:#fafafa}
                             </div>
                             <div class="field field--full"><label>Meta Title</label><input v-model="solPageForm.meta_title"></div>
                             <div class="field field--full"><label>Meta Description</label><textarea v-model="solPageForm.meta_description" rows="2"></textarea></div>
+                            <div class="field field--full"><label>Social Share Image <span style="font-weight:normal;color:var(--muted)">(falls back to the featured image above, then the site default)</span></label>
+                                <div class="img-picker">
+                                    <img v-if="solPageForm.og_image_url" :src="solPageForm.og_image_url" class="img-thumb">
+                                    <button class="btn btn--outline btn--sm" @click="pickMedia(m=>{solPageForm.og_image_url=m.url})">Choose from library</button>
+                                    <button v-if="solPageForm.og_image_url" class="btn btn--sm" @click="solPageForm.og_image_url=''">Remove</button>
+                                </div>
+                            </div>
                         </div>
                     </div></div>
                 </div>
@@ -978,6 +993,13 @@ tr:hover td{background:#fafafa}
                         <div class="field"><label>Services Used (tags, one per line)</label><textarea v-model="caseForm.services_text" rows="4" placeholder="AI Integration&#10;Process Automation"></textarea></div>
                         <div class="field"><label>Meta Title</label><input v-model="caseForm.meta_title"></div>
                         <div class="field"><label>Meta Description</label><textarea v-model="caseForm.meta_description" rows="2"></textarea></div>
+                        <div class="field"><label>Social Share Image <span style="font-weight:normal;color:var(--muted)">(falls back to the featured image, then the site default)</span></label>
+                            <div class="img-picker">
+                                <img v-if="caseForm.og_image_url" :src="caseForm.og_image_url" class="img-thumb">
+                                <button class="btn btn--outline btn--sm" @click="pickMedia(m=>{caseForm.og_image_url=m.url})">Choose from library</button>
+                                <button v-if="caseForm.og_image_url" class="btn btn--sm" @click="caseForm.og_image_url=''">Remove</button>
+                            </div>
+                        </div>
                     </div>
 
                     <div v-if="caseTab==='Challenges'">
@@ -1238,6 +1260,13 @@ tr:hover td{background:#fafafa}
                     <div v-if="postTab==='SEO'" class="form-grid cols-1">
                         <div class="field"><label>Meta Title</label><input v-model="postForm.meta_title"></div>
                         <div class="field"><label>Meta Description</label><textarea v-model="postForm.meta_description" rows="3"></textarea></div>
+                        <div class="field"><label>Social Share Image <span style="font-weight:normal;color:var(--muted)">(falls back to the featured image, then the site default)</span></label>
+                            <div class="img-picker">
+                                <img v-if="postForm.og_image_url" :src="postForm.og_image_url" class="img-thumb">
+                                <button class="btn btn--outline btn--sm" @click="pickMedia(m=>{postForm.og_image_url=m.url})">Choose from library</button>
+                                <button v-if="postForm.og_image_url" class="btn btn--sm" @click="postForm.og_image_url=''">Remove</button>
+                            </div>
+                        </div>
                     </div>
 
                     <div v-if="postTab==='Extras'">
@@ -1372,6 +1401,18 @@ tr:hover td{background:#fafafa}
                 </div>
             </div></div>
 
+            <div class="card"><div class="card__head"><h2>Social Sharing</h2></div><div class="card__body">
+                <div class="form-grid">
+                    <div class="field field--full"><label>Default Social Share Image <span style="color:var(--muted);font-size:12px">(used when a page has no cover image or custom social image of its own, 1200×630 recommended)</span></label>
+                        <div class="img-picker">
+                            <img v-if="settingsData.default_og_image_url" :src="settingsData.default_og_image_url" class="img-thumb">
+                            <button class="btn btn--outline btn--sm" @click="pickMedia(m=>{settingsData.default_og_image_url=m.url})">Choose from library</button>
+                            <button v-if="settingsData.default_og_image_url" class="btn btn--sm" @click="settingsData.default_og_image_url=''">Remove</button>
+                        </div>
+                    </div>
+                </div>
+            </div></div>
+
             <div class="card"><div class="card__head"><h2>Social Media</h2></div><div class="card__body">
                 <div class="form-grid">
                     <div class="field"><label>LinkedIn URL</label><input v-model="settingsData.social_linkedin" placeholder="https://linkedin.com/company/..."></div>
@@ -1478,6 +1519,18 @@ tr:hover td{background:#fafafa}
                             <button v-if="settingsData.blog_og_image_url" class="btn btn--sm" @click="settingsData.blog_og_image_url=''">Remove</button>
                         </div>
                         <div class="field-note" style="margin-top:6px;color:var(--muted);font-size:12px">Shown when sharing the link in social media / messengers (1200×630 recommended)</div>
+                    </div>
+                </div>
+            </div></div>
+
+            <div class="card"><div class="card__head"><h2>Terms &amp; Conditions Page</h2></div><div class="card__body">
+                <div class="form-grid">
+                    <div class="field"><label>Page Title ({{ currentLangCode }})</label><input v-model="settingsData.terms_title" placeholder="Terms & Conditions"></div>
+                    <div class="field"><label>Hero Subtitle ({{ currentLangCode }})</label><input v-model="settingsData.terms_hero_text"></div>
+                    <div class="field"><label>Meta Title ({{ currentLangCode }})</label><input v-model="settingsData.terms_meta_title" placeholder="Falls back to Page Title"></div>
+                    <div class="field field--full"><label>Meta Description ({{ currentLangCode }})</label><textarea v-model="settingsData.terms_meta_description" rows="2"></textarea></div>
+                    <div class="field field--full"><label>Page Content (HTML) <span style="color:var(--muted);font-size:12px">(supports h2, p, ul/li tags)</span></label>
+                        <textarea v-model="settingsData.terms_content" rows="20" style="font-family:monospace;font-size:13px"></textarea>
                     </div>
                 </div>
             </div></div>
@@ -2210,7 +2263,7 @@ createApp({
         const editingSolBlocks = ref(false);
         const editingSolPageObj = ref(null);
         const solPageBlocks = ref([]);
-        const solPageForm = reactive({id:0,type:'solution',slug:'',title:'',description:'',btn1_text:'View Our Presentation',btn2_text:'Free audit',icon_svg:'',icon_svg_white:'',image_id:null,image_url:'',sort_order:0,is_active:1,meta_title:'',meta_description:''});
+        const solPageForm = reactive({id:0,type:'solution',slug:'',title:'',description:'',btn1_text:'View Our Presentation',btn2_text:'Free audit',icon_svg:'',icon_svg_white:'',image_id:null,image_url:'',sort_order:0,is_active:1,meta_title:'',meta_description:'',og_image_url:''});
         const allReviews = ref([]);
         const allCases   = ref([]);
         const allPosts   = ref([]);
@@ -2219,7 +2272,7 @@ createApp({
             solPagesList.value = await api(`/admin/api/sol_pages.php?action=list&lang_id=${langId.value}`);
         };
         const openSolPageEditor = (p=null) => {
-            Object.assign(solPageForm, p ? {...p,image_url:p.image_url||'',icon_svg:p.icon_svg||'',icon_svg_white:p.icon_svg_white||''} : {id:0,type:solPagesTab.value,slug:'',title:'',description:'',btn1_text:'View Our Presentation',btn2_text:'Free audit',icon_svg:'',icon_svg_white:'',image_id:null,image_url:'',sort_order:0,is_active:1,meta_title:'',meta_description:''});
+            Object.assign(solPageForm, p ? {...p,image_url:p.image_url||'',icon_svg:p.icon_svg||'',icon_svg_white:p.icon_svg_white||'',og_image_url:p.og_image_url||''} : {id:0,type:solPagesTab.value,slug:'',title:'',description:'',btn1_text:'View Our Presentation',btn2_text:'Free audit',icon_svg:'',icon_svg_white:'',image_id:null,image_url:'',sort_order:0,is_active:1,meta_title:'',meta_description:'',og_image_url:''});
             editingSolBlocks.value = false;
             editingSolPage.value = true;
         };
@@ -2275,7 +2328,7 @@ createApp({
         const editingCase = ref(null);
         const caseTab = ref('Basic');
         const allTerms = ref([]);
-        const caseForm = reactive({id:0,slug:'',title:'',company_name:'',description:'',overview_text:'',location:'',cooperation_period:'',key_results_text:'',services_text:'',meta_title:'',meta_description:'',is_active:1,is_featured:0,sort_order:0,link_behavior:'case_page',external_url:'',featured_image_id:null,company_logo_id:null,image_url:'',logo_url:'',challenges:[],tech_items:[],term_ids:[],extras:{}});
+        const caseForm = reactive({id:0,slug:'',title:'',company_name:'',description:'',overview_text:'',location:'',cooperation_period:'',key_results_text:'',services_text:'',meta_title:'',meta_description:'',og_image_url:'',is_active:1,is_featured:0,sort_order:0,link_behavior:'case_page',external_url:'',featured_image_id:null,company_logo_id:null,image_url:'',logo_url:'',challenges:[],tech_items:[],term_ids:[],extras:{}});
 
         const loadCases = async () => { casesList.value = await api(`/admin/api/cases.php?lang_id=${langId.value}`); };
         const openCaseEditor = async (c=null) => {
@@ -2288,7 +2341,7 @@ createApp({
                     : (full.tech_items||[]).map(t=>({name:t.name||'',description:''}));
                 Object.assign(caseForm,{...full,link_behavior:full.link_behavior||'case_page',external_url:full.external_url||'',key_results_text:(full.key_results||[]).map(r=>r.text).join('\n'),services_text:(full.services||[]).map(s=>s.service_name).join('\n'),challenges:full.challenges.map(ch=>({id:ch.id,title:ch.ch_title||'',text:ch.ch_text||''})),tech_items:techItems,term_ids:full.term_ids||[],extras:{...extras,results:extras.results||[]}});
             } else {
-                Object.assign(caseForm,{id:0,slug:'',title:'',company_name:'',description:'',overview_text:'',location:'',cooperation_period:'',key_results_text:'',services_text:'',meta_title:'',meta_description:'',is_active:1,is_featured:0,sort_order:0,link_behavior:'case_page',external_url:'',featured_image_id:null,company_logo_id:null,image_url:'',logo_url:'',challenges:[],tech_items:[],term_ids:[],extras:{results:[]}});
+                Object.assign(caseForm,{id:0,slug:'',title:'',company_name:'',description:'',overview_text:'',location:'',cooperation_period:'',key_results_text:'',services_text:'',meta_title:'',meta_description:'',og_image_url:'',is_active:1,is_featured:0,sort_order:0,link_behavior:'case_page',external_url:'',featured_image_id:null,company_logo_id:null,image_url:'',logo_url:'',challenges:[],tech_items:[],term_ids:[],extras:{results:[]}});
             }
             editingCase.value = true;
         };
@@ -2311,7 +2364,7 @@ createApp({
         const postTab = ref('Basic');
         const authorsList = ref([]);
         const defaultExtras = () => ({cta_title:'',cta_btn1_text:'View Our Presentation',cta_btn1_url:'/assets/Sidis-Group.pdf?v=1',cta_btn2_text:'Free audit',cta_btn2_url:'#getintouch',faq_title:'Questions & answers',faq_enabled:true,faq:[],articles_title:'Latest Automation\nInsights',related_post_ids:[],_gallery_imgs:[],_media_img_url:'',_media_video_url:''});
-        const postForm = reactive({id:0,slug:'',title:'',subtitle:'',content:'',excerpt:'',meta_title:'',meta_description:'',is_active:1,featured_image_id:null,image_url:'',author_id:null,published_at:'',toc:[],term_ids:[],extras:defaultExtras()});
+        const postForm = reactive({id:0,slug:'',title:'',subtitle:'',content:'',excerpt:'',meta_title:'',meta_description:'',og_image_url:'',is_active:1,featured_image_id:null,image_url:'',author_id:null,published_at:'',toc:[],term_ids:[],extras:defaultExtras()});
 
         const loadPosts = async () => { postsList.value = await api(`/admin/api/posts.php?lang_id=${langId.value}`); };
         const loadAuthors = async () => { authorsList.value = await api(`/admin/api/authors.php?lang_id=${langId.value}`); };
@@ -2322,7 +2375,7 @@ createApp({
                 const loadedExtras = Object.assign(defaultExtras(), full.extras||{});
                 Object.assign(postForm,{...full,toc:full.toc||[],term_ids:full.term_ids||[],extras:loadedExtras});
             } else {
-                Object.assign(postForm,{id:0,slug:'',title:'',subtitle:'',content:'',excerpt:'',meta_title:'',meta_description:'',is_active:1,featured_image_id:null,image_url:'',author_id:null,published_at:new Date().toISOString().slice(0,16),toc:[],term_ids:[],extras:defaultExtras()});
+                Object.assign(postForm,{id:0,slug:'',title:'',subtitle:'',content:'',excerpt:'',meta_title:'',meta_description:'',og_image_url:'',is_active:1,featured_image_id:null,image_url:'',author_id:null,published_at:new Date().toISOString().slice(0,16),toc:[],term_ids:[],extras:defaultExtras()});
             }
             editingPost.value = true;
             if (!authorsList.value.length) await loadAuthors();

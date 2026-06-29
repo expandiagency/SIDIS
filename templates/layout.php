@@ -2,6 +2,7 @@
 // $lang, $languages, $nav_header, $nav_footer, $page_class must be set by caller
 $meta_title = $meta_title ?? get_setting('site_name', $lang_id) ?: 'Sidis';
 $meta_description = $meta_description ?? get_setting('site_description', $lang_id) ?: '';
+$og_image = (isset($og_image) && $og_image) ? $og_image : (get_setting('default_og_image_url') ?: '');
 $lang_code = $lang['code'] ?? 'en';
 $is_default = (bool)($lang['is_default'] ?? true);
 
@@ -35,8 +36,8 @@ $_getintouch_url = in_array($page_class ?? '', ['blog-list-page', 'cases-list-pa
     <link rel="preload" href="/assets/fonts/BasementGrotesque-Medium.woff2" as="font" type="font/woff2" crossorigin="anonymous" fetchpriority="low">
     <link rel="preload" href="/assets/fonts/BasementGrotesque-Bold.woff2" as="font" type="font/woff2" crossorigin="anonymous" fetchpriority="low">
     <!-- CSS: preload hint so browser discovers it before parsing <link> -->
-    <link rel="preload" as="style" href="/css/app.min.css?v=20">
-    <link rel="stylesheet" href="/css/app.min.css?v=20" fetchpriority="high">
+    <link rel="preload" as="style" href="/css/app.min.css?v=21">
+    <link rel="stylesheet" href="/css/app.min.css?v=21" fetchpriority="high">
     <link rel="preload" href="/css/icons.css?v=2" as="style" onload="this.onload=null;this.rel='stylesheet'">
     <noscript><link rel="stylesheet" href="/css/icons.css?v=2"></noscript>
     <style>

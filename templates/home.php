@@ -16,6 +16,7 @@ if (empty($blocks)) {
     ];
 }
 
+$og_image = $h['og_image_url'] ?: ($h['hero_poster_url'] ?? '');
 require __DIR__ . '/layout.php';
 ?>
 <main class="page">
