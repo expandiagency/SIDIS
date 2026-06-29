@@ -75,10 +75,10 @@ address {
 @font-face {font-family: Inter;font-display: swap;src: url("../assets/fonts/Inter-Regular.woff2") format("woff2");font-weight: 400;font-style: normal;}
 @font-face {font-family: Inter;font-display: swap;src: url("../assets/fonts/Inter-Medium.woff2") format("woff2");font-weight: 500;font-style: normal;}
 @font-face {font-family: Inter;font-display: swap;src: url("../assets/fonts/Inter-Bold.woff2") format("woff2");font-weight: 700;font-style: normal;}
-@font-face {font-family: BasementGrotesqueExpanded;font-display: swap;src: url("../assets/fonts/BasementGrotesqueExpanded-Black.woff2") format("woff2");font-weight: 900;font-style: normal;}
-@font-face {font-family: BasementGrotesque;font-display: swap;src: url("../assets/fonts/BasementGrotesque-Medium.woff2") format("woff2");font-weight: 500;font-style: normal;}
-@font-face {font-family: BasementGrotesque;font-display: swap;src: url("../assets/fonts/BasementGrotesque-Bold.woff2") format("woff2");font-weight: 700;font-style: normal;}
-@font-face {font-family: BasementGrotesque;font-display: swap;src: url("../assets/fonts/BasementGrotesque-Black.woff2") format("woff2");font-weight: 900;font-style: normal;}
+@font-face {font-family: BasementGrotesqueExpanded;font-display: optional;src: url("../assets/fonts/BasementGrotesqueExpanded-Black.woff2") format("woff2");font-weight: 900;font-style: normal;}
+@font-face {font-family: BasementGrotesque;font-display: optional;src: url("../assets/fonts/BasementGrotesque-Medium.woff2") format("woff2");font-weight: 500;font-style: normal;}
+@font-face {font-family: BasementGrotesque;font-display: optional;src: url("../assets/fonts/BasementGrotesque-Bold.woff2") format("woff2");font-weight: 700;font-style: normal;}
+@font-face {font-family: BasementGrotesque;font-display: optional;src: url("../assets/fonts/BasementGrotesque-Black.woff2") format("woff2");font-weight: 900;font-style: normal;}
 
 :root {
   /* Шрифт за замовчуванням */
