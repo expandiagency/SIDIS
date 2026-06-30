@@ -7032,10 +7032,6 @@ a.automation__marquee-item {
   }
 }
 @media (width >= 62em) and (any-hover: hover){
-  .projects-card__descr {
-    width: 280px;
-    flex-shrink: 0;
-  }
   .projects-card:hover .projects-card__body {
     max-width: calc(68% - 12px);
     color: var(--clr-white);
