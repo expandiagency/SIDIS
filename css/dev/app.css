@@ -2046,6 +2046,7 @@ a.planning__marquee-item {
   display: flex;
   flex-direction: column;
   gap: 10px;
+  max-width: 520px;
 }
 .roadmap__item-title {
   font-weight: 700;

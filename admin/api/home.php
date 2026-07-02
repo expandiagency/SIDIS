@@ -97,6 +97,8 @@ if ($method === 'POST') {
         $save['departments_ids']   = json_encode(array_map('intval', $data['departments_ids']   ?? []));
         $save['industries_ids']    = json_encode(array_map('intval', $data['industries_ids']    ?? []));
         $save['featured_cases_ids']= json_encode(array_map('intval', $data['featured_cases_ids']?? []));
+        $raw_steps = $data['roadmap_steps'] ?? [];
+        $save['roadmap_steps'] = is_array($raw_steps) ? json_encode($raw_steps, JSON_UNESCAPED_UNICODE) : '';
         $existing = row('SELECT id FROM home_content WHERE lang_id=?', [$lang_id]);
         if ($existing) {
             update('home_content', $save, ['lang_id' => $lang_id]);

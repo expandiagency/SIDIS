@@ -439,6 +439,15 @@ tr:hover td{background:#fafafa}
                     </div>
                 </div>
                 <hr style="margin:20px 0;border:none;border-top:1px solid var(--border)">
+                <p style="font-size:13px;font-weight:600;margin-bottom:12px">Roadmap Steps</p>
+                <div v-for="(step, i) in homeData.roadmap_steps" :key="i" style="margin-bottom:12px;padding:12px;border:1px solid var(--border);border-radius:6px">
+                    <p style="font-size:12px;color:var(--muted);margin-bottom:8px">Step {{ i + 1 }}</p>
+                    <div class="form-grid cols-1">
+                        <div class="field"><label>Title</label><input v-model="step.title"></div>
+                        <div class="field"><label>Description</label><textarea v-model="step.text" rows="2"></textarea></div>
+                    </div>
+                </div>
+                <hr style="margin:20px 0;border:none;border-top:1px solid var(--border)">
                 <p style="font-size:13px;font-weight:600;margin-bottom:12px">Contact Form Section</p>
                 <div class="form-grid cols-1">
                     <div class="field"><label>Section Title</label><input v-model="homeData.cta_title"></div>
@@ -2163,6 +2172,8 @@ createApp({
             d.hero_btn2_new_tab    = d.hero_btn2_new_tab    ? 1 : 0;
             d.roadmap_btn1_new_tab = d.roadmap_btn1_new_tab ? 1 : 0;
             d.roadmap_btn2_new_tab = d.roadmap_btn2_new_tab ? 1 : 0;
+            if (typeof d.roadmap_steps === 'string') { try { d.roadmap_steps = JSON.parse(d.roadmap_steps); } catch(e) {} }
+            if (!Array.isArray(d.roadmap_steps) || !d.roadmap_steps.length) d.roadmap_steps = [{title:'',text:''},{title:'',text:''},{title:'',text:''},{title:'',text:''}];
             Object.assign(homeData, d);
             if (!allCases.value.length) {
                 allCases.value = await api(`/admin/api/cases.php?lang_id=${langId.value}`);
