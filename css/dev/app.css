@@ -4236,7 +4236,7 @@ a.automation__marquee-item {
   gap: 25px;
 }
 .result__user-img {
-  max-width: 22.7%;
+  max-width: 160px;
   width: 100%;
   mask-image: url("../assets/img/reviews/mask.svg");
   mask-repeat: no-repeat;
@@ -4250,16 +4250,18 @@ a.automation__marquee-item {
   object-fit: cover;
 }
 .result__user-body {
-  flex: 1 1 auto;
+  flex: 0 0 auto;
   display: flex;
   align-items: center;
-  justify-content: center;
-  gap: 40px;
+  justify-content: space-between;
+  gap: 60px;
 }
 .result__user-head {
+  width: 55%;
   display: flex;
   flex-direction: column;
   gap: 4px;
+  margin-right: auto;
 }
 .result__user-name {
   font-weight: 600;
@@ -4273,6 +4275,7 @@ a.automation__marquee-item {
   letter-spacing: -0.02em;
 }
 .result__user-socials {
+  max-width: 35%;
   display: grid;
   align-items: center;
   grid-template-columns: repeat(2, auto);
