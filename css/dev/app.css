@@ -4257,6 +4257,7 @@ a.automation__marquee-item {
   gap: 30px;
 }
 .result__user-head {
+  max-width: 320px;
   display: flex;
   flex-direction: column;
   gap: 4px;
