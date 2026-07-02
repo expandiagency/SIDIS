@@ -7,8 +7,9 @@ require dirname(__DIR__) . '/sendmail/phpmailer/src/SMTP.php';
 header('Content-Type: application/json');
 
 $form  = $_POST['form'] ?? [];
-$name  = trim($form['name']  ?? '');
-$email = trim($form['email'] ?? '');
+$name     = trim($form['name']     ?? '');
+$email    = trim($form['email']    ?? '');
+$page_url = trim($form['page_url'] ?? '');
 
 if (!$name || !$email || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
     echo json_encode(['message' => 'Error: invalid data']);
@@ -26,6 +27,9 @@ if (empty($recipients)) {
 $body  = "New Contact Form Submission\n\n";
 $body .= "Name:  {$name}\n";
 $body .= "Email: {$email}\n";
+if ($page_url) {
+    $body .= "Page:  {$page_url}\n";
+}
 
 $results = [];
 $error   = '';

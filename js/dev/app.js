@@ -5311,6 +5311,7 @@ function formInit() {
 					const formAction = form.getAttribute("action") ? form.getAttribute("action").trim() : "#";
 					const formMethod = form.getAttribute("method") ? form.getAttribute("method").trim() : "GET";
 					const formData = new FormData(form);
+					formData.append('form[page_url]', window.location.href);
 					form.classList.add("--sending");
 					const response = await fetch(formAction, {
 						method: formMethod,
