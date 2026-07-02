@@ -513,30 +513,30 @@ require __DIR__ . '/layout.php';
         <div data-fls-spollers="" data-fls-spollers-one="" class="faq__items spollers">
             <div class="spollers__column">
                 <details class="spollers__item">
-                    <summary class="spollers__title">What are your pricing options?</summary>
-                    <div class="spollers__body">Our team is based in Eastern Europe, which gives us an advantage in operational costs — low taxes, rent, and payroll. We deliberately maintain a compact team of professionals instead of a bloated staff. Over the years, we've built automated processes and refined systems which eliminates unnecessary work hours. We don't spend budget on expensive offices in central London or New York — we save that money for the client.</div>
+                    <summary class="spollers__title">What does RPA development actually involve?</summary>
+                    <div class="spollers__body">RPA development means building software robots that interact with your existing applications the same way a person would. They log in, read data, move it between systems, fill forms, trigger actions and produce outputs. The difference is they do it without breaks, without errors and at whatever volume the business requires. We handle the full process: mapping your workflows, building the automations, testing them against your real systems and deploying them into your environment.</div>
                 </details>
                 <details class="spollers__item">
-                    <summary class="spollers__title">How do you handle customer feedback?</summary>
-                    <div class="spollers__body">Our team is based in Eastern Europe, which gives us an advantage in operational costs — low taxes, rent, and payroll. We deliberately maintain a compact team of professionals instead of a bloated staff. Over the years, we've built automated processes and refined systems which eliminates unnecessary work hours. We don't spend budget on expensive offices in central London or New York — we save that money for the client.</div>
+                    <summary class="spollers__title">Which processes are the best fit for RPA?</summary>
+                    <div class="spollers__body">The best candidates are processes that follow consistent rules, repeat frequently and currently require someone to copy or move data by hand. Invoice processing, order entry, report generation, compliance checks, CRM updates, onboarding workflows. If your team does the same sequence of steps more than a few times a day, there is a strong case for automating it. We run a process audit before starting any project to identify where the actual time and cost sit.</div>
                 </details>
                 <details class="spollers__item">
-                    <summary class="spollers__title">What is your typical project timeline?</summary>
-                    <div class="spollers__body">Our team is based in Eastern Europe, which gives us an advantage in operational costs — low taxes, rent, and payroll. We deliberately maintain a compact team of professionals instead of a bloated staff. Over the years, we've built automated processes and refined systems which eliminates unnecessary work hours. We don't spend budget on expensive offices in central London or New York — we save that money for the client.</div>
+                    <summary class="spollers__title">How long does an RPA project take from start to go-live?</summary>
+                    <div class="spollers__body">The first automation typically goes live within three to six weeks, depending on complexity and how quickly we can access your systems for testing. We prioritise speed to the first working workflow because seeing real results early matters. Larger programmes with multiple processes run in parallel phases. We scope everything before we start so you know what to expect at each milestone.</div>
                 </details>
             </div>
             <div class="spollers__column">
                 <details class="spollers__item">
-                    <summary class="spollers__title">Can you provide case studies or testimonials?</summary>
-                    <div class="spollers__body">Our team is based in Eastern Europe, which gives us an advantage in operational costs — low taxes, rent, and payroll. We deliberately maintain a compact team of professionals instead of a bloated staff. Over the years, we've built automated processes and refined systems which eliminates unnecessary work hours. We don't spend budget on expensive offices in central London or New York — we save that money for the client.</div>
+                    <summary class="spollers__title">Do we need to replace or upgrade our existing software?</summary>
+                    <div class="spollers__body">No. RPA works on top of your current applications. The robots interact with the interfaces that are already there, whether that is SAP, Salesforce, an internal ERP, a web portal or a spreadsheet. You do not need to replace anything or wait for a system migration. That is part of what makes RPA practical: you get the efficiency gains without the disruption of replacing the tools your team already knows.</div>
                 </details>
                 <details class="spollers__item">
-                    <summary class="spollers__title">What sets you apart from competitors?</summary>
-                    <div class="spollers__body">Our team is based in Eastern Europe, which gives us an advantage in operational costs — low taxes, rent, and payroll. We deliberately maintain a compact team of professionals instead of a bloated staff. Over the years, we've built automated processes and refined systems which eliminates unnecessary work hours. We don't spend budget on expensive offices in central London or New York — we save that money for the client.</div>
+                    <summary class="spollers__title">What does RPA development cost?</summary>
+                    <div class="spollers__body">Cost depends on the number of processes, their complexity and the level of exception handling required. A focused single-process automation is a different scope than a multi-department programme. We provide a fixed quote after the discovery phase, not before, because quoting without understanding your specific workflows produces numbers that do not hold. What we can say is that most clients see the investment returned within the first six months through reduced labour hours and error correction costs.</div>
                 </details>
                 <details class="spollers__item">
-                    <summary class="spollers__title">How do you ensure quality in your work?</summary>
-                    <div class="spollers__body">Our team is based in Eastern Europe, which gives us an advantage in operational costs — low taxes, rent, and payroll. We deliberately maintain a compact team of professionals instead of a bloated staff. Over the years, we've built automated processes and refined systems which eliminates unnecessary work hours. We don't spend budget on expensive offices in central London or New York — we save that money for the client.</div>
+                    <summary class="spollers__title">What happens if something breaks or the process changes?</summary>
+                    <div class="spollers__body">We include monitoring and support in every engagement. When an application update or process change affects a bot, we identify it quickly and push a fix. Business processes are not static and neither is our support. We document everything we build so your team understands what is running, and we stay available when adjustments are needed. Most clients keep us on retainer for ongoing maintenance as the automation programme grows.</div>
                 </details>
             </div>
         </div>
