@@ -105,8 +105,8 @@ $_getintouch_url = in_array($page_class ?? '', ['blog-list-page', 'cases-list-pa
     });
     </script>
     <!-- JS: modulepreload fetches + parses the module before execution -->
-    <link rel="modulepreload" crossorigin href="/js/app.min.js?v=4">
-    <script type="module" crossorigin src="/js/app.min.js?v=4"></script>
+    <link rel="modulepreload" crossorigin href="/js/app.min.js?v=5">
+    <script type="module" crossorigin src="/js/app.min.js?v=5"></script>
     <script defer src="/js/catalog-filters.js?v=1"></script>
     <link rel="shortcut icon" href="/assets/img/favicon.ico">
     <title><?= e($meta_title) ?></title>
