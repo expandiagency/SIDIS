@@ -1,5 +1,8 @@
 <?php
 require dirname(__DIR__) . '/includes/functions.php';
+require dirname(__DIR__) . '/sendmail/phpmailer/src/Exception.php';
+require dirname(__DIR__) . '/sendmail/phpmailer/src/PHPMailer.php';
+require dirname(__DIR__) . '/sendmail/phpmailer/src/SMTP.php';
 
 header('Content-Type: application/json');
 
@@ -20,25 +23,41 @@ if (empty($recipients)) {
     exit;
 }
 
-$subject = '=?UTF-8?B?' . base64_encode('New Lead from SIDIS website') . '?=';
-
 $body  = "New Contact Form Submission\n\n";
 $body .= "Name:  {$name}\n";
 $body .= "Email: {$email}\n";
 
-$headers  = "From: noreply@sidistech.group\r\n";
-$headers .= "Reply-To: {$name} <{$email}>\r\n";
-$headers .= "Content-Type: text/plain; charset=UTF-8\r\n";
-$headers .= "MIME-Version: 1.0\r\n";
-$headers .= "X-Mailer: PHP/" . phpversion() . "\r\n";
-
 $results = [];
-foreach ($recipients as $recipient) {
-    $ok = mail($recipient, $subject, $body, $headers);
-    $results[] = $recipient . ':' . ($ok ? 'ok' : 'fail');
+$error   = '';
+
+try {
+    $mail = new PHPMailer\PHPMailer\PHPMailer(true);
+    $mail->isSMTP();
+    $mail->Host       = 'smtp.gmail.com';
+    $mail->SMTPAuth   = true;
+    $mail->Username   = 'services@sidis.group';
+    $mail->Password   = 'rjsewiijqurgojme';
+    $mail->SMTPSecure = PHPMailer\PHPMailer\PHPMailer::ENCRYPTION_STARTTLS;
+    $mail->Port       = 587;
+    $mail->CharSet    = 'UTF-8';
+
+    $mail->setFrom('services@sidis.group', 'SIDIS Website');
+    $mail->addReplyTo($email, $name);
+    $mail->Subject = 'New Lead from SIDIS website';
+    $mail->Body    = $body;
+
+    foreach ($recipients as $recipient) {
+        $mail->clearAddresses();
+        $mail->addAddress($recipient);
+        $mail->send();
+        $results[] = $recipient . ':ok';
+    }
+} catch (Exception $e) {
+    $error   = $mail->ErrorInfo;
+    $results[] = 'error:' . $error;
 }
 
-$log_line = date('Y-m-d H:i:s') . ' | ' . $name . ' | ' . $email . ' | ' . implode(', ', $results) . "\n";
+$log_line = date('Y-m-d H:i:s') . ' | ' . $name . ' | ' . $email . ' | ' . implode(', ', $results) . ($error ? ' | ERR: ' . $error : '') . "\n";
 file_put_contents(dirname(__DIR__) . '/sendmail/mail.log', $log_line, FILE_APPEND | LOCK_EX);
 
 echo json_encode(['message' => 'Дані надіслані!', 'debug' => $results]);
