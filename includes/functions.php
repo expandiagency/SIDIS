@@ -92,6 +92,16 @@ function get_nav(int $lang_id, string $location): array {
             $mega_type = $item['mega_type'] ?? 'solutions';
             if (in_array($mega_type, ['departments', 'industries'])) {
                 $sp_type = $mega_type === 'departments' ? 'department' : 'industry';
+
+                // Collect admin-configured URLs from nav_mega_subitems (if any)
+                $allowed_urls = [];
+                $nav_cats = rows('SELECT id FROM nav_mega_categories WHERE nav_item_id=? AND lang_id=?', [$item['id'], $lang_id]);
+                foreach ($nav_cats as $nc) {
+                    $subs = rows('SELECT url FROM nav_mega_subitems WHERE category_id=? ORDER BY sort_order', [$nc['id']]);
+                    foreach ($subs as $s) { if ($s['url']) $allowed_urls[] = $s['url']; }
+                }
+                $url_order = array_flip($allowed_urls);
+
                 $pages = rows(
                     'SELECT sp.slug, sp.type, sp.icon_svg, sp.icon_svg_white, spt.title, spt.description
                      FROM solution_pages sp
@@ -101,6 +111,9 @@ function get_nav(int $lang_id, string $location): array {
                 );
                 $subitems = [];
                 foreach ($pages as $p) {
+                    $url = '/' . sp_type_prefix($p['type']) . '/' . $p['slug'] . '/';
+                    // If admin configured specific items, skip unlisted ones
+                    if (!empty($allowed_urls) && !in_array($url, $allowed_urls)) continue;
                     $white = $p['icon_svg_white'] ?: '';
                     // Fallback: read white SVG directly from file if DB column is empty
                     if (!$white && !empty($p['title'])) {
@@ -115,10 +128,16 @@ function get_nav(int $lang_id, string $location): array {
                     $subitems[] = [
                         'title'          => $p['title'] ?: $p['slug'],
                         'description'    => $p['description'] ?: '',
-                        'url'            => '/' . sp_type_prefix($p['type']) . '/' . $p['slug'] . '/',
+                        'url'            => $url,
                         'icon_svg'       => $p['icon_svg'] ?: '',
                         'icon_svg_white' => $white,
                     ];
+                }
+                // Preserve admin sort order from nav_mega_subitems
+                if (!empty($url_order)) {
+                    usort($subitems, function($a, $b) use ($url_order) {
+                        return ($url_order[$a['url']] ?? PHP_INT_MAX) - ($url_order[$b['url']] ?? PHP_INT_MAX);
+                    });
                 }
                 $item['mega_categories'] = [['id'=>0,'title'=>'','description'=>'','subitems'=>$subitems]];
             } else {
