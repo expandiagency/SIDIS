@@ -243,20 +243,22 @@ if (!empty($ex['tech_items'])) {
     <div class="result__container">
         <div class="result__body">
             <div class="result__text">"<?= e($ex['result_quote']) ?>"</div>
-            <div class="result__user">
-                <div class="result__user-img">
-                    <img alt="<?= e($ex['result_user_name'] ?? '') ?>" loading="lazy" src="<?= e($ex['result_user_image'] ?: '/assets/img/nda-user.webp') ?>">
-                </div>
-                <div class="result__user-body">
-                    <div class="result__user-head">
-                        <div class="result__user-name"><?= e($ex['result_user_name'] ?? '') ?></div>
-                        <div class="result__user-work"><?= e($ex['result_user_work'] ?? '') ?></div>
+            <div class="result__user-outer">
+                <div class="result__user">
+                    <div class="result__user-img">
+                        <img alt="<?= e($ex['result_user_name'] ?? '') ?>" loading="lazy" src="<?= e($ex['result_user_image'] ?: '/assets/img/nda-user.webp') ?>">
                     </div>
-                    <div class="result__user-socials">
+                    <div class="result__user-body">
+                        <div class="result__user-head">
+                            <div class="result__user-name"><?= e($ex['result_user_name'] ?? '') ?></div>
+                            <div class="result__user-work"><?= e($ex['result_user_work'] ?? '') ?></div>
+                        </div>
                         <?php if (!empty($ex['result_linkedin'])): ?>
-                        <a href="<?= e($ex['result_linkedin']) ?>" class="result__user-social" target="_blank">
-                            <img src="/assets/img/icons/linkedin.svg" width="38" height="38" alt="LinkedIn" loading="lazy">
-                        </a>
+                        <div class="result__user-socials">
+                            <a href="<?= e($ex['result_linkedin']) ?>" class="result__user-social" target="_blank">
+                                <img src="/assets/img/icons/linkedin.svg" width="38" height="38" alt="LinkedIn" loading="lazy">
+                            </a>
+                        </div>
                         <?php endif; ?>
                     </div>
                 </div>
