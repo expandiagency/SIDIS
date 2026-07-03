@@ -93,51 +93,62 @@ function get_nav(int $lang_id, string $location): array {
             if (in_array($mega_type, ['departments', 'industries'])) {
                 $sp_type = $mega_type === 'departments' ? 'department' : 'industry';
 
-                // Collect admin-configured URLs from nav_mega_subitems (if any)
-                $allowed_urls = [];
-                $nav_cats = rows('SELECT id FROM nav_mega_categories WHERE nav_item_id=? AND lang_id=?', [$item['id'], $lang_id]);
-                foreach ($nav_cats as $nc) {
-                    $subs = rows('SELECT url FROM nav_mega_subitems WHERE category_id=? ORDER BY sort_order', [$nc['id']]);
-                    foreach ($subs as $s) { if ($s['url']) $allowed_urls[] = $s['url']; }
-                }
-                $url_order = array_flip($allowed_urls);
-
-                $pages = rows(
-                    'SELECT sp.slug, sp.type, sp.icon_svg, sp.icon_svg_white, spt.title, spt.description
+                // Build icon map from solution_pages (url → icon)
+                $icon_map = [];
+                $white_map = [];
+                $folder_map = ['department'=>'Departments','industry'=>'Industries','solution'=>'Solutions'];
+                $sp_pages = rows(
+                    'SELECT sp.slug, sp.type, sp.icon_svg, sp.icon_svg_white, spt.title
                      FROM solution_pages sp
                      LEFT JOIN solution_pages_t spt ON sp.id=spt.page_id AND spt.lang_id=?
-                     WHERE sp.type=? AND sp.is_active=1 ORDER BY sp.sort_order',
+                     WHERE sp.type=? AND sp.is_active=1',
                     [$lang_id, $sp_type]
                 );
-                $subitems = [];
-                foreach ($pages as $p) {
-                    $url = '/' . sp_type_prefix($p['type']) . '/' . $p['slug'] . '/';
-                    // If admin configured specific items, skip unlisted ones
-                    if (!empty($allowed_urls) && !in_array($url, $allowed_urls)) continue;
-                    $white = $p['icon_svg_white'] ?: '';
-                    // Fallback: read white SVG directly from file if DB column is empty
-                    if (!$white && !empty($p['title'])) {
-                        $folder_map = ['department'=>'Departments','industry'=>'Industries','solution'=>'Solutions'];
+                foreach ($sp_pages as $p) {
+                    $u = '/' . sp_type_prefix($p['type']) . '/' . $p['slug'] . '/';
+                    if ($p['icon_svg']) $icon_map[$u] = $p['icon_svg'];
+                    $w = $p['icon_svg_white'] ?: '';
+                    if (!$w && !empty($p['title'])) {
                         $dir = __DIR__ . '/../Icons/' . ($folder_map[$p['type']] ?? '');
-                        $fn = str_replace([' / ', '/'], [' - ', '-'], $p['title']);
-                        $path = $dir . '/' . $fn . '-white.svg';
-                        if (@file_exists($path)) {
-                            $white = trim(preg_replace('/<\?xml[^?]*\?>\s*/i', '', @file_get_contents($path)));
-                        }
+                        $fn  = str_replace([' / ', '/'], [' - ', '-'], $p['title']);
+                        $fp  = $dir . '/' . $fn . '-white.svg';
+                        if (@file_exists($fp)) $w = trim(preg_replace('/<\?xml[^?]*\?>\s*/i', '', @file_get_contents($fp)));
                     }
-                    $subitems[] = [
-                        'title'          => $p['title'] ?: $p['slug'],
-                        'description'    => $p['description'] ?: '',
-                        'url'            => $url,
-                        'icon_svg'       => $p['icon_svg'] ?: '',
-                        'icon_svg_white' => $white,
-                    ];
+                    if ($w) $white_map[$u] = $w;
                 }
-                // Preserve admin sort order from nav_mega_subitems
-                if (!empty($url_order)) {
-                    usort($subitems, function($a, $b) use ($url_order) {
-                        return ($url_order[$a['url']] ?? PHP_INT_MAX) - ($url_order[$b['url']] ?? PHP_INT_MAX);
-                    });
+
+                // Check if admin configured items via nav_mega_subitems
+                $admin_subs = [];
+                $nav_cats = rows('SELECT id FROM nav_mega_categories WHERE nav_item_id=? AND lang_id=?', [$item['id'], $lang_id]);
+                foreach ($nav_cats as $nc) {
+                    $subs = rows('SELECT title, description, url FROM nav_mega_subitems WHERE category_id=? ORDER BY sort_order', [$nc['id']]);
+                    foreach ($subs as $s) { if ($s['url']) $admin_subs[] = $s; }
+                }
+
+                $subitems = [];
+                if (!empty($admin_subs)) {
+                    // Use admin-configured items: titles/order from admin, icons from solution_pages
+                    foreach ($admin_subs as $s) {
+                        $subitems[] = [
+                            'title'          => $s['title'],
+                            'description'    => $s['description'] ?: '',
+                            'url'            => $s['url'],
+                            'icon_svg'       => $icon_map[$s['url']] ?? '',
+                            'icon_svg_white' => $white_map[$s['url']] ?? '',
+                        ];
+                    }
+                } else {
+                    // Fallback: show all active solution_pages
+                    foreach ($sp_pages as $p) {
+                        $u = '/' . sp_type_prefix($p['type']) . '/' . $p['slug'] . '/';
+                        $subitems[] = [
+                            'title'          => $p['title'] ?: $p['slug'],
+                            'description'    => '',
+                            'url'            => $u,
+                            'icon_svg'       => $icon_map[$u] ?? '',
+                            'icon_svg_white' => $white_map[$u] ?? '',
+                        ];
+                    }
                 }
                 $item['mega_categories'] = [['id'=>0,'title'=>'','description'=>'','subitems'=>$subitems]];
             } else {
