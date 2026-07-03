@@ -4237,6 +4237,7 @@ a.automation__marquee-item {
 .result__user {
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 25px;
 }
 .result__user-img {
